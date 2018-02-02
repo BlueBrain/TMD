@@ -1,0 +1,22 @@
+----------------------------------------------------------------------------
+-                                                                          -
+-          Topological Analysis of Neuronal Morphologies.                  -
+-                                                                          -
+----------------------------------------------------------------------------
+
+Python toolkit to analyze anatomical properties of neurons.
+
+====================
+Quick example
+====================
+
+# Import the TANM toolkit in IPython
+import neurontopology as nt
+
+# Load a neuron 
+neuron = tn.io.load('input_path_to_file/input_file.swc')
+
+# Extract a tree of the morphology
+basal = nauron.basal[0]
+
+
