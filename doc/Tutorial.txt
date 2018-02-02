@@ -4,19 +4,17 @@
 -                                                                          -
 ----------------------------------------------------------------------------
 
-Python toolkit to analyze anatomical properties of neurons.
+Python toolkit to analyze the topological properties of neuronal trees.
 
 ====================
 Quick example
 ====================
 
-# Import the TANM toolkit in IPython
-import neurontopology as nt
+# Import the TMD toolkit in IPython
+import tmd
 
 # Load a neuron 
-neuron = tn.io.load('input_path_to_file/input_file.swc')
+neuron = tmd.io.load('input_path_to_file/input_file.swc')
 
-# Extract a tree of the morphology
-basal = nauron.basal[0]
-
-
+# Extract the tmd of a neurite, i.e., neuronal tree
+pd = tmd.methods.get_ph_diagram(neuron.neurite[0])

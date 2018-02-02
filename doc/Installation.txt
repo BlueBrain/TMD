@@ -1,0 +1,13 @@
+# Make a virtual environment
+virtualenv tmd_test
+
+# Activate the virtual environment
+. ./tmd_test/bin/activate
+
+# Install tmd module
+pip install -e TMD
+
+# If you see the error "Command "python setup.py egg_info" failed with error code 1 in /TMD" try:
+pip install pystan
+
+# Now your module is ready to use
