@@ -38,7 +38,7 @@ clean_test_venv:
 clean: clean_test_venv
 	@rm -f pep8.txt
 	@rm -f pylint.txt
-	@rm -rf neurom.egg-info
+	@rm -rf tmd.egg-info
 	@rm -f .coverage
 	@rm -rf test-reports
 	@rm -rf dist
