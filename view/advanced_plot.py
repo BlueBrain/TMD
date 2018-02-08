@@ -1,7 +1,7 @@
-"""Plotting functions of neurontopology"""
+"""Plotting functions of tmd"""
 
 import numpy as _np
-from neurontopology import Topology as _tm
+from tmd import Topology as _tm
 import view as _view
 import common as _cm
 
@@ -469,7 +469,7 @@ def tree_instance(tree, new_fig=True, plane='xy', component_num=1, feature='radi
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     if new_fig:
@@ -703,7 +703,7 @@ def tree_br(tree, plane='xy', feature='radial_distances', title='', diameter=Tru
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
@@ -748,7 +748,7 @@ def tree_gaussian_kernel(tree, plane='xy', feature='radial_distances', title='',
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
@@ -793,7 +793,7 @@ def tree_ph(tree, plane='xy', feature='radial_distances', title='', diameter=Tru
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
@@ -838,7 +838,7 @@ def tree_evol(tree, plane='xy', feature='radial_distances', title='', diameter=T
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
@@ -920,7 +920,7 @@ def plot_simple_tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd
     '''Generates a 2d figure of the tree.
     '''
     from matplotlib.collections import LineCollection
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
