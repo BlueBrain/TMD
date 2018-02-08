@@ -4,7 +4,7 @@
 import common as _cm
 from matplotlib.collections import LineCollection as _LC
 import numpy as _np
-from neurontopology import utils as _utils
+from tmd import utils as _utils
 
 
 def _get_default(variable, **kwargs):

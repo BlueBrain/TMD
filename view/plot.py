@@ -1,7 +1,7 @@
-"""Plotting functions of neurontopology"""
+"""Plotting functions of tmd"""
 
 import numpy as _np
-from neurontopology import Topology as _tm
+from tmd import Topology as _tm
 import view as _view
 import common as _cm
 
@@ -211,7 +211,7 @@ def tree_all(tree, plane='xy', feature='radial_distances', title='',
              diameter=True, treecol='b', xlims=None, ylims=None, **kwargs):
     '''Subplot with ph, barcode and tree
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
@@ -261,7 +261,7 @@ def neu_all(neuron, plane='xy', feature='radial_distances', title='',
     '''Subplot with ph, barcode
        and tree within spheres
     '''
-    from neurontopology import utils as _utils
+    from tmd import utils as _utils
     from matplotlib.collections import LineCollection
 
     kwargs['output_path'] = kwargs.get('output_path', None)
