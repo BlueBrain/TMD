@@ -272,7 +272,7 @@ def ph_on_tree(tree, new_fig=True, subplot=False, plane='xy', alpha=0.05, **kwar
     fig, ax = _view.tree(tree, new_fig=new_fig, subplot=subplot, plane=plane, **kwargs)
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology(tree, dim=plane)
+        ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
     else:
         raise Exception('Plane value not recognised')
 
@@ -329,7 +329,7 @@ def barcode_tree(tree, new_fig=True, plane='xy', output_dir=None, **kwargs):
 
     """
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology(tree, dim=plane)
+        ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
     else:
         raise Exception('Plane value not recognised')
 
@@ -416,7 +416,7 @@ def ph_diagram_tree(tree, new_fig=True, plane='xy', output_dir=None, **kwargs):
 
     """
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology(tree, dim=plane)
+        ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
     else:
         raise Exception('Plane value not recognised')
 
@@ -493,7 +493,7 @@ def tree_instance(tree, new_fig=True, plane='xy', component_num=1, feature='radi
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
@@ -728,7 +728,7 @@ def tree_br(tree, plane='xy', feature='radial_distances', title='', diameter=Tru
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology_multifurcation(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
@@ -773,7 +773,7 @@ def tree_gaussian_kernel(tree, plane='xy', feature='radial_distances', title='',
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology_multifurcation(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
@@ -818,7 +818,7 @@ def tree_ph(tree, plane='xy', feature='radial_distances', title='', diameter=Tru
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology_multifurcation(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
@@ -863,7 +863,7 @@ def tree_evol(tree, plane='xy', feature='radial_distances', title='', diameter=T
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology_multifurcation_unordered(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
@@ -1001,7 +1001,7 @@ def plot_persistent_homology_video(tree, feature='radial_distances', linewidth=1
     '''Method to extract ph from tree that contains mutlifurcations
     and generate a video of the process'''
 
-    ph_all = _tm.methods.get_persistent_homology_multifurcation(tree)
+    ph_all = _tm.methods.get_persistence_diagram(tree)
 
     ph_all = _sort_ph_initial(ph_all)
 

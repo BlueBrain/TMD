@@ -236,7 +236,7 @@ def tree_all(tree, plane='xy', feature='radial_distances', title='',
         return ((horz1, vert1), (horz2, vert2))
 
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
-        ph = _tm.methods.get_persistent_homology_multifurcation(tree, feature=feature)
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
     else:
         raise Exception('Plane value not recognised')
 
