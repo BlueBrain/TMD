@@ -4,6 +4,26 @@ tmd Topology algorithms implementation
 
 import numpy as np
 
+def sort_ph(ph):
+    '''Sorts the persistence diagram
+    so that birth is always before death.
+    '''
+    for i in ph: 
+        i.sort()
+
+
+def write_ph(ph, output_file='test.txt'):
+    '''Writes a persistence diagram in
+       an output file.
+    '''
+    wfile = open(output_file, 'w')
+
+    for p in ph:
+
+        wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
+
+    wfile.close()
+
 
 def get_graph(tree):
     '''Generate tree graph'''
@@ -38,6 +58,10 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
     end = np.array(end)
 
     parents = {e: b for b, e in zip(beg, end)}
+
+    if 0 in beg:
+        parents[0] = tree.p[0]
+
     children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
 
     while len(np.where(active)[0]) > 1:
@@ -54,14 +78,14 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
                 mx = np.argmax(abs(rd[c]))
                 mx_id = c[mx]
 
-                alive.remove(mx_id)
+                #alive.remove(mx_id)
                 c = np.delete(c, mx)
 
                 for ci in c:
                     ph.append([rd[ci], rd[p]])
-                    alive.remove(ci)
+                    #alive.remove(ci)
 
-                alive.append(p)
+                #alive.append(p)
 
                 rd[p] = rd[mx_id]
 
@@ -113,6 +137,7 @@ def get_angles(tree, beg, end, parents, children):
     angles = [[0,0,0,0],]
 
     for i,b in enumerate(beg[1:]):
+        print i,b
 
         dirP = tree.get_direction_between(start_id=parents[b], end_id=b)
 
@@ -157,6 +182,10 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
     end = np.array(end)
 
     parents = {e: b for b, e in zip(beg, end)}
+
+    if 0 in beg:
+        parents[0] = tree.p[0]
+
     children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
 
     angles = get_angles(tree, beg, end, parents, children)
@@ -175,16 +204,16 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
                 mx = np.argmax(abs(rd[c]))
                 mx_id = c[mx]
 
-                alive.remove(mx_id)
+                #alive.remove(mx_id)
                 c = np.delete(c, mx)
 
                 for ci in c:
                     angID = np.array(angles)[np.where(beg==p)[0][0]]
                     ph.append([rd[ci], rd[p], angID[0], angID[1], angID[2], angID[3]])
 
-                    alive.remove(ci)
+                    #alive.remove(ci)
 
-                alive.append(p)
+                #alive.append(p)
 
                 rd[p] = rd[mx_id]
 
@@ -230,16 +259,16 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
                 mx = np.argmax(abs(rd[c]))
                 mx_id = c[mx]
 
-                alive.remove(mx_id)
+                #alive.remove(mx_id)
                 c = np.delete(c, mx)
 
                 for ci in c:
                     radiiID = np.array(radii)[np.where(beg==p)[0][0]]
                     ph.append([rd[ci], rd[p], radiiID])
 
-                    alive.remove(ci)
+                    #alive.remove(ci)
 
-                alive.append(p)
+                #alive.append(p)
 
                 rd[p] = rd[mx_id]
 
@@ -283,38 +312,32 @@ def get_ph_neuron_rot(neuron, feature='radial_distances', neurite_type='all', **
 
 
 def extract_ph(tree, feature='radial_distances', output_file='test.txt',
-               function='get_persistence_diagram', **kwargs):
+               function='get_persistence_diagram', sort=False, **kwargs):
     '''Extracts persistent homology from tree'''
 
     ph = eval(function)(tree, feature=feature, **kwargs)
 
-    wfile = open(output_file, 'w')
+    if sort:
+        sort_ph(ph)
 
-    for p in ph:
-
-        wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
-
-    wfile.close()
+    write_ph(ph, output_file)
 
     print 'File ' + output_file + ' completed!'
 
 
 def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
-               function='get_ph_neuron', neurite_type='all', **kwargs):
+               function='get_ph_neuron', neurite_type='all', sort=False, **kwargs):
     '''Extracts persistent homology from tree'''
 
     ph = eval(function)(neuron, feature=feature, neurite_type='all', **kwargs)
 
+    if sort:
+        sort_ph(ph)
+
     if output_file is None:
         output_file = 'PH_' + n.name + '_' + neurite_type + '.txt'
 
-    wfile = open(output_file, 'w')
-
-    for p in ph:
-
-        wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
-
-    wfile.close()
+    write_ph(ph, output_file)
 
     print 'File ' + output_file + ' completed!'
 

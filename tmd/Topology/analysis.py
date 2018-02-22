@@ -19,7 +19,7 @@ def sort_ph(ph, reverse=True):
     return ph_sort
 
 
-def load_file(filename):
+def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
     f = open(filename, 'r')
@@ -28,7 +28,7 @@ def load_file(filename):
 
     for line in f:
 
-        line = np.array(line.split(), dtype=np.float)
+        line = np.array(line.split(delimiter), dtype=np.float)
         ph.append(line)
 
     f.close()
