@@ -79,7 +79,5 @@ def test_io_load():
 
 def test_load_population():
     population = io.load_population(POP_PATH)
-    nt.ok_(len(population.neurons) == 3)
-    nt.ok_(neuron_v1.is_equal(population.neurons[0]))
-    nt.ok_(neuron_v2.is_equal(population.neurons[1]))
-    nt.ok_(neuron1.is_equal(population.neurons[2]))
+    nt.ok_(len(population.neurons) == 5)
+    names = np.array([n.name for n in population.neurons])

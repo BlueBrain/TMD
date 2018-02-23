@@ -8,16 +8,37 @@ import os
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, '../../../test_data')
+POP_PATH = os.path.join(_path, '../../../test_data/valid')
 
 # Filenames for testing
 sample_file = os.path.join(DATA_PATH, 'sample.swc')
-sample_file1 = os.path.join(DATA_PATH, '/valid/sample.swc')
+sample_file2 = os.path.join(POP_PATH, 'C010398B-P2.h5')
 
 neu1 = io.load_neuron(sample_file)
-neu2 = io.load_neuron(sample_file1)
+neu3 = io.load_neuron(sample_file2)
+tree_h5 = neu3.neurites[0]
 tree0 = neu1.neurites[0]
 tree1 = neu1.neurites[1]
-tree2 = neu2.basal[0]
+
+secs_h5_beg = np.array([0,  16,  17,  21,  30,  52,  78,  78,  52,  30, 196, 219, 219,
+       196,  21,  17, 301, 301, 334, 334, 406, 409, 409, 406,  16, 508,
+       519, 522, 612, 640, 645, 645, 640, 612, 710, 730, 738, 738, 730,
+       710, 522, 519, 508])
+
+secs_h5_end = np.array([16,  17,  21,  30,  52,  78,  86,  91, 190, 196, 219, 222, 230,
+       249, 256, 301, 330, 334, 385, 406, 409, 454, 482, 494, 508, 519,
+       522, 612, 640, 645, 678, 682, 684, 710, 730, 738, 772, 795, 804,
+       828, 829, 832, 838])
+
+secs_h5_beg_points = np.array([0,  17,  18,  22,  31,  53,  79,  87,  92, 191, 197, 220, 223,
+       231, 250, 257, 302, 331, 335, 386, 407, 410, 455, 483, 495, 509,
+       520, 523, 613, 641, 646, 679, 683, 685, 711, 731, 739, 773, 796,
+       805, 829, 830, 833])
+
+secs_h5_end_points = np.array([16,  17,  21,  30,  52,  78,  86,  91, 190, 196, 219, 222, 230,
+       249, 256, 301, 330, 334, 385, 406, 409, 454, 482, 494, 508, 519,
+       522, 612, 640, 645, 678, 682, 684, 710, 730, 738, 772, 795, 804,
+       828, 829, 832, 838])
 
 x1 = np.array([0.,  1.,  2.,  3., 4.])
 y1 = np.array([0.,  2.,  3.,  4., 5.])
@@ -92,7 +113,7 @@ def test_get_point_radial_dist():
 
 def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
-    nt.ok_(np.allclose(pds, np.array([ 0., 3.74165739, 5.47370819, 7.205759, 8.93780981])))
+    nt.ok_(np.allclose(pds, np.array([ 0., 5.19615242, 8.93780981, 10.66986062, 8.93780981])))
 
 def test_get_sections():
     secs = tree.get_sections()
@@ -100,7 +121,20 @@ def test_get_sections():
 
 def test_get_sections_2():
     secs = tree.get_sections_2()
-    nt.ok_(np.allclose(secs, np.array([[0, 1, 1], [1, 3, 4]])))
+    nt.ok_(np.allclose(secs[0], np.array([0, 1, 1])))
+    nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
+    secs = tree_h5.get_sections_2()
+    nt.ok_(np.allclose(secs[0], secs_h5_beg))
+    nt.ok_(np.allclose(secs[1], secs_h5_end))
+
+def test_get_sections_points():
+    secs = tree.get_sections_points()
+    nt.ok_(np.allclose(secs[0], np.array([0, 2, 4])))
+    nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
+    secs = tree_h5.get_sections_points()
+    print secs[0], secs_h5_beg_points
+    nt.ok_(np.allclose(secs[0], secs_h5_beg_points))
+    nt.ok_(np.allclose(secs[1], secs_h5_end_points))
 
 def test_get_section_number():
     nt.ok_(tree.get_section_number() == 3)
@@ -108,14 +142,15 @@ def test_get_section_number():
     nt.ok_(tree1.get_section_number() == 3)
 
 def test_get_section_lengths():
-    nt.ok_(np.allclose(tree2.get_section_lengths(), np.array([10.00, 4.00, 4.00])))
+    nt.ok_(np.allclose(tree1.get_section_lengths(), np.array([10.00, 4.00, 4.00])))
 
 def test_get_section_radial_distances():
     nt.ok_(np.allclose(tree.get_section_radial_distances(), np.array([3.74165739, 7.07106781, 8.77496439])))
     nt.ok_(np.allclose(tree.get_section_radial_distances(initial=True), np.array([0. , 3.74165739, 3.74165739])))
 
 def test_get_section_path_distances():
-    nt.ok_(np.allclose(tree.get_section_path_distances(), np.array([3.74165739,  3.46410162, 12.12435565])))
+    pds = tree.get_section_path_distances()
+    nt.ok_(np.allclose(pds, np.array([3.74165739, 1.73205081, 1.73205081])))
 
 def test_get_bif_term():
     nt.ok_(np.allclose(tree.get_bif_term(), np.array([ 1.,  2.,  1.,  0.,  0.])))

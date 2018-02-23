@@ -28,7 +28,8 @@ class Population(object):
         if isinstance(new_neuron, Neuron.Neuron):
             self.neurons.append(new_neuron)
 
-    def extract_ph(self, neurite_type='all', output_folder='./', feature='radial_distances'):
+    def extract_ph(self, neurite_type='all', output_folder='./',
+                   feature='radial_distances'):
         """Extract the persistent homology of all
            neurites in the population and saves
            them in files according to the tree type.
@@ -60,7 +61,8 @@ class Population(object):
             _ = [try_except(ax, enax, feature, output_folder, ttype=neurite_type)
                  for enax, ax in enumerate(getattr(self, neurite_type + 's'))]
 
-    def extract_ph_names(self, neurite_type='all', output_folder='./', feature='radial_distances'):
+    def extract_ph_names(self, neurite_type='all', output_folder='./',
+                         feature='radial_distances'):
         """Extract the persistent homology of all
            neurites in the population and saves
            them in files according to the tree type.
@@ -96,7 +98,8 @@ class Population(object):
                              ttype=neurite_type + '_' + n.name.split('/')[-1])
                   for enax, ax in enumerate(getattr(n, neurite_type + 's'))] for n in self.neurons]
 
-    def extract_ph_neurons(self, neurite_type='all', output_folder='./', feature='radial_distances'):
+    def extract_ph_neurons(self, neurite_type='all', output_folder='./',
+                           feature='radial_distances'):
         """Extract the persistent homology of all
            neurites in the population and saves
            them in files according to the tree type.
@@ -113,8 +116,7 @@ class Population(object):
                     output_file=os.path.join(output_folder, neuron.name + '.txt'))
 
             except ValueError:
-                print tree
+                print neuron.name
 
         _ = [try_except(n, feature, output_folder, ttype=neurite_type)
              for n in self.neurons]
-

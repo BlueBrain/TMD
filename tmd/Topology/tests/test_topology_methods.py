@@ -2,6 +2,7 @@
 from nose import tools as nt
 import numpy as np
 from tmd.Topology import methods
+from tmd.Topology import analysis
 from tmd.Tree import Tree
 from tmd.io import io
 import os
@@ -10,13 +11,8 @@ from collections import OrderedDict
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, '../../../test_data')
 
-sample_file = os.path.join(DATA_PATH, 'sample.swc')
 sample_ph_0 = os.path.join(DATA_PATH, 'sample_ph_0.txt')
 sample_ph_1 = os.path.join(DATA_PATH, 'sample_ph_1.txt')
-
-neu1 = io.load_neuron(sample_file)
-tree0 = neu1.neurites[0]
-tree1 = neu1.neurites[1]
 
 x1 = np.array([0.,  0.,   0.,  1.,   1.])
 y1 = np.array([0.,  1.,  -1.,  1.,   0.])
@@ -30,6 +26,43 @@ p2 = np.array([-1,  0,  1,  1,  1])
 
 tree = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
 tree_trifork = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p2)
+
+# ===================================== tree0 =======================================
+
+x2 = np.array([0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -1., -2.,
+       -3., -4., -5.,  1.,  2.,  3.,  4.,  5.,  5.,  5.,  5.,  5.,  5.,
+        5.,  5.,  5.,  5.,  5.])
+y2 = np.array([0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 10., 10.,
+       10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10.,
+       10., 10., 10., 10., 10.])
+z2 = np.array([0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
+        0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,  2.,  3.,  4.,  5.,
+       -1., -2., -3., -4., -5.])
+d2 = np.array([0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+       0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+       0.4, 0.4, 0.4, 0.4, 0.4])
+t2 = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+       2, 2, 2, 2, 2, 2, 2, 2, 2])
+p2 = np.array([-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 10,
+       16, 17, 18, 19, 20, 21, 22, 23, 24, 20, 26, 27, 28, 29])
+
+tree0 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
+
+# ===================================== tree1 =======================================
+x2 = np.array([0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -1., -2.,
+       -3., -4., -5.,  1.,  2.,  3.,  4.,  5.])
+y2 = np.array([0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 10., 10.,
+       10., 10., 10., 10., 10., 10., 10., 10.])
+z2 = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+       0., 0., 0., 0.])
+d2 = np.array([0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+       0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4])
+t2 = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+p2 = np.array([-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 10,
+       16, 17, 18, 19])
+
+tree1 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
+
 
 def test_get_graph():
     tt0 = methods.get_graph(tree0)
@@ -54,8 +87,10 @@ def test_extract_persistence_diagram():
     import filecmp
     if os.path.isfile('test_ph.txt'):
         os.remove('test_ph.txt')
-    methods.extract_ph(tree0, output_file='test_ph.txt')
-    nt.ok_(filecmp.cmp('./test_ph.txt', sample_ph_0))
+    methods.extract_ph(tree0, output_file='./test_ph.txt')
+    ph_file = analysis.load_file('./test_ph.txt')
+    ph_0 = analysis.load_file(sample_ph_0)
+    nt.ok_(np.allclose(ph_file, ph_0))
     os.remove('test_ph.txt')
 
 def test_get_lifetime():

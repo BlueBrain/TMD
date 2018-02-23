@@ -11,7 +11,7 @@ def sort_ph(ph, reverse=True):
     """
     ph_sort = []
 
-    for ip, p in enumerate(ph):
+    for p in ph:
         ph_sort.append([p[0], p[1], np.abs(p[0] - p[1])])
 
     ph_sort.sort(key=lambda x: x[2], reverse=reverse)

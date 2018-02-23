@@ -50,7 +50,7 @@ class Neuron(object):
         """
         from tmd.Tree import Tree
         import numpy as np
-        #from tmd.utils import tree_type as td
+        # from tmd.utils import tree_type as td
 
         if isinstance(new_tree, Tree.Tree):
 

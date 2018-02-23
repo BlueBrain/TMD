@@ -9,6 +9,7 @@ class Tree(object):
     from tmd.Tree.methods import size
     from tmd.Tree.methods import get_sections
     from tmd.Tree.methods import get_sections_2
+    from tmd.Tree.methods import get_sections_points
     from tmd.Tree.methods import get_section_number
     from tmd.Tree.methods import get_section_lengths
     from tmd.Tree.methods import get_section_radial_distances
@@ -115,14 +116,10 @@ class Tree(object):
         self.x = new_x
         self.y = new_y
 
-
     def move_to_point(self, point=(0, 0, 0)):
         """Moves the tree in the x-y-z plane
         so that it starts from the selected point.
         """
-        import numpy as np
-
         self.x = self.x - (self.x[0]) + point[0]
         self.y = self.y - (self.y[0]) + point[1]
         self.z = self.z - (self.z[0]) + point[2]
-

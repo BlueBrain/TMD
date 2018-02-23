@@ -35,11 +35,10 @@ def _find_parent_id(point_id, groups):
         # point is not first point in section
         # so parent is previous point
         return point_id - 1
-    else:
-        # parent is last point in parent group
-        parent_group_id = group[h5_dct['GPID']]
-        # get last point in parent group
-        return groups[parent_group_id + 1][h5_dct['GPFIRST']] - 1
+    # parent is last point in parent group
+    parent_group_id = group[h5_dct['GPID']]
+    # get last point in parent group
+    return groups[parent_group_id + 1][h5_dct['GPFIRST']] - 1
 
 
 def _find_last_point(group_id, groups, points):
@@ -48,8 +47,7 @@ def _find_last_point(group_id, groups, points):
 
     if group_id != len(group_initial_ids) - 1:
         return group_initial_ids[_np.where(group_initial_ids == groups[group_id][0])[0][0] + 1] - 1
-    else:
-        return len(points) - 1
+    return len(points) - 1
 
 
 def remove_duplicate_points(points, groups):
@@ -122,13 +120,12 @@ def _get_h5_version(h5file):
     '''
     if 'points' in h5file and 'structure' in h5file:
         return 1
-    elif 'neuron1/structure' in h5file:
+    if 'neuron1/structure' in h5file:
         return 2
-    else:
-        return None
+    return None
 
 
-def read_h5(input_file):
+def read_h5(input_file, remove_duplicates=True):
     '''Function to properly load sn h5 file,
        of v1 or v2 format.
     '''
@@ -149,7 +146,9 @@ def read_h5(input_file):
 
     h5file.close()
 
-    return _unpack_data(*remove_duplicate_points(points, groups))
+    if remove_duplicates:
+        return _unpack_data(*remove_duplicate_points(points, groups))
+    return _unpack_data(points, groups)
 
 
 def h5_data_to_lists(data):

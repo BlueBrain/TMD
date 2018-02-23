@@ -11,14 +11,3 @@ DATA_PATH = os.path.join(_path, '../../../test_data')
 
 # Filenames for testing
 sample_file = os.path.join(DATA_PATH, 'sample.swc')
-
-neu1 = io.load_neuron(sample_file)
-
-def test_size():
-    nt.ok_(neu1.size() == 2)
-    nt.ok_(neu1.size(neurite_type='axon') == 1)
-
-def test_section_lengths():
-    neu1.get_section_lengths()
-    neu1.get_section_lengths(neurite_type='basal')
-

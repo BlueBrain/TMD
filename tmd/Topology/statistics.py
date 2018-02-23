@@ -31,17 +31,13 @@ def get_apical_point(ph):
     """
     B = np.sort(get_bifurcations(ph))
 
-    fig = plt.figure()
-    plt.hist(B, bins=len(ph) / 4)
+    # fig = plt.figure()
+    # plt.hist(B, bins=len(ph) / 4)
 
     heights, bins = np.histogram(B, bins=len(ph) / 4)
     empty_bins = np.where(heights == 0)[0]
-    consecutive_empty_bins = np.split(empty_bins, np.where(np.diff(empty_bins) != 1)[0]+1)
-
+    consecutive_empty_bins = np.split(empty_bins, np.where(np.diff(empty_bins) != 1)[0] + 1)
     max_separation = np.argmax([len(i) for i in consecutive_empty_bins])
-
-    #print consecutive_empty_bins[max_separation]
-
     separation = consecutive_empty_bins[max_separation][-1]
 
     return B[np.where(B > bins[separation + 1])[0][0]]
@@ -60,7 +56,8 @@ def nosify(var, noise=0.1):
         F.write(towrite)
     F.close()
     '''
+    from scipy import stats
     var_new = np.zeros(len(var))
-    for i,v in enumerate(var):
-        var_new[i] = stats.norm.rvs(v,noise)
+    for i, v in enumerate(var):
+        var_new[i] = stats.norm.rvs(v, noise)
     return var_new
