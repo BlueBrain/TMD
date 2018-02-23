@@ -1,5 +1,6 @@
-pep8>=1.6.0
+pycodestyle
 pylint>=1.4.0
 nose>=1.3.0
 coverage==3.7
 nosexcover>=1.0.8
+numpy==1.14

@@ -19,7 +19,7 @@ $(VENV):
 	$(VENV_BIN)/pip install -e .
 
 run_pep8: $(VENV)
-	$(VENV_BIN)/pep8 --config=pep8rc $(LINT_PYFILES) > pep8.txt
+	$(VENV_BIN)/pycodestyle --config=pep8rc $(LINT_PYFILES) > pep8.txt
 
 run_pylint: $(VENV)
 	$(VENV_BIN)/pylint --rcfile=pylintrc --extension-pkg-whitelist=numpy $(LINT_PYFILES) > pylint.txt
