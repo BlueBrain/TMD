@@ -161,15 +161,11 @@ def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False
        of the ph diagram that is given.
     '''
     from scipy import stats
-    xmin = min(_np.transpose(ph)[0])
-    xmax = max(_np.transpose(ph)[0])
-    ymin = min(_np.transpose(ph)[1])
-    ymax = max(_np.transpose(ph)[1])
 
     if xlims is None:
-        xlims = [xmin, xmax]
+        xlims = [min(_np.transpose(ph)[0]), max(_np.transpose(ph)[0])]
     if ylims is None:
-        ylims = [ymin, ymax]
+        ylims = [min(_np.transpose(ph)[1]), max(_np.transpose(ph)[1])]
 
     X, Y = _np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
 
@@ -395,3 +391,71 @@ def image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=None, **kwarg
     kwargs['ylim'] = ylims
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
+
+
+def merge_image(ph_list, xlims=None, ylims=None, bins=100j, **kwargs):
+    '''Plots the gaussian kernel of a population of cells
+       as an average of the ph diagrams that are given.
+    '''
+    from scipy import stats
+
+    def gauss_ker(ph, xlims=None, ylims=None, bins=100j):
+        """Returns the values for the GK of a
+           persistence diagram
+        """
+        if xlims is None:
+            xlims = [min(_np.transpose(ph)[0]), max(_np.transpose(ph)[0])]
+        if ylims is None:
+            ylims = [min(_np.transpose(ph)[1]), max(_np.transpose(ph)[1])]
+
+        X, Y = _np.mgrid[xlims[0]:xlims[1]:bins, ylims[0]:ylims[1]:bins]
+
+        values = _np.transpose(ph)
+        kernel = stats.gaussian_kde(values)
+        positions = _np.vstack([X.ravel(), Y.ravel()])
+        Z = _np.reshape(kernel(positions).T, X.shape)
+
+        return Z
+
+    imgs = gauss_ker(ph_list[0], xlims=xlims, ylims=ylims, bins=bins)
+
+    for p in ph_list[1:]:
+        if len(p) > 1 and sum(_np.array(p)[:,1]) > 0.1:
+            im = gauss_ker(p, xlims=xlims, ylims=ylims, bins=bins)
+            imgs = _np.add(imgs, im)
+        else:
+            print 'One image failed!'
+
+    imgs = imgs / len(ph_list)
+
+    return imgs
+
+
+def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bins=100j, 
+                norm_factor=1.0, masked=False, cmap=_cm.plt.cm.jet, **kwargs):
+    """Merges ph diagrams and plots them.
+    """
+    imgs = merge_image(ph_list, xlims=xlims, ylims=ylims, bins=bins, **kwargs)
+
+    if xlims is None:
+        xlims = [min(_np.transpose(collapse(ph_list))[0]), max(_np.transpose(collapse(ph_list))[0])]
+    if ylims is None:
+        ylims = [min(_np.transpose(collapse(ph_list))[1]), max(_np.transpose(collapse(ph_list))[1])]
+
+    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
+
+    Zn = _np.multiply(imgs, 1./norm_factor)
+
+    if masked:
+        Zn = _np.ma.masked_where((0.01 > Zn), Zn)
+
+    ax.imshow(_np.rot90(Zn), vmin=0., vmax=1., cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+
+    kwargs['xlim'] = xlims
+    kwargs['ylim'] = ylims
+    kwargs['title'] = kwargs.get('title', 'Persistence image')
+    kwargs['xlabel'] = kwargs.get('xlabel', 'End radial distance from soma')
+    kwargs['ylabel'] = kwargs.get('ylabel', 'Start radial distance from soma')
+
+
+    return Zn, _cm.plot_style(fig=fig, ax=ax, **kwargs)
