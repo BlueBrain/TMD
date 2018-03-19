@@ -251,8 +251,11 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         scale = _get_default('diameter_scale', **kwargs)
         linewidth = [2 * d * scale for d in tr.d]
 
-    treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                                 _utils.tree_type[tr.get_type()])
+    if tr.get_type() not in _utils.tree_type:
+        treecolor = 'black'
+    else:
+        treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
+                                               _utils.tree_type[tr.get_type()])
 
     # Plot the collection of lines.
     collection = _LC(segs, color=treecolor, linewidth=linewidth,

@@ -444,6 +444,9 @@ def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bin
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
+    if norm_factor is None or norm_factor==0:
+        norm_factor = _np.max(imgs)
+
     Zn = _np.multiply(imgs, 1./norm_factor)
 
     if masked:
