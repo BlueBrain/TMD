@@ -108,8 +108,4 @@ def load_population(input_directory, tree_types=None):
         pop.append_neuron(load_neuron(os.path.join(input_directory, i),
                                       tree_types=tree_types))
 
-    pop.apicals = [ap for n in pop.neurons for ap in n.apical]
-    pop.axons = [ax for n in pop.neurons for ax in n.axon]
-    pop.basals = [bas for n in pop.neurons for bas in n.basal]
-
     return pop

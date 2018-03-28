@@ -174,3 +174,15 @@ def get_image_max_diff(Z1, Z2):
     diff = np.max(np.abs(img2 - img1))
 
     return diff
+
+
+def transform_to_length(ph, direction=False):
+    '''Transforms a persistence diagram into
+    a (start_point, length) equivalent diagram.
+    '''
+    if not direction:
+        return [[i[0], np.abs(i[1] - i[0])] for i in ph]
+    else:
+        return [[i[0], i[1] - i[0]] for i in ph]
+
+

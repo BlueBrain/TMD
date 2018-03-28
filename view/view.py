@@ -20,6 +20,40 @@ def _get_default(variable, **kwargs):
     return kwargs.get(variable, default[variable])
 
 
+
+def _get_polar_data(population, neurite_type='neurites', bins=20):
+    '''Extracts the data to plot the polar length distribution
+    of a neuron or a population of neurons.
+    '''
+
+    def seg_angle(seg):
+        '''mean x, y coordinates of a segment'''
+        mean_x = _np.mean([seg[0][0], seg[1][0]])
+        mean_y = _np.mean([seg[0][1], seg[1][1]])
+        return _np.arctan2(mean_y, mean_x)
+
+    segs = []
+    for tr in getattr(population, neurite_type):
+     segs = segs + tr.get_segments()
+
+    angles = _np.array([seg_angle(s) for s in segs])
+
+    lens = []
+    for tr in getattr(population, neurite_type):
+        lens = lens + tr.get_segment_lengths().tolist()
+    lens = _np.array(lens)
+
+    step = 2 * _np.pi / bins
+    ranges = [[i * step - _np.pi, (i + 1) * step - _np.pi] for i in xrange(bins)]
+
+    results = []
+
+    for r in ranges:
+        results.append(r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])])
+
+    return results
+
+
 def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10, **kwargs):
     '''Generates a 2d figure of the trunk = first N segments of the tree.
 
@@ -1350,3 +1384,42 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
     soma(neu.soma, new_fig=False)
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
+
+
+def polar_plot(population, neurite_type='neurites', bins=20):
+    '''
+    '''
+    input_data = _get_polar_data(population, neurite_type=neurite_type, bins=bins)
+
+    fig = _cm.plt.figure()
+    ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
+
+    theta = _np.array(input_data)[:,0]
+    radii = _np.array(input_data)[:,2] / _np.max(input_data)
+    width = 2 * _np.pi / len(input_data)
+    bars = ax.bar(theta, radii, width=width, bottom=0.0, alpha=0.8)
+
+
+def polar_plot_custom_color(population, bins=25, apical_color='purple', basal_color='r',
+                            edgecolor=None, alpha=0.8):
+    '''
+    '''
+    fig = _cm.plt.figure()
+    ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
+
+    input_data1 = _get_polar_data(population, neurite_type='basals', bins=bins)
+    input_data2 = _get_polar_data(population, neurite_type='apicals', bins=bins)
+
+    maximum = _np.max(_np.array(input_data1)[:,2].tolist() + _np.array(input_data2)[:,2].tolist())
+
+    theta = _np.array(input_data1)[:,0]
+    radii = _np.array(input_data1)[:,2] / maximum
+    width = 2 * _np.pi / len(input_data1)
+    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
+                  bottom=0.0, alpha=alpha, color=basal_color)
+
+    theta = _np.array(input_data2)[:,0]
+    radii = _np.array(input_data2)[:,2] / maximum
+    width = 2 * _np.pi / len(input_data2)
+    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
+                  bottom=0.0, alpha=alpha, color=apical_color)

@@ -123,7 +123,7 @@ def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def gaussian_kernel(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs):
+def gaussian_kernel(ph, new_fig=True, subplot=111, xlims=None, ylims=None, norm_factor=None, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
     '''
@@ -144,7 +144,10 @@ def gaussian_kernel(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwa
     kernel = stats.gaussian_kde(values)
     positions = _np.vstack([X.ravel(), Y.ravel()])
     Z = _np.reshape(kernel(positions).T, X.shape)
-    Zn = Z / _np.max(Z)
+
+    if norm_factor is None:
+        norm_factor = _np.max(Z)
+    Zn = Z / norm_factor
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -156,7 +159,8 @@ def gaussian_kernel(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwa
     return Z, _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False, cmap=_cm.plt.cm.jet, **kwargs):
+def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False,
+             norm_factor=None, cmap=_cm.plt.cm.jet, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
     '''
@@ -173,7 +177,10 @@ def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False
     kernel = stats.gaussian_kde(values)
     positions = _np.vstack([X.ravel(), Y.ravel()])
     Z = _np.reshape(kernel(positions).T, X.shape)
-    Zn = Z / _np.max(Z)
+
+    if norm_factor is None:
+        norm_factor = _np.max(Z)
+    Zn = Z / norm_factor
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -462,3 +469,24 @@ def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bin
 
 
     return Zn, _cm.plot_style(fig=fig, ax=ax, **kwargs)
+
+
+def start_length_plot(ph, direction=False, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
+    '''Plots the transformed ph diagram that
+    represents lengths and starting points of
+    a component.
+    '''
+    ph_transformed = _tm.analysis.transform_to_length(ph, direction=direction)
+
+    # Initialization of matplotlib figure and axes.
+    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
+
+    for p in ph:
+
+        ax.scatter(p[0], p[1], c=color, edgecolors='black', alpha=alpha)
+
+    kwargs['title'] = kwargs.get('title', 'Transformed Persistence diagram')
+    kwargs['xlabel'] = kwargs.get('xlabel', 'Start of the component')
+    kwargs['ylabel'] = kwargs.get('ylabel', 'Length of the component')
+
+    return _cm.plot_style(fig=fig, ax=ax, **kwargs)
