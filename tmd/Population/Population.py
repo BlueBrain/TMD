@@ -15,24 +15,24 @@ class Population(object):
         self.name = name
 
     @property
-    def axons(self):
+    def axon(self):
         return [a for n in self.neurons for a in n.axon]
 
     @property
-    def apicals(self):
+    def apical(self):
         return [a for n in self.neurons for a in n.apical]
 
     @property
-    def basals(self):
+    def basal(self):
         return [a for n in self.neurons for a in n.basal]
 
     @property
     def neurites(self):
-        return self.apicals + self.axons + self.basals
+        return self.apical + self.axon + self.basal
 
     @property
     def dendrites(self):
-        return self.apicals + self.basals
+        return self.apical + self.basal
 
     def append_neuron(self, new_neuron):
         """

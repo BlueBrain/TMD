@@ -1407,8 +1407,8 @@ def polar_plot_custom_color(population, bins=25, apical_color='purple', basal_co
     fig = _cm.plt.figure()
     ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
 
-    input_data1 = _get_polar_data(population, neurite_type='basals', bins=bins)
-    input_data2 = _get_polar_data(population, neurite_type='apicals', bins=bins)
+    input_data1 = _get_polar_data(population, neurite_type='basal', bins=bins)
+    input_data2 = _get_polar_data(population, neurite_type='apical', bins=bins)
 
     maximum = _np.max(_np.array(input_data1)[:,2].tolist() + _np.array(input_data2)[:,2].tolist())
 
