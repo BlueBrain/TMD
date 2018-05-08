@@ -208,7 +208,7 @@ def save_plot(fig, **kwargs):
 
     plt.savefig(output, dpi=dpi, transparent=transparent)
 
-    print 'Plot Saved:', output
+    #print 'Plot Saved:', output
 
     return fig
 

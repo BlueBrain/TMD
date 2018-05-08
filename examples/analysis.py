@@ -96,4 +96,4 @@ def plot_imgs(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None, 
 
     ax.set_aspect('equal')
 
-    return common.plot_style(fig=fig, ax=ax, aspect='equal')
+    return common.plot_style(fig=fig, ax=ax, aspect='equal', **kwargs)

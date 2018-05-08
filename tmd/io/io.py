@@ -104,8 +104,11 @@ def load_population(input_directory, tree_types=None):
     pop = Population.Population(name=os.path.relpath(input_directory))
 
     for i in files_h5 + files_swc:
-        print 'Loading ' + i + ' ...'
-        pop.append_neuron(load_neuron(os.path.join(input_directory, i),
-                                      tree_types=tree_types))
+        #print 'Loading ' + i + ' ...'
+        try:
+            pop.append_neuron(load_neuron(os.path.join(input_directory, i),
+                                          tree_types=tree_types))
+        except:
+            print 'File failed to load: ', l
 
     return pop

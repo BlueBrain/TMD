@@ -3,8 +3,8 @@ import view
 
 pop1 = tmd.io.load_population(directory1)
 pop2 = tmd.io.load_population(directory2)
-phs1 = [tmd.methods.get_ph_neuron(n, neurite_type='axon') for n in pop1.neurons]
-phs2 = [tmd.methods.get_ph_neuron(n, neurite_type='axon') for n in pop2.neurons]
+phs1 = [tmd.methods.get_ph_neuron(n, neurite_type='basal') for n in pop1.neurons]
+phs2 = [tmd.methods.get_ph_neuron(n, neurite_type='basal') for n in pop2.neurons]
 
 # Normalize the limits
 xlims, ylims = define_limits(phs1 + phs2)

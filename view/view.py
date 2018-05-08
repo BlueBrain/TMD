@@ -498,17 +498,17 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neu
         v.append([bounding_box[0][_utils.term_dict[plane[1]]],
                   bounding_box[1][_utils.term_dict[plane[1]]]])
 
-        tree(temp_tree, **kwargs)
+        tree(temp_tree, hadd=hadd, vadd=vadd, **kwargs)
 
     kwargs['title'] = kwargs.get('title', nrn.name)
     kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
     kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
 
     white_space = _get_default('white_space', **kwargs)
-    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space,
-                                         _np.max(h) + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v) - white_space,
-                                         _np.max(v) + white_space])
+    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space + hadd,
+                                         _np.max(h) + white_space + hadd])
+    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v) - white_space + vadd,
+                                         _np.max(v) + white_space + vadd])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
