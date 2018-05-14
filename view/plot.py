@@ -4,6 +4,7 @@ import numpy as _np
 from tmd import Topology as _tm
 import view as _view
 import common as _cm
+from tmd.Topology.analysis import collapse
 
 def _sort_ph(ph):
     """
@@ -123,71 +124,31 @@ def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def gaussian_kernel(ph, new_fig=True, subplot=111, xlims=None, ylims=None, norm_factor=None, **kwargs):
-    '''Plots the gaussian kernel
-       of the ph diagram that is given.
-    '''
-    from scipy import stats
-    xmin = min(_np.transpose(ph)[0])
-    xmax = max(_np.transpose(ph)[0])
-    ymin = min(_np.transpose(ph)[1])
-    ymax = max(_np.transpose(ph)[1])
-
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
-
-    X, Y = _np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
-
-    values = _np.transpose(ph)
-    kernel = stats.gaussian_kde(values)
-    positions = _np.vstack([X.ravel(), Y.ravel()])
-    Z = _np.reshape(kernel(positions).T, X.shape)
-
-    if norm_factor is None:
-        norm_factor = _np.max(Z)
-    Zn = Z / norm_factor
-
-    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
-
-    ax.pcolor(X, Y, Zn, vmin=0., vmax=1., cmap=_cm.plt.cm.jet)
-
-    kwargs['xlim'] = xlims
-    kwargs['ylim'] = ylims
-
-    return Z, _cm.plot_style(fig=fig, ax=ax, **kwargs)
-
-
 def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False,
-             norm_factor=None, cmap=_cm.plt.cm.jet, **kwargs):
+             norm_factor=None, threshold=0.01, vmin=None, vmax=None, cmap=_cm.plt.cm.jet, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
     '''
-    from scipy import stats
+    from tmd.Topology.analysis import persistence_image_data
 
     if xlims is None:
         xlims = [min(_np.transpose(ph)[0]), max(_np.transpose(ph)[0])]
     if ylims is None:
         ylims = [min(_np.transpose(ph)[1]), max(_np.transpose(ph)[1])]
 
-    X, Y = _np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
-
-    values = _np.transpose(ph)
-    kernel = stats.gaussian_kde(values)
-    positions = _np.vstack([X.ravel(), Y.ravel()])
-    Z = _np.reshape(kernel(positions).T, X.shape)
+    Zn = persistence_image_data(ph, norm_factor=norm_factor,
+                                xlims=xlims, ylims=ylims)
 
     if norm_factor is None:
-        norm_factor = _np.max(Z)
-    Zn = Z / norm_factor
+        norm_factor = _np.max(Zn)
+    Zn = Zn / norm_factor
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
     if masked:
-        Zn = _np.ma.masked_where((0.01 > Zn), Zn)
+        Zn = _np.ma.masked_where((threshold > Zn), Zn)
 
-    ax.imshow(_np.rot90(Zn), vmin=0., vmax=1., cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+    ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
@@ -195,19 +156,7 @@ def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False
     kwargs['xlabel'] = kwargs.get('xlabel', 'End radial distance from soma')
     kwargs['ylabel'] = kwargs.get('ylabel', 'Start radial distance from soma')
 
-
-    return Z, _cm.plot_style(fig=fig, ax=ax, **kwargs)
-
-
-def collapse(ph_list):
-    '''Collapses a list of ph diagrams
-       into a single instance for plotting.
-    '''
-    ph_tr = []
-    for p in ph_list:
-        for pi in p:
-            ph_tr.append(list(pi))
-    return ph_tr
+    return Zn, _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def tree_all(tree, plane='xy', feature='radial_distances', title='',
@@ -283,7 +232,7 @@ def neu_all(neuron, plane='xy', feature='radial_distances', title='',
 
     fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
 
-    fig1, ax4 = gaussian_kernel(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = ph_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
 
     _cm.plt.tight_layout(True)
 
@@ -297,9 +246,11 @@ def stepped_hist(ph, new_fig=True, subplot=False, color='b', alpha=0.7, **kwargs
     '''Extracts and plots the stepped histogram of a persistent
        homology array.
     '''
+    from tmd.Topology.analysis import step_hist
+
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    hist_data = _tm.analysis.step_hist(ph)
+    hist_data = step_hist(ph)
 
     ax.fill_between(hist_data[0][:-1], 0, hist_data[1], color=color, alpha=alpha)
 
@@ -310,9 +261,11 @@ def stepped_hist_population(ph_list, new_fig=True, subplot=False, color='b', alp
     '''Extracts and plots the stepped histogram of a list of persistence diagrams.
        The histogram is normalized acording to the number of persistence diagrams.
     '''
+    from tmd.Topology.analysis import step_hist
+
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    hist_data = _tm.analysis.step_hist(collapse(ph_list))
+    hist_data = step_hist(collapse(ph_list))
 
     ax.fill_between(hist_data[0][:-1], 0, hist_data[1]/len(ph_list), color=color, alpha=alpha)
 
@@ -323,44 +276,33 @@ def horizontal_hist(ph, new_fig=True, subplot=False, bins=100, color='b', alpha=
     '''Extracts and plots the binned histogram of a persistent
        homology array.
     '''
+    from tmd.Topology.analysis import horizontal_hist
+
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    hist_data = _tm.analysis.horizontal_hist(ph, num_bins=bins)
+    hist_data = horizontal_hist(ph, num_bins=bins)
 
     ax.fill_between(hist_data[0][:-1], 0, hist_data[1], color=color, alpha=alpha)
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def image_diff(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=None,  cmap=_cm.plt.cm.jet, **kwargs):
-    """Takes as input two images
-       as exported from the gaussian kernel
-       plotting function, and plots
-       their difference.
+def image_diff(Z1, Z2, new_fig=True, subplot=111, xlims=None, ylims=None, norm=True,
+               vmin=-1., vmax=1., cmap=_cm.plt.cm.jet, **kwargs):
+    """Takes as input two images as exported from the gaussian kernel
+       plotting function, and plots their difference.
     """
-    xmin = min(Z1[1][1].get_xlim() + Z2[1][1].get_xlim())
-    xmax = max(Z1[1][1].get_xlim() + Z2[1][1].get_xlim())
-    ymin = min(Z1[1][1].get_ylim() + Z2[1][1].get_ylim())
-    ymax = max(Z1[1][1].get_ylim() + Z2[1][1].get_ylim())
+    from tmd.Topology.analysis import img_diff_data
 
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
-
-    X, Y = _np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
-
-    img1 = Z1[0]/Z1[0].max()
-    img2 = Z2[0]/Z2[0].max()
+    difference = img_diff_data(Z1, Z2, norm=norm, xlims=xlims, ylims=ylims)
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    ax.imshow(_np.rot90(img2 - img1), vmin=-1., vmax=1., cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+    ax.imshow(_np.rot90(difference), vmin=vmin, vmax=vmax, cmap=cmap,
+              interpolation='bilinear', extent=xlims+ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
-
-    #_cm.plt.pcolor(X, Y, img2 - img1, vmin=-1.0, vmax=1.0)
 
     #_cm.plt.colorbar()
 
@@ -400,49 +342,13 @@ def image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=None, **kwarg
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def merge_image(ph_list, xlims=None, ylims=None, bins=100j, **kwargs):
-    '''Plots the gaussian kernel of a population of cells
-       as an average of the ph diagrams that are given.
-    '''
-    from scipy import stats
-
-    def gauss_ker(ph, xlims=None, ylims=None, bins=100j):
-        """Returns the values for the GK of a
-           persistence diagram
-        """
-        if xlims is None:
-            xlims = [min(_np.transpose(ph)[0]), max(_np.transpose(ph)[0])]
-        if ylims is None:
-            ylims = [min(_np.transpose(ph)[1]), max(_np.transpose(ph)[1])]
-
-        X, Y = _np.mgrid[xlims[0]:xlims[1]:bins, ylims[0]:ylims[1]:bins]
-
-        values = _np.transpose(ph)
-        kernel = stats.gaussian_kde(values)
-        positions = _np.vstack([X.ravel(), Y.ravel()])
-        Z = _np.reshape(kernel(positions).T, X.shape)
-
-        return Z
-
-    imgs = gauss_ker(ph_list[0], xlims=xlims, ylims=ylims, bins=bins)
-
-    for p in ph_list[1:]:
-        if len(p) > 1 and sum(_np.array(p)[:,1]) > 0.1:
-            im = gauss_ker(p, xlims=xlims, ylims=ylims, bins=bins)
-            imgs = _np.add(imgs, im)
-        else:
-            print 'One image failed!'
-
-    imgs = imgs / len(ph_list)
-
-    return imgs
-
-
 def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bins=100j, 
-                norm_factor=1.0, masked=False, cmap=_cm.plt.cm.jet, **kwargs):
+                norm_factor=1.0, masked=False, vmin=0., vmax=1., cmap=_cm.plt.cm.jet, **kwargs):
     """Merges ph diagrams and plots them.
     """
-    imgs = merge_image(ph_list, xlims=xlims, ylims=ylims, bins=bins, **kwargs)
+    from tmd.Topology.analysis import average_image
+
+    av_imgs = average_image(ph_list, xlims=xlims, ylims=ylims, bins=bins, **kwargs)
 
     if xlims is None:
         xlims = [min(_np.transpose(collapse(ph_list))[0]), max(_np.transpose(collapse(ph_list))[0])]
@@ -451,24 +357,16 @@ def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bin
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    if norm_factor is None or norm_factor==0:
-        norm_factor = _np.max(imgs)
-
-    Zn = _np.multiply(imgs, 1./norm_factor)
-
-    if masked:
-        Zn = _np.ma.masked_where((0.01 > Zn), Zn)
-
-    ax.imshow(_np.rot90(Zn), vmin=0., vmax=1., cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+    ax.imshow(_np.rot90(av_imgs), vmin=vmin, vmax=vmax, cmap=cmap,
+              interpolation='bilinear', extent=xlims+ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
-    kwargs['title'] = kwargs.get('title', 'Persistence image')
+    kwargs['title'] = kwargs.get('title', 'Average persistence image')
     kwargs['xlabel'] = kwargs.get('xlabel', 'End radial distance from soma')
     kwargs['ylabel'] = kwargs.get('ylabel', 'Start radial distance from soma')
 
-
-    return Zn, _cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return av_imgs, _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def start_length_plot(ph, direction=False, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
@@ -476,13 +374,14 @@ def start_length_plot(ph, direction=False, new_fig=True, subplot=False, color='b
     represents lengths and starting points of
     a component.
     '''
-    ph_transformed = _tm.analysis.transform_to_length(ph, direction=direction)
+    from tmd.Topology.analysis import transform_to_length
+
+    ph_transformed = transform_to_length(ph, direction=direction)
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
     for p in ph:
-
         ax.scatter(p[0], p[1], c=color, edgecolors='black', alpha=alpha)
 
     kwargs['title'] = kwargs.get('title', 'Transformed Persistence diagram')
@@ -490,3 +389,38 @@ def start_length_plot(ph, direction=False, new_fig=True, subplot=False, color='b
     kwargs['ylabel'] = kwargs.get('ylabel', 'Length of the component')
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
+
+
+def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None,
+                   cmap=_cm.plt.cm.jet, vmin=None, vmax=None, masked=False, threshold=0.01):
+    '''Plots the gaussian kernel of the input image.
+    '''
+    if xlims is None:
+        xlims = (0,100)
+    if ylims is None:
+        ylims = (0,100)
+
+    if vmin is None:
+        vmin = _np.min(img)
+    if vmax is None:
+        vmax = _np.max(img)
+
+    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
+
+    if masked:
+        img = _np.ma.masked_where((threshold > _np.abs(img)), img)
+
+    cax = ax.imshow(_np.rot90(img), vmin=vmin, vmax=vmax, cmap=cmap,
+                    interpolation='bilinear', extent=xlims+ylims)
+
+    kwargs = {}
+
+    kwargs['xlim'] = xlims
+    kwargs['ylim'] = ylims
+    kwargs['title'] = title
+
+    _cm.plt.colorbar(cax)
+
+    ax.set_aspect('equal')
+
+    return _cm.plot_style(fig=fig, ax=ax, aspect='equal', **kwargs)

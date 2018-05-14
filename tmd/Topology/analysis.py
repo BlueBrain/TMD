@@ -5,6 +5,17 @@ tmd Topology analysis algorithms implementation
 import numpy as np
 
 
+def collapse(ph_list):
+    '''Collapses a list of ph diagrams
+       into a single instance for plotting.
+    '''
+    ph_tr = []
+    for p in ph_list:
+        for pi in p:
+            ph_tr.append(list(pi))
+    return ph_tr
+
+
 def sort_ph(ph, reverse=True):
     """
     Sorts barcode according to decreasing length of bars.
@@ -34,6 +45,59 @@ def load_file(filename, delimiter=' '):
     f.close()
 
     return np.array(ph)
+
+
+def define_limits(phs_list):
+    '''Returns the x-y coordinates limits (min, max)
+    for a list of persistence diagrams
+    '''
+    ph = collapse(phs_list)
+    xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
+    ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+
+    return xlims, ylims
+
+
+def persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None):
+    '''Create the data for the generation of the persistence image.
+    If norm_factor is provided the data will be normalized based on this,
+    otherwise they will be normalized to 1.
+    If xlims, ylims are provided the data will be scaled accordingly.   
+    '''
+    from scipy import stats
+
+    if xlims is None:
+        xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
+    if ylims is None:
+        ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+
+    X, Y = np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
+
+    values = np.transpose(ph)
+    kernel = stats.gaussian_kde(values)
+    positions = np.vstack([X.ravel(), Y.ravel()])
+    Z = np.reshape(kernel(positions).T, X.shape)
+
+    if norm_factor is None:
+        norm_factor = np.max(Z)
+
+    Zn = Z / norm_factor
+
+    return Zn
+
+
+def img_diff_data(Z1, Z2, norm=True):
+    """Takes as input two images
+       as exported from the gaussian kernel
+       plotting function, and returns
+       their absolute difference:
+       diff(abs(Z1 - Z2))
+    """
+    if norm:
+        Z1 = Z1 / Z1.max()
+        Z2 = Z2 / Z2.max()
+
+    return Z1 - Z2
 
 
 def horizontal_hist(ph1, num_bins=100, min_bin=None, max_bin=None):
@@ -186,3 +250,19 @@ def transform_to_length(ph, direction=False):
         return [[i[0], i[1] - i[0]] for i in ph]
 
 
+def average_image(ph_list, xlims=None, ylims=None, norm_factor=None, **kwargs):
+    '''Plots the gaussian kernel of a population of cells
+       as an average of the ph diagrams that are given.
+    '''
+    imgs_list = [persistence_image_data(p, norm_factor=norm_factor,
+                                        xlims=xlims, ylims=ylims)
+                for p in ph_list]
+
+    average_imgs = imgs_list[0]
+
+    for im in imgs_list[1:]:
+        average_imgs = np.add(average_imgs, im)
+
+    average_imgs = average_imgs / len(imgs_list)
+
+    return average_imgs

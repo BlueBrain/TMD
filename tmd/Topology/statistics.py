@@ -27,6 +27,7 @@ def get_lengths(ph):
 
 def get_apical_point(ph):
     """
+    Experimental / untested function, not to be used yet.
     Returns the apical point of the tree from the diagram
     """
     B = np.sort(get_bifurcations(ph))
