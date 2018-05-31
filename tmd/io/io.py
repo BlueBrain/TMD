@@ -34,7 +34,7 @@ def make_tree(data):
                      d=tr_data[swc_dct['radius']], t=tr_data[swc_dct['type']], p=parents)
 
 
-def load_neuron(input_file, line_delimiter='\n', tree_types=None, remove_duplicates=True):
+def load_neuron(input_file, line_delimiter='\n', soma_type=None, tree_types=None, remove_duplicates=True):
     '''
     Io method to load an swc or h5 file into a Neuron object.
     TODO: Check if tree is connected to soma, otherwise do
@@ -50,7 +50,10 @@ def load_neuron(input_file, line_delimiter='\n', tree_types=None, remove_duplica
         td.update(tree_types)
 
     # Definition of swc types from type_dict function
-    soma_index = type_dct['soma']
+    if soma_type is None:
+        soma_index = type_dct['soma']
+    else:
+        soma_index = soma_type
 
     # Make neuron with correct filename and load data
     if os.path.splitext(input_file)[-1] == '.swc':
