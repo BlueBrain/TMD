@@ -124,7 +124,7 @@ def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False,
+def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False, colorbar=False,
              norm_factor=None, threshold=0.01, vmin=None, vmax=None, cmap=_cm.plt.cm.jet, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
@@ -139,16 +139,15 @@ def ph_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False
     Zn = persistence_image_data(ph, norm_factor=norm_factor,
                                 xlims=xlims, ylims=ylims)
 
-    if norm_factor is None:
-        norm_factor = _np.max(Zn)
-    Zn = Zn / norm_factor
-
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
     if masked:
         Zn = _np.ma.masked_where((threshold > Zn), Zn)
 
-    ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+    cax = ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+
+    if colorbar:
+        _cm.plt.colorbar(cax)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
@@ -294,7 +293,7 @@ def image_diff(Z1, Z2, new_fig=True, subplot=111, xlims=None, ylims=None, norm=T
     """
     from tmd.Topology.analysis import img_diff_data
 
-    difference = img_diff_data(Z1, Z2, norm=norm, xlims=xlims, ylims=ylims)
+    difference = img_diff_data(Z1, Z2, norm=norm)
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
