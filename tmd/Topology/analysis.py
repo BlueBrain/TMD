@@ -81,9 +81,7 @@ def persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None):
     if norm_factor is None:
         norm_factor = np.max(Z)
 
-    Zn = Z / norm_factor
-
-    return Zn
+    return Z / norm_factor
 
 
 def img_diff_data(Z1, Z2, norm=True):
