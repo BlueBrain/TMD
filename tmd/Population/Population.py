@@ -27,8 +27,12 @@ class Population(object):
         return [a for n in self.neurons for a in n.basal]
 
     @property
+    def undefined(self):
+        return [a for n in self.neurons for a in n.undefined]
+
+    @property
     def neurites(self):
-        return self.apical + self.axon + self.basal
+        return self.apical + self.axon + self.basal + self.undefined
 
     @property
     def dendrites(self):

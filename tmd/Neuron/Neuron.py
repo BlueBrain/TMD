@@ -23,7 +23,14 @@ class Neuron(object):
         self.basal = list()
         self.undefined = list()
         self.name = name
-        self.neurites = self.axon + self.basal + self.apical
+
+    @property
+    def neurites(self):
+        return self.apical + self.axon + self.basal + self.undefined
+
+    @property
+    def dendrites(self):
+        return self.apical + self.basal
 
     def rename(self, new_name):
         """
