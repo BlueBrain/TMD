@@ -67,7 +67,6 @@ class Neuron(object):
                 tree_type = 'undefined'
             getattr(self, tree_type).append(new_tree)
 
-        self.neurites = self.axon + self.basal + self.apical + self.undefined
 
     def copy_neuron(self):
         """
