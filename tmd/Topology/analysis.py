@@ -337,7 +337,7 @@ def symmetric(p):
     return [(p[0] + p[1]) / 2., (p[0] + p[1]) / 2]
 
 
-def matching_diagrams(p1, p2, plot=False, method='munkres'):
+def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True):
     '''Returns a list of matching components
     Possible matching methods:
     - munkress
@@ -357,8 +357,12 @@ def matching_diagrams(p1, p2, plot=False, method='munkres'):
             plt.scatter(p1[i][0], p1[i][1], c='r')
             plt.scatter(p2[j][0], p2[j][1], c='b')
 
-    p1_enh = p1 + [symmetric(i) for i in p2]
-    p2_enh = p2 + [symmetric(i) for i in p1]
+    if use_diag:
+        p1_enh = p1 + [symmetric(i) for i in p2]
+        p2_enh = p2 + [symmetric(i) for i in p1]
+    else:
+        p1_enh = p1
+        p2_enh = p2
 
     D = cdist(p1_enh, p2_enh)
 
