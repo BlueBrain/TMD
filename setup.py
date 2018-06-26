@@ -1,9 +1,9 @@
 """ Distribution configuration for TMD
 """
-import os
 from setuptools import setup
 from setuptools import find_packages
-import pip
+
+execfile('tmd/version.py')
 
 config = {
     'description': 'TMD: a python package for the topological analysis of neurons',
@@ -22,6 +22,7 @@ config = {
     'scripts': [],
     'name': 'tmd',
     'include_package_data': True,
+    'version': VERSION,  # pylint: disable=undefined-variable
 }
 
 setup(**config)

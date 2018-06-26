@@ -78,7 +78,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None, tree_types=None
     # Save soma in Neuron
     neuron.set_soma(soma)
     p = _np.array(_np.transpose(data)[6], dtype=int) - _np.transpose(data)[0][0]
-    #return p, soma_ids
+    # return p, soma_ids
     dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
                         (range(len(soma_ids), len(p)),
                          p[len(soma_ids):])), shape=(len(p), len(p)))
@@ -108,11 +108,10 @@ def load_population(input_directory, tree_types=None):
     pop = Population.Population(name=os.path.relpath(input_directory))
 
     for i in files_h5 + files_swc:
-        #print 'Loading ' + i + ' ...'
         try:
             pop.append_neuron(load_neuron(os.path.join(input_directory, i),
                                           tree_types=tree_types))
         except:
-            print 'File failed to load: ', i
+            print('File failed to load: {}'.format(i))
 
     return pop

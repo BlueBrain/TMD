@@ -86,7 +86,7 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
 
                 rd[p] = rd[mx_id]
 
-    ph.append([rd[np.where(active)[0][0]], 0]) # Add the last alive component
+    ph.append([rd[np.where(active)[0][0]], 0])  # Add the last alive component
 
     return ph
 
@@ -119,10 +119,10 @@ def phi_theta(u, v):
     phi2 = np.arctan2(v[1], v[0])
     theta2 = np.arccos(v[2] / np.linalg.norm(v))
 
-    delta_phi = phi2 - phi1 # np.abs(phi1 - phi2)
-    delta_theta = theta2 - theta1 # np.abs(theta1 - theta2)
+    delta_phi = phi2 - phi1  # np.abs(phi1 - phi2)
+    delta_theta = theta2 - theta1  # np.abs(theta1 - theta2)
 
-    return delta_phi, delta_theta # dphi, dtheta
+    return delta_phi, delta_theta  # dphi, dtheta
 
 
 def get_angles(tree, beg, parents, children):
@@ -252,7 +252,7 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
 
                 rd[p] = rd[mx_id]
 
-    ph.append([rd[np.where(active)[0][0]], 0, radii[beg[0]]]) # Add the last alive component
+    ph.append([rd[np.where(active)[0][0]], 0, radii[beg[0]]])  # Add the last alive component
 
     return ph
 
@@ -302,7 +302,7 @@ def extract_ph(tree, feature='radial_distances', output_file='test.txt',
 
     write_ph(ph, output_file)
 
-    print 'File ' + output_file + ' completed!'
+    print('File ' + output_file + ' completed!')
 
 
 def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
@@ -319,7 +319,7 @@ def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
 
     write_ph(ph, output_file)
 
-    print 'File ' + output_file + ' completed!'
+    print('File ' + output_file + ' completed!')
 
 
 def get_lifetime(tree, feature='point_radial_distances'):

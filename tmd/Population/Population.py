@@ -66,7 +66,7 @@ class Population(object):
                     output_file=os.path.join(output_folder, ttype +
                                              '_' + str(ntree) + '.txt'))
             except ValueError:
-                print tree
+                print(tree)
 
         if neurite_type == 'all':
             _ = [try_except(ap, enap, feature, output_folder, ttype='apical')
@@ -99,7 +99,7 @@ class Population(object):
                     output_file=os.path.join(output_folder, ttype +
                                              '_' + str(ntree) + '.txt'))
             except ValueError:
-                print tree
+                print(tree)
 
         if neurite_type == 'all':
             _ = [[try_except(ap, enap, feature, output_folder,
@@ -137,7 +137,7 @@ class Population(object):
                     output_file=os.path.join(output_folder, neuron.name + '.txt'))
 
             except ValueError:
-                print neuron.name
+                print(neuron.name)
 
         _ = [try_except(n, feature, output_folder, ttype=neurite_type)
              for n in self.neurons]
