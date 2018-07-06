@@ -1,7 +1,7 @@
 '''Module for viewing neuronal morphologies
 '''
 
-import common as _cm
+from tmd.view import common as _cm
 from matplotlib.collections import LineCollection as _LC
 import numpy as _np
 from tmd import utils as _utils
@@ -1344,7 +1344,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, 
+def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
                         neurite_type='all', bins=100, plane='xy',
                         color_map=_cm.plt.cm.Blues, alpha=0.8,
                         centered=True, **kwargs):

@@ -4,10 +4,10 @@ tmd Tree's methods
 import numpy as _np
 
 
-def _rd(p1, p2):
-    '''Returns euclidean distance between p1 and p2
+def _rd(point1, point2):
+    '''Returns euclidean distance between point1 and point2
     '''
-    return _np.linalg.norm(_np.array(p1) - _np.array(p2), 2)
+    return _np.linalg.norm(_np.array(point1) - _np.array(point2), 2)
 
 
 def _rd_w(p1, p2, w=(1., 1., 1.), normed=True):
@@ -73,7 +73,7 @@ def get_segments(self):
     """
     seg_list = []
 
-    for seg_id in xrange(1, self.size()):
+    for seg_id in range(1, self.size()):
         par_id = self.p[seg_id]
         child_coords = _np.array([self.x[seg_id],
                                   self.y[seg_id],
@@ -131,7 +131,7 @@ def get_point_radial_distances(self, point=None, dim='xyz'):
 
     radial_distances = _np.zeros(self.size(), dtype=float)
 
-    for i in xrange(self.size()):
+    for i in range(self.size()):
         point_dest = []
         for d in dim:
             point_dest.append(getattr(self, d)[i])
@@ -155,7 +155,7 @@ def get_point_radial_distances_time(self, point=None, dim='xyz', zero_time=0, ti
 
     radial_distances = _np.zeros(self.size(), dtype=float)
 
-    for i in xrange(self.size()):
+    for i in range(self.size()):
         point_dest = []
         for d in dim:
             point_dest.append(getattr(self, d)[i])
@@ -179,7 +179,7 @@ def get_point_weighted_radial_distances(self, point=None, dim='xyz', w=(1, 1, 1)
 
     radial_distances = _np.zeros(self.size(), dtype=float)
 
-    for i in xrange(self.size()):
+    for i in range(self.size()):
         point_dest = []
         for d in dim:
             point_dest.append(getattr(self, d)[i])
@@ -198,7 +198,7 @@ def get_point_path_distances(self):
         '''Returns path length of segment'''
         return sum([seg_len[i] for i in self.get_way_to_root(seg_id)[1:]])
 
-    return _np.array([path_length(i) for i in xrange(self.size())])
+    return _np.array([path_length(i) for i in range(self.size())])
 
 
 def get_point_section_lengths(self):
@@ -208,8 +208,8 @@ def get_point_section_lengths(self):
     ways, end = self.get_sections_points()
     seg_len = self.get_segment_lengths()
 
-    for i in xrange(len(end)):
-        lengths[end[i]] = _np.sum(seg_len[ways[i]:end[i]])
+    for i, item in enumerate(end):
+        lengths[item] = _np.sum(seg_len[ways[i]:item])
 
     return lengths
 
@@ -223,7 +223,7 @@ def get_point_section_branch_orders(self):
         '''Returns branch order of segment'''
         return sum([1 if i in B else 0 for i in self.get_way_to_root(seg_id)])
 
-    return _np.array([get_bo(i) for i in xrange(self.size())])
+    return _np.array([get_bo(i) for i in range(self.size())])
 
 
 def get_point_projection(self, vect=(0, 1, 0), point=None):
@@ -264,7 +264,7 @@ def get_sections_2(self):
     import scipy.sparse as sp
     end = _np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
 
-    if 0 in end: # If first segment is a bifurcation
+    if 0 in end:  # If first segment is a bifurcation
         end = end[1:]
 
     beg = _np.append([0], self.p[_np.delete(_np.hstack([0, 1 + end]), len(end))][1:])
@@ -282,7 +282,7 @@ def get_sections_points(self):
     import scipy.sparse as sp
     end = _np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
 
-    if 0 in end: # If first segment is a bifurcation
+    if 0 in end:  # If first segment is a bifurcation
         end = end[1:]
 
     # In case the section has only one point (get_way... = 1)
@@ -302,7 +302,7 @@ def get_section_projection(self, vect=(0, 1, 0)):
     """
     beg, end = self.get_sections_2()
     xyz = _np.transpose([self.x[end], self.y[end], self.z[end]]) - \
-          _np.transpose([self.x[beg], self.y[beg], self.z[beg]])
+        _np.transpose([self.x[beg], self.y[beg], self.z[beg]])
     return _np.dot(xyz, vect)
 
 
@@ -323,7 +323,7 @@ def get_section_lengths(self):
     array_length = self.get_section_number()
     lengths = _np.zeros(array_length, dtype=float)
 
-    for i in xrange(array_length):
+    for i in range(array_length):
         lengths[i] = _np.sum(seg_len[ways[i]:end[i]])
 
     return lengths
@@ -342,7 +342,7 @@ def get_section_path_distances(self):
     path_distances = _np.zeros(array_length, dtype=float)
     path_distances[0] = lengths[0]
 
-    for i in xrange(1, array_length):
+    for i in range(1, array_length):
         path_distances[i] = path_distances[beg[i]] + lengths[i]
 
     return path_distances
@@ -363,7 +363,7 @@ def get_section_radial_distances(self, point=None, initial=False):
 
     radial_distances = _np.zeros(array_length, dtype=float)
 
-    for i in xrange(array_length):
+    for i in range(array_length):
         if initial:
             radial_distances[i] = _rd(point,
                                       [self.x[beg[i]],
@@ -423,8 +423,8 @@ def get_direction(self, sec_id=0, child_id=0):
     normalized as a unit vector.
     '''
     beg, end = self.get_sections_2()
-    b = sec_id # b = beg[sec_id]
-    e = end[_np.where(beg == sec_id)[0]][child_id] # e = end[sec_id]
+    b = sec_id  # b = beg[sec_id]
+    e = end[_np.where(beg == sec_id)[0]][child_id]  # e = end[sec_id]
     vect = _np.subtract([self.x[e], self.y[e], self.z[e]], [self.x[b], self.y[b], self.z[b]])
     direction = vect / _np.linalg.norm(vect)
 

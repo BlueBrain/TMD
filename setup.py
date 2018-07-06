@@ -3,7 +3,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-execfile('tmd/version.py')
+exec(open('tmd/version.py').read())
 
 config = {
     'description': 'TMD: a python package for the topological analysis of neurons',
@@ -12,6 +12,7 @@ config = {
     'author_email': 'lida.kanari@epfl.ch',
     'install_requires': [
         'matplotlib>=1.3.1',
+        'h5py>=2.8.0',
         'enum34>=1.0.4',
         'scipy>=0.13.3',
         'numpy>=1.8.0'

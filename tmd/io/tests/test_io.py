@@ -23,20 +23,22 @@ neuron_v1 = io.load_neuron(sample_h5_v1_file)
 neuron_v2 = io.load_neuron(sample_h5_v2_file)
 neuron1 = io.load_neuron(sample_file)
 
-soma_test = Soma.Soma([0.],[0.],[0.],[12.])
-soma_test1 = Soma.Soma([0.],[0.],[0.],[6.])
-apical_test = Tree.Tree(x=np.array([5., 5.]), y=np.array([6., 6.]), z=np.array([ 7., 7.]),
-                       d=np.array([16., 16.]), t=np.array([4, 4]), p=np.array([-1,  0]))
+soma_test = Soma.Soma([0.], [0.], [0.], [12.])
+soma_test1 = Soma.Soma([0.], [0.], [0.], [6.])
+apical_test = Tree.Tree(x=np.array([5., 5.]), y=np.array([6., 6.]), z=np.array([7., 7.]),
+                        d=np.array([16., 16.]), t=np.array([4, 4]), p=np.array([-1,  0]))
 basal_test = Tree.Tree(x=np.array([4.]), y=np.array([5.]), z=np.array([6.]),
                        d=np.array([14.]), t=np.array([3]), p=np.array([-1]))
-axon_test = Tree.Tree(x=np.array([ 3.]), y=np.array([4.]), z=np.array([5.]),
-                      d=np.array([12.]), t=np.array([2 ]), p=np.array([-1]))
+axon_test = Tree.Tree(x=np.array([3.]), y=np.array([4.]), z=np.array([5.]),
+                      d=np.array([12.]), t=np.array([2]), p=np.array([-1]))
+
 
 def test_type_dict():
-    nt.ok_(io.type_dct == {'soma': 1,
+    nt.ok_(io.TYPE_DCT == {'soma': 1,
                            'basal': 3,
                            'apical': 4,
                            'axon': 2})
+
 
 def test_load_swc_neuron():
     neuron = io.load_neuron(basic_file)
@@ -61,6 +63,7 @@ def test_load_swc_neuron():
     except:
         nt.ok_(True)
 
+
 def test_load_h5_neuron():
     nt.ok_(neuron_v1.soma.is_equal(neuron_v2.soma))
     nt.ok_(neuron_v1.basal[0].is_equal(neuron_v2.basal[0]))
@@ -71,11 +74,13 @@ def test_load_h5_neuron():
     except:
         nt.ok_(True)
 
+
 def test_io_load():
     #neuron_v1 = io.load_neuron(sample_h5_v1_file)
     #neuron_v2 = io.load_neuron(sample_h5_v2_file)
     nt.ok_(neuron1.is_equal(neuron_v1))
     nt.ok_(neuron1.is_equal(neuron_v2))
+
 
 def test_load_population():
     population = io.load_population(POP_PATH)

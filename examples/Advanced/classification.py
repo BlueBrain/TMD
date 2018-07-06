@@ -1,6 +1,7 @@
 list_of_modules = ['discriminant_analysis', 'discriminant_analysis', 'tree']
 
-list_of_classifiers =['LinearDiscriminantAnalysis', 'QuadraticDiscriminantAnalysis', 'DecisionTreeClassifier']
+list_of_classifiers = ['LinearDiscriminantAnalysis',
+                       'QuadraticDiscriminantAnalysis', 'DecisionTreeClassifier']
 
 
 def train(mod, classifier, data, labels, **kwargs):
@@ -18,6 +19,7 @@ def train(mod, classifier, data, labels, **kwargs):
 
     return clf
 
+
 def predict(clf, data):
     '''Predict label for data for the trained classifier clf.
        Returns the index of the predicted class
@@ -26,6 +28,7 @@ def predict(clf, data):
     predict_label = clf.predict([data])
 
     return predict_label[0]
+
 
 def leave_one_out(mod, classifier, data, labels, **kwargs):
     '''Leaves one individual out, trains classifier
@@ -37,21 +40,21 @@ def leave_one_out(mod, classifier, data, labels, **kwargs):
     sample_size = len(labels)
     scores = np.zeros(sample_size)
 
-    for ed in xrange(sample_size):
+    for ed in range(sample_size):
 
-        #print 'Testing ' + str(ed) + ' ...'
+        # print 'Testing ' + str(ed) + ' ...'
 
-        train_data = data[np.delete(xrange(sample_size), ed)]
-        train_labels = labels[np.delete(xrange(sample_size), ed)]
+        train_data = data[np.delete(range(sample_size), ed)]
+        train_labels = labels[np.delete(range(sample_size), ed)]
 
         clf = train(mod, classifier, train_data, train_labels, **kwargs)
         predict_label = predict(clf, data[ed])
 
-        #print 'The individual ' + str(ed) + ' is of type ' + str(predict_label)
+        # print 'The individual ' + str(ed) + ' is of type ' + str(predict_label)
 
-        scores[ed] = predict_label==labels[ed]
+        scores[ed] = predict_label == labels[ed]
 
-    return np.float(np.count_nonzero(scores))/sample_size
+    return np.float(np.count_nonzero(scores)) / sample_size
 
 
 def leave_one_out_statistics(mod, classifier, data, labels, N=10, **kwargs):
@@ -64,26 +67,25 @@ def leave_one_out_statistics(mod, classifier, data, labels, N=10, **kwargs):
     sample_size = len(labels)
     scores = np.zeros(sample_size)
 
-    for ed in xrange(sample_size):
+    for ed in range(sample_size):
 
-        #print 'Testing ' + str(ed) + ' ...'
+        # print 'Testing ' + str(ed) + ' ...'
 
-        train_data = data[np.delete(xrange(sample_size), ed)]
-        train_labels = labels[np.delete(xrange(sample_size), ed)]
+        train_data = data[np.delete(range(sample_size), ed)]
+        train_labels = labels[np.delete(range(sample_size), ed)]
 
         clf = train(mod, classifier, train_data, train_labels, **kwargs)
 
         all_results = []
-        for i in xrange(N):
+        for i in range(N):
             all_results.append(predict(clf, data[ed]))
 
         predict_label = predict(clf, data[ed])
         print 'The individual ', str(ed), ' is of type ', all_results
 
-        scores[ed] = predict_label==labels[ed]
+        scores[ed] = predict_label == labels[ed]
 
-    return np.float(np.count_nonzero(scores))/sample_size
-
+    return np.float(np.count_nonzero(scores)) / sample_size
 
 
 def leave_perc_out(mod, classifier, data, labels, iterations=10, percent=10, **kwargs):
@@ -99,28 +101,28 @@ def leave_perc_out(mod, classifier, data, labels, iterations=10, percent=10, **k
     import random
 
     sample_size = len(labels)
-    test_size = int(sample_size*percent/100.)
+    test_size = int(sample_size * percent / 100.)
     scores = np.zeros(iterations)
 
-    #print sample_size, test_size
+    # print sample_size, test_size
 
-    for i in xrange(iterations):
+    for i in range(iterations):
 
         random_inds = random.sample(range(0, sample_size), test_size)
-        kept = np.delete(xrange(sample_size), random_inds)
+        kept = np.delete(range(sample_size), random_inds)
 
         clf = train(mod, classifier, data[kept], labels[kept], **kwargs)
 
         sc = 0.0
         for ed in random_inds:
             predict_label = predict(clf, data[ed])
-            sc = sc + float(predict_label==labels[ed])
+            sc = sc + float(predict_label == labels[ed])
 
-        scores[i] = float(sc)/float(test_size)
+        scores[i] = float(sc) / float(test_size)
 
-    #print len(random_inds), len(kept), len(random_inds) + len(kept)
+    # print len(random_inds), len(kept), len(random_inds) + len(kept)
 
-    return scores # np.mean(np.count_nonzero(scores))/sample_size
+    return scores  # np.mean(np.count_nonzero(scores))/sample_size
 
 
 def leave_one_out_mixing(mod, classifier, data, labels, **kwargs):
@@ -138,26 +140,27 @@ def leave_one_out_mixing(mod, classifier, data, labels, **kwargs):
     sizes = np.zeros(len(np.unique(labels)))
 
     for i in np.unique(labels):
-        sizes[int(i-1)] = len(np.where(labels==i)[0])
+        sizes[int(i - 1)] = len(np.where(labels == i)[0])
 
-    for ed in xrange(sample_size):
+    for ed in range(sample_size):
 
-        #print 'Testing ' + str(ed) + ' ...'
+        # print 'Testing ' + str(ed) + ' ...'
 
-        train_data = data[np.delete(xrange(sample_size), ed)]
-        train_labels = labels[np.delete(xrange(sample_size), ed)]
+        train_data = data[np.delete(range(sample_size), ed)]
+        train_labels = labels[np.delete(range(sample_size), ed)]
 
         clf = train(mod, classifier, train_data, train_labels, **kwargs)
         predict_label = predict(clf, data[ed])
 
-        #print predict_label, labels[ed]
-        separation[int(labels[ed]-1)][int(predict_label-1)] = separation[int(labels[ed]-1)][int(predict_label-1)] + 1./sizes[int(labels[ed]-1)]
+        # print predict_label, labels[ed]
+        separation[int(labels[ed] - 1)][int(predict_label - 1)] = separation[int(labels[ed] - 1)
+                                                                             ][int(predict_label - 1)] + 1. / sizes[int(labels[ed] - 1)]
 
-        #print 'The individual ' + str(ed) + ' is of type ' + str(predict_label)
+        # print 'The individual ' + str(ed) + ' is of type ' + str(predict_label)
 
-        scores[ed] = predict_label==labels[ed]
+        scores[ed] = predict_label == labels[ed]
 
-    return np.float(np.count_nonzero(scores))/sample_size, separation
+    return np.float(np.count_nonzero(scores)) / sample_size, separation
 
 
 def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
@@ -170,16 +173,16 @@ def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
     sample_size = len(labels)
     scores = np.zeros(sample_size)
 
-    for ed in xrange(sample_size):
+    for ed in range(sample_size):
 
-        #print 'Testing ' + str(ed) + ' ...'
+        # print 'Testing ' + str(ed) + ' ...'
 
         print 'The individual ' + str(ed) + ' is of type ',
 
-        for ni in xrange(n):
+        for ni in range(n):
 
-            train_data = data[np.delete(xrange(sample_size), ed)]
-            train_labels = labels[np.delete(xrange(sample_size), ed)]
+            train_data = data[np.delete(range(sample_size), ed)]
+            train_labels = labels[np.delete(range(sample_size), ed)]
 
             clf = train(mod, classifier, train_data, train_labels, **kwargs)
 
@@ -189,17 +192,19 @@ def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
 
         print ' !'
 
-        scores[ed] = predict_label==labels[ed]
+        scores[ed] = predict_label == labels[ed]
 
-    return np.float(np.count_nonzero(scores))/sample_size
+    return np.float(np.count_nonzero(scores)) / sample_size
+
 
 def multi(dat, tar, m='tree', cl='DecisionTreeClassifier', n=10, randomize=False):
     score = np.zeros(n)
     if not randomize:
-        for i in xrange(n):
+        for i in range(n):
             score[i] = leave_one_out(m, cl, dat, tar)
     else:
-        for i in xrange(n):
-            score[i] = leave_one_out(m, cl, dat, np.random.randint(min(tar),max(tar)+1,size=len(tar)))
+        for i in range(n):
+            score[i] = leave_one_out(m, cl, dat, np.random.randint(
+                min(tar), max(tar) + 1, size=len(tar)))
 
     return mean(score), std(score)

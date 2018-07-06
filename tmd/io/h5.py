@@ -4,7 +4,7 @@ about reading h5 files.
 '''
 
 import numpy as _np
-from tmd.io.swc import swc_dct
+from tmd.io.swc import SWC_DCT
 
 # Definition of h5 data container
 # separated in points (PX,PY,PZ,PD)
@@ -180,15 +180,15 @@ def h5_data_to_lists(data):
     """
     length = len(data)
 
-    x = _np.transpose(data)[swc_dct['x']]
-    y = _np.transpose(data)[swc_dct['y']]
-    z = _np.transpose(data)[swc_dct['z']]
-    d = _np.transpose(data)[swc_dct['radius']]
-    t = _np.transpose(data)[swc_dct['type']]
-    p = _np.transpose(data)[swc_dct['parent']]
+    x = _np.transpose(data)[SWC_DCT['x']]
+    y = _np.transpose(data)[SWC_DCT['y']]
+    z = _np.transpose(data)[SWC_DCT['z']]
+    d = _np.transpose(data)[SWC_DCT['radius']]
+    t = _np.transpose(data)[SWC_DCT['type']]
+    p = _np.transpose(data)[SWC_DCT['parent']]
     ch = {}
 
-    for enline in xrange(length):
+    for enline in range(length):
 
         ch[enline] = list(_np.where(p == enline)[0])
 

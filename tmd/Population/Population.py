@@ -16,26 +16,32 @@ class Population(object):
 
     @property
     def axon(self):
+        '''Get axon'''
         return [a for n in self.neurons for a in n.axon]
 
     @property
     def apical(self):
+        '''Get apical'''
         return [a for n in self.neurons for a in n.apical]
 
     @property
     def basal(self):
+        '''Get basal'''
         return [a for n in self.neurons for a in n.basal]
 
     @property
     def undefined(self):
+        '''I dont know'''
         return [a for n in self.neurons for a in n.undefined]
 
     @property
     def neurites(self):
+        '''Get neurites'''
         return self.apical + self.axon + self.basal + self.undefined
 
     @property
     def dendrites(self):
+        '''Get dendrites'''
         return self.apical + self.basal
 
     def append_neuron(self, new_neuron):
@@ -63,8 +69,7 @@ class Population(object):
             '''
             try:
                 eph(tree, feature=feature,
-                    output_file=os.path.join(output_folder, ttype +
-                                             '_' + str(ntree) + '.txt'))
+                    output_file=os.path.join(output_folder, ttype + '_' + str(ntree) + '.txt'))
             except ValueError:
                 print(tree)
 
@@ -96,8 +101,8 @@ class Population(object):
             '''
             try:
                 eph(tree, feature=feature,
-                    output_file=os.path.join(output_folder, ttype +
-                                             '_' + str(ntree) + '.txt'))
+                    output_file=os.path.join(output_folder,
+                                             ttype + '_' + str(ntree) + '.txt'))
             except ValueError:
                 print(tree)
 

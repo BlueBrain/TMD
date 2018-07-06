@@ -6,7 +6,7 @@ about reading swc files.
 import numpy as _np
 
 # Definition of swc data container
-swc_dct = {'index': 0,
+SWC_DCT = {'index': 0,
            'type': 1,
            'x': 2,
            'y': 3,
@@ -42,13 +42,13 @@ def swc_to_data(data_swc):
     '''
     import re
 
-    expected_data = re.compile('^\s*([-+]?\d*\.\d+|[-+]?\d+)'
-                               '\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
-                               '*([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*$')
+    expected_data = re.compile(r'^\s*([-+]?\d*\.\d+|[-+]?\d+)'
+                               r'\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
+                               r'*([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*$')
 
     data = []
 
@@ -60,7 +60,7 @@ def swc_to_data(data_swc):
                                       dtype=_np.float)
 
             # make the radius diameter
-            segment_point[swc_dct['radius']] = 2. * segment_point[swc_dct['radius']]
+            segment_point[SWC_DCT['radius']] = 2. * segment_point[SWC_DCT['radius']]
 
             data.append(segment_point)
 
@@ -103,15 +103,15 @@ def swc_data_to_lists(data):
     # If this structure is not followed, the data will fail
     # to load and the method will be terminated, with an error message.
 
-    expected_data = re.compile('^\s*([-+]?\d*\.\d+|[-+]?\d+)'
-                               '\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
-                               '*([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               '([-+]?\d*\.\d+|[-+]?\d+)\s*$')
+    expected_data = re.compile(r'^\s*([-+]?\d*\.\d+|[-+]?\d+)'
+                               r'\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
+                               r'*([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
+                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*$')
 
-    # Definition of swc data from swc_dct function
+    # Definition of swc data from SWC_DCT function
 
     x = _np.zeros(length, dtype=float)
     y = _np.zeros(length, dtype=float)
@@ -125,26 +125,26 @@ def swc_data_to_lists(data):
 
     total_offset = int(first_line_data.groups()[0])
 
-    for enline in xrange(length):
+    for enline in range(length):
 
         segment_point = expected_data.match(data[enline].replace('\r', '')).groups()
 
-        x[enline] = float(segment_point[swc_dct['x']])
-        y[enline] = float(segment_point[swc_dct['y']])
-        z[enline] = float(segment_point[swc_dct['z']])
+        x[enline] = float(segment_point[SWC_DCT['x']])
+        y[enline] = float(segment_point[SWC_DCT['y']])
+        z[enline] = float(segment_point[SWC_DCT['z']])
         # swc contains radii, and here it is transformed into diameter.
-        d[enline] = 2 * float(segment_point[swc_dct['radius']])
-        t[enline] = int(segment_point[swc_dct['type']])
+        d[enline] = 2 * float(segment_point[SWC_DCT['radius']])
+        t[enline] = int(segment_point[SWC_DCT['type']])
         if enline != 0:
-            p[enline] = int(segment_point[swc_dct['parent']]) - total_offset
+            p[enline] = int(segment_point[SWC_DCT['parent']]) - total_offset
         else:
-            p[enline] = int(segment_point[swc_dct['parent']])
+            p[enline] = int(segment_point[SWC_DCT['parent']])
 
-        if int(segment_point[swc_dct['index']]) - enline != total_offset:
+        if int(segment_point[SWC_DCT['index']]) - enline != total_offset:
             raise Exception("Aborting process, with non-sequential ids error.\
                              Fix to proceed.")
 
-    for enline in xrange(length):
+    for enline in range(length):
 
         ch[enline] = list(_np.where(p == enline)[0])
 

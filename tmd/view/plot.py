@@ -2,8 +2,8 @@
 
 import numpy as _np
 from tmd import Topology as _tm
-import view as _view
-import common as _cm
+from tmd.view import view as _view
+from tmd.view import common as _cm
 from tmd.Topology.analysis import collapse
 
 def _sort_ph(ph):
@@ -341,7 +341,7 @@ def image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=None, **kwarg
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bins=100j, 
+def plot_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bins=100j,
                 norm_factor=1.0, masked=False, vmin=0., vmax=1., cmap=_cm.plt.cm.jet, **kwargs):
     """Merges ph diagrams and plots them.
     """

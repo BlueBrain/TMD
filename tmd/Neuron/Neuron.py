@@ -26,10 +26,12 @@ class Neuron(object):
 
     @property
     def neurites(self):
+        '''Get neurites'''
         return self.apical + self.axon + self.basal + self.undefined
 
     @property
     def dendrites(self):
+        '''Get dendrites'''
         return self.apical + self.basal
 
     def rename(self, new_name):
@@ -66,7 +68,6 @@ class Neuron(object):
             else:
                 tree_type = 'undefined'
             getattr(self, tree_type).append(new_tree)
-
 
     def copy_neuron(self):
         """

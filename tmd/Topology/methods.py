@@ -1,6 +1,7 @@
 '''
 tmd Topology algorithms implementation
 '''
+from __future__ import print_function
 
 import numpy as np
 
@@ -209,7 +210,7 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
 
 def get_section_radii(tree, beg, end):
     """Returns the mean radii of a section"""
-    return [np.mean(tree.d[beg[i]:end[i]]) for i in xrange(len(beg))]
+    return [np.mean(tree.d[beg[i]:end[i]]) for i in range(len(beg))]
 
 
 def get_ph_radii(tree, feature='radial_distances', **kwargs):
@@ -328,15 +329,14 @@ def get_lifetime(tree, feature='point_radial_distances'):
     of the radial distances of the neuronal branches.
     '''
 
-    beg, end = tree.get_sections()
+    begs, ends = tree.get_sections()
 
     rd = getattr(tree, 'get_' + feature)()
 
-    lifetime = np.array(len(beg) * [np.zeros(2)])
+    lifetime = np.array(len(begs) * [np.zeros(2)])
 
-    for i in xrange(len(beg)):
-
-        lifetime[i] = np.array([rd[beg[i]], rd[end[i]]])
+    for i, (beg, end) in enumerate(zip(begs, ends)):
+        lifetime[i] = np.array([rd[beg], rd[end]])
 
     return lifetime
 

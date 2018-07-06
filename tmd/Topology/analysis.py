@@ -62,7 +62,7 @@ def persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None):
     '''Create the data for the generation of the persistence image.
     If norm_factor is provided the data will be normalized based on this,
     otherwise they will be normalized to 1.
-    If xlims, ylims are provided the data will be scaled accordingly.   
+    If xlims, ylims are provided the data will be scaled accordingly.
     '''
     from scipy import stats
 
@@ -266,13 +266,15 @@ def transform_from_length(ph, keep_side='end'):
         return [[i[0] - i[1], i[0]] for i in ph]
 
 
-def average_image(ph_list, xlims=None, ylims=None, norm_factor=None, **kwargs):
+# pylint: disable=unused-argument
+def average_image(ph_list, xlims=None, ylims=None,
+                  norm_factor=None, **kwargs):
     '''Plots the gaussian kernel of a population of cells
        as an average of the ph diagrams that are given.
     '''
     imgs_list = [persistence_image_data(p, norm_factor=norm_factor,
                                         xlims=xlims, ylims=ylims)
-                for p in ph_list]
+                 for p in ph_list]
 
     average_imgs = imgs_list[0]
 
@@ -305,9 +307,7 @@ def _marriage_problem(women_preferences, men_preferences):
     free_women = range(N)
     free_men = range(M)
 
-    couples = {x: None for x in xrange(N)} # woman first, then current husband
-
-    count = 0
+    couples = {x: None for x in range(N)}  # woman first, then current husband
 
     while len(free_men) > 0:
         m = free_men.pop()
@@ -319,7 +319,7 @@ def _marriage_problem(women_preferences, men_preferences):
         else:
             current = np.where(np.array(women_preferences)[choice] == couples[choice])[0][0]
             tobe = np.where(np.array(women_preferences)[choice] == m)[0][0]
-            if  current < tobe:
+            if current < tobe:
                 free_men.append(couples[choice])
                 couples[choice] = m
             else:
@@ -337,7 +337,8 @@ def symmetric(p):
     return [(p[0] + p[1]) / 2., (p[0] + p[1]) / 2]
 
 
-def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_fig=True, subplot=(111)):
+def matching_diagrams(p1, p2, plot=False, method='munkres',
+                      use_diag=True, new_fig=True, subplot=(111)):
     '''Returns a list of matching components
     Possible matching methods:
     - munkress
@@ -353,7 +354,7 @@ def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_f
         '''
         import pylab as plt
         fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
-        for i,j in indices:
+        for i, j in indices:
             ax.plot((p1[i][0], p2[j][0]), (p1[i][1], p2[j][1]), color='black')
             ax.scatter(p1[i][0], p1[i][1], c='r')
             ax.scatter(p2[j][0], p2[j][1], c='b')
@@ -367,10 +368,10 @@ def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_f
 
     D = cdist(p1_enh, p2_enh)
 
-    if method=='munkres':
+    if method == 'munkres':
         m = munkres.Munkres()
         indices = m.compute(np.copy(D))
-    elif method=='marriage':
+    elif method == 'marriage':
         first_pref = [np.argsort(k).tolist() for k in cdist(p1_enh, p2_enh)]
         second_pref = [np.argsort(k).tolist() for k in cdist(p2_enh, p1_enh)]
         indices = _marriage_problem(first_pref, second_pref)
@@ -378,6 +379,6 @@ def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_f
     if plot:
         plot_matching(p1_enh, p2_enh, indices, new_fig=new_fig, subplot=subplot)
 
-    ssum = np.sum([D[i][j] for (i,j) in indices])
+    ssum = np.sum([D[i][j] for (i, j) in indices])
 
     return indices, ssum

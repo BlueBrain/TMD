@@ -1,7 +1,8 @@
 # Example script to compute the diversity index from a set of classes.
 
+
 def diversity_index(perc, simil, q):
-    """Computes the generalized diversity index 
+    """Computes the generalized diversity index
        as described in http://onlinelibrary.wiley.com/doi/10.1890/10-2402.1/abstract
        Inputs:
             perc: list of percentages of species distribution
@@ -12,19 +13,19 @@ def diversity_index(perc, simil, q):
     """
     import numpy as np
 
-    perc = np.array(perc, dtype=float)/sum(perc)
+    perc = np.array(perc, dtype=float) / sum(perc)
 
     diq = 0.0
 
-    for i in xrange(len(perc)):
+    for i in range(len(perc)):
         zpi = np.dot(simil[i], perc)
-        diq = diq + np.power(perc[i], q)*np.power(zpi, q-1.)
+        diq = diq + np.power(perc[i], q) * np.power(zpi, q - 1.)
 
-    return np.power(diq, 1./(1.-q))
+    return np.power(diq, 1. / (1. - q))
 
 
 def diversity_index_inf(perc, simil):
-    """Computes the generalized diversity index 
+    """Computes the generalized diversity index
        as described in http://onlinelibrary.wiley.com/doi/10.1890/10-2402.1/abstract
        Inputs:
             perc: list of percentages of species distribution
@@ -37,17 +38,17 @@ def diversity_index_inf(perc, simil):
 
     diq = np.inf
 
-    perc = np.array(perc, dtype=float)/sum(perc)
+    perc = np.array(perc, dtype=float) / sum(perc)
 
-    for i in xrange(len(perc)):
+    for i in range(len(perc)):
         zpi = np.dot(simil[i], perc)
         diq = min(diq, zpi)
 
-    return np.float(1.)/diq
+    return np.float(1.) / diq
 
 
 def diversity_index_one(perc, simil):
-    """Computes the generalized diversity index 
+    """Computes the generalized diversity index
        as described in http://onlinelibrary.wiley.com/doi/10.1890/10-2402.1/abstract
        Inputs:
             perc: list of percentages of species distribution
@@ -60,17 +61,17 @@ def diversity_index_one(perc, simil):
 
     diq = 1.0
 
-    perc = np.array(perc, dtype=float)/sum(perc)
+    perc = np.array(perc, dtype=float) / sum(perc)
 
-    for i in xrange(len(perc)):
+    for i in range(len(perc)):
         zpi = np.dot(simil[i], perc)
         diq = diq * np.power(zpi, perc[i])
 
-    return np.float(1.)/diq
+    return np.float(1.) / diq
 
 
 def diversity_index_zero(perc, simil):
-    """Computes the generalized diversity index 
+    """Computes the generalized diversity index
        as described in http://onlinelibrary.wiley.com/doi/10.1890/10-2402.1/abstract
        Inputs:
             perc: list of percentages of species distribution
@@ -83,22 +84,22 @@ def diversity_index_zero(perc, simil):
 
     diq = 1.0
 
-    perc = np.array(perc, dtype=float)/sum(perc)
+    perc = np.array(perc, dtype=float) / sum(perc)
 
-    for i in xrange(len(perc)):
+    for i in range(len(perc)):
         zpi = np.dot(simil[i], perc)
         diq = diq * np.power(zpi, perc[i])
 
-    return np.float(1.)/diq
+    return np.float(1.) / diq
 
-    perc = np.array(perc, dtype=float)/sum(perc)
+    perc = np.array(perc, dtype=float) / sum(perc)
 
     diq = 0.0
 
-    for i in xrange(len(perc)):
+    for i in range(len(perc)):
         zpi = np.dot(simil[i], perc)
         if not np.close(zpi, 0.0):
-            diq = diq + perc[i]/zpi
+            diq = diq + perc[i] / zpi
 
     return diq
 
