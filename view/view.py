@@ -398,7 +398,7 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,  **kwa
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type='all', **kwargs):
+def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type='all', rotation=None, **kwargs):
     '''Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
@@ -483,6 +483,11 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neu
 
     to_plot = []
 
+    if rotation=='apical':
+        angle = _np.arctan2(nrn.apical[0].get_pca()[0], nrn.apical[0].get_pca()[1])
+    elif type(rotation) is list:
+        angle = _np.arctan2(rotation[1], rotation[0])
+
     if neurite_type == 'all':
         to_plot = nrn.neurites
     else:
@@ -490,6 +495,8 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neu
             to_plot = to_plot + getattr(nrn, neu_type)
 
     for temp_tree in to_plot:
+        if rotation is not None:
+            temp_tree.rotate_xy(angle)
 
         bounding_box = temp_tree.get_bounding_box()
 

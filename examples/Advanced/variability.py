@@ -548,7 +548,3 @@ def check_input_data(filename):
 
     return len(L), counter_load, counter_process
 
-
-
-def plot_average_on_population(pop):
-
