@@ -1,9 +1,7 @@
-========================================
 TMD: Topological Morphology Descriptor
 ========================================
 
 The TMD performs topological analysis of neuronal morphologies and extracts the persistence of trees.
----------------------------------------------
 
 Authors: Lida Kanari
 Contributors: Pawel Dlotko, Benoit Coste
@@ -14,7 +12,6 @@ Cite this article as:
     Kanari, L., Dłotko, P., Scolamiero, M. et al. Neuroinform (2018) 16:3.
     DOI: <https://doi.org/10.1007/s12021-017-9341-1>
 
-----------------------
 Sotware description
 ---------------------
 
@@ -25,13 +22,11 @@ This Python module includes:
 * Visualization of neuronal trees and neurons.
 * Ploting persistence diagrams, barcodes and images.
 
--------------
 Supported OS
 --------------
 
 Ubuntu : 12.0, 14.04, 16.04
 
----------------------
 Required Dependencies
 ---------------------
 
