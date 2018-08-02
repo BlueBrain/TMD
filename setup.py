@@ -8,7 +8,7 @@ exec(open('tmd/version.py').read())
 config = {
     'description': 'TMD: a python package for the topological analysis of neurons',
     'author': 'Lida Kanari',
-    'url': 'https://bbpcode.epfl.ch/molecularsystems/TMD',
+    'url': 'https://github.com/BlueBrain/TMD',
     'author_email': 'lida.kanari@epfl.ch',
     'install_requires': [
         'matplotlib>=1.3.1',
@@ -19,7 +19,7 @@ config = {
     ],
     'extras_require': {},
     'packages': find_packages(),
-    'license': 'BSD',
+    'license': 'LGPL',
     'scripts': [],
     'name': 'tmd',
     'include_package_data': True,

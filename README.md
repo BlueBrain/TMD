@@ -3,12 +3,15 @@ TMD: Topological Morphology Descriptor
 
 The TMD performs topological analysis of neuronal morphologies and extracts the persistence of trees.
 
-Authors: Lida Kanari
+Details
+---------
+Author: Lida Kanari
+
 Contributors: Pawel Dlotko, Benoit Coste
 
 Publication: A Topological Representation of Branching Neuronal Morphologies
 
-Cite this article as:
+_Cite this article as:_
     Kanari, L., Dłotko, P., Scolamiero, M. et al. Neuroinform (2018) 16:3.
     DOI: <https://doi.org/10.1007/s12021-017-9341-1>
 
@@ -27,9 +30,29 @@ Supported OS
 
 Ubuntu : 12.0, 14.04, 16.04
 
+macOS: Sierra 10.13.3
+
 Required Dependencies
 ---------------------
 
-Python : 2.7
-Numpy : 1.8.1
-Matplotlib : 1.3 (optional)
+Python : 2.7+
+
+numpy : 1.8.1+
+
+scipy : 0.13.3+
+
+h5py : 2.8.0+ (optional)
+
+matplotlib : 1.3.1+ (optional)
+
+
+Instalation instructions
+--------------------------------
+
+```bash
+virtualenv test_tmd
+source ./test_tmd/bin/activate
+git clone https://github.com/BlueBrain/TMD
+pip install --upgrade pip
+pip install ./TMD
+```
