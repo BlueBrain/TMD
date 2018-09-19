@@ -418,7 +418,7 @@ def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=N
     kwargs['ylim'] = ylims
     kwargs['title'] = title
 
-    _cm.plt.colorbar(cax)
+    #_cm.plt.colorbar(cax)
 
     ax.set_aspect('equal')
 

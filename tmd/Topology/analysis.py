@@ -346,7 +346,7 @@ def matching_diagrams(p1, p2, plot=False, method='munkres',
     '''
     from scipy.spatial.distance import cdist
     import munkres
-    from view import common as _cm
+    from tmd.view import common as _cm
 
     def plot_matching(p1, p2, indices, new_fig=True, subplot=(111)):
         '''Plots matching between p1, p2

@@ -205,7 +205,7 @@ def get_point_section_lengths(self):
     '''Tree method to get section lengths.
     '''
     lengths = _np.zeros(self.size(), dtype=float)
-    ways, end = self.get_sections_points()
+    ways, end = self.get_sections_only_points()
     seg_len = self.get_segment_lengths()
 
     for i, item in enumerate(end):
@@ -214,16 +214,16 @@ def get_point_section_lengths(self):
     return lengths
 
 
+def get_branch_order(self, seg_id):
+    '''Returns branch order of segment'''
+    B = self.get_multifurcations()
+    return sum([1 if i in B else 0 for i in self.get_way_to_root(seg_id)])
+
+
 def get_point_section_branch_orders(self):
     '''Tree method to get section lengths.
     '''
-    B = self.get_multifurcations()
-
-    def get_bo(seg_id):
-        '''Returns branch order of segment'''
-        return sum([1 if i in B else 0 for i in self.get_way_to_root(seg_id)])
-
-    return _np.array([get_bo(i) for i in range(self.size())])
+    return _np.array([self.get_branch_order(i) for i in range(self.size())])
 
 
 def get_point_projection(self, vect=(0, 1, 0), point=None):
@@ -272,12 +272,9 @@ def get_sections_2(self):
     return beg, end
 
 
-def get_sections_points(self):
+def get_sections_only_points(self):
     '''Tree method to get the sections'
     begining and ending indices.
-    The first index represents the first point
-    within the section, the last index represents
-    the last point of the section.
     '''
     import scipy.sparse as sp
     end = _np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
@@ -285,13 +282,53 @@ def get_sections_points(self):
     if 0 in end:  # If first segment is a bifurcation
         end = end[1:]
 
-    # In case the section has only one point (get_way... = 1)
-    # the start and the end of the section are the same point.
-    # We take the -2 to exclude the initial bifurcation
-    # which is included in the previous section
-    beg = _np.array([self.get_way_to_section_start(e)[-2] for e in end])
+    beg = _np.delete(_np.hstack([0, 1 + end]), len(end))
 
     return beg, end
+
+
+def extract_simplified(self):
+    """Returns a simplified tree that corresponds
+       to the start - end of the sections points
+    """
+    from tmd import Tree
+    beg0, end0 = self.get_sections_2()
+    sections = _np.transpose([beg0, end0])
+
+    x = _np.zeros([len(sections)+1])
+    y = _np.zeros([len(sections)+1])
+    z = _np.zeros([len(sections)+1])
+    d = _np.zeros([len(sections)+1])
+    t = _np.zeros([len(sections)+1])
+    p = _np.zeros([len(sections)+1])
+
+    x[0] = self.x[sections[0][0]]
+    y[0] = self.y[sections[0][0]]
+    z[0] = self.z[sections[0][0]]
+    d[0] = self.d[sections[0][0]]
+    t[0] = self.t[sections[0][0]]
+    p[0] = -1
+
+    for i,s in enumerate(sections):
+        x[i+1] = self.x[s[1]]
+        y[i+1] = self.y[s[1]]
+        z[i+1] = self.z[s[1]]
+        d[i+1] = self.d[s[1]]
+        t[i+1] = self.t[s[1]]
+        p[i+1] = _np.where(beg0 ==s[0])[0][0]
+
+    return Tree.Tree(x,y,z,d,t,p)
+
+
+def get_section_points(self, sec_start):
+    '''Tree method to get the sections' points
+    from the start to end indices.
+    The sec_start must be the beginning (start) of a section.
+    '''
+    if sec_start in self.get_sections_only_points():
+        return self.get_way_to_section_end(sec_start)
+    else:
+        return "The input sec_start is not a section start point"
 
 
 def get_section_projection(self, vect=(0, 1, 0)):
@@ -318,7 +355,7 @@ def get_section_lengths(self):
     Tree method to get the sections'
     lengths. TODO: fix this one!!!
     """
-    ways, end = self.get_sections_points()
+    ways, end = self.get_sections_only_points()
     seg_len = self.get_segment_lengths()
     array_length = self.get_section_number()
     lengths = _np.zeros(array_length, dtype=float)
@@ -327,6 +364,21 @@ def get_section_lengths(self):
         lengths[i] = _np.sum(seg_len[ways[i]:end[i]])
 
     return lengths
+
+
+def get_section_branch_orders(self):
+    """
+    Tree method to get the sections'
+    lengths. TODO: fix this one!!!
+    """
+    beg, end = self.get_sections()
+    array_length = len(beg)
+    branch_orders = _np.zeros(array_length, dtype=float)
+
+    for i in range(array_length):
+        branch_orders[i] = self.get_branch_order(end[i])
+
+    return branch_orders
 
 
 def get_section_path_distances(self):
@@ -422,10 +474,11 @@ def get_direction(self, sec_id=0, child_id=0):
     defined as terminal point - initial point
     normalized as a unit vector.
     '''
-    beg, end = self.get_sections_2()
-    b = sec_id  # b = beg[sec_id]
-    e = end[_np.where(beg == sec_id)[0]][child_id]  # e = end[sec_id]
-    vect = _np.subtract([self.x[e], self.y[e], self.z[e]], [self.x[b], self.y[b], self.z[b]])
+    beg, end = self.get_sections_only_points()
+    e = end[_np.where(beg == sec_id)[0]][child_id]
+
+    vect = _np.subtract([self.x[e], self.y[e], self.z[e]],
+                        [self.x[sec_id], self.y[sec_id], self.z[sec_id]])
     direction = vect / _np.linalg.norm(vect)
 
     return direction
@@ -444,19 +497,65 @@ def get_direction_between(self, start_id=0, end_id=1):
     return vect
 
 
+def _vec_angle(u, v):
+    '''Returns the angle between v and u in 3D.
+    '''
+    c = _np.dot(u, v) / _np.linalg.norm(u) / _np.linalg.norm(v)
+    return _np.arccos(c)
+
+
+def get_angle_between(self, sec_id1, sec_id2):
+    '''Returns local bifurcations angle
+    between two sections, defined by their ids.
+    sec_id1: the start point of the section #1
+    sec_id2: the start point of the section #2
+    '''
+    beg, end = self.get_sections_only_points()
+    print sec_id1, sec_id2
+    b1 = _np.where(beg == sec_id1)[0][0]
+    b2 = _np.where(beg == sec_id2)[0][0]
+
+    u = self.get_direction_between(beg[b1],
+                                   end[b1])
+    v = self.get_direction_between(beg[b2],
+                                   end[b2])
+
+    return _vec_angle(u, v)
+
+
 def get_bif_angles(self):
     '''Returns local bifurcations angles
     '''
     angs = []
-    beg, _ = self.get_sections_2()
+    bif = self.get_bifurcations()
 
-    for b in beg[1:]:
-        u = self.get_direction(sec_id=b, child_id=0)
-        v = self.get_direction(sec_id=b, child_id=1)
-        c = _np.dot(u, v) / _np.linalg.norm(u) / _np.linalg.norm(v)
-        angs.append(_np.arccos(c))
+    for b in bif:
+        children = self.get_children(b)
+        # Angle between two first children
+        angs.append(self.get_angle_between(children[0], children[1]))
 
     return angs
+
+
+def get_parent_child_angles(self, funct=_np.min):
+    '''Returns the angles of a section and its children
+    at each bifurcation
+    '''
+    angles = []
+    beg, end = self.get_sections_only_points()
+
+    for i,e1 in enumerate(end):
+        angs = []
+        children = self.get_children(e1)
+
+        for ch in children:
+            angs.append(self.get_angle_between(beg[i], ch))
+        small = funct(angs)
+
+        if len(children) > 1:
+            angles.append(small)
+
+    return angles
 
 
 def get_way_to_root(self, sec_id=0):

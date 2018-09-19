@@ -9,11 +9,13 @@ class Tree(object):
     from tmd.Tree.methods import size
     from tmd.Tree.methods import get_sections
     from tmd.Tree.methods import get_sections_2
-    from tmd.Tree.methods import get_sections_points
+    from tmd.Tree.methods import get_sections_only_points
+    from tmd.Tree.methods import get_section_points
     from tmd.Tree.methods import get_section_number
     from tmd.Tree.methods import get_section_lengths
     from tmd.Tree.methods import get_section_radial_distances
     from tmd.Tree.methods import get_section_path_distances
+    from tmd.Tree.methods import get_section_branch_orders
     from tmd.Tree.methods import get_section_start
     from tmd.Tree.methods import get_segment_lengths
     from tmd.Tree.methods import get_segment_radial_distances
@@ -40,6 +42,11 @@ class Tree(object):
     from tmd.Tree.methods import get_direction
     from tmd.Tree.methods import get_direction_between
     from tmd.Tree.methods import get_pca
+    from tmd.Tree.methods import extract_simplified
+    from tmd.Tree.methods import get_angle_between
+    from tmd.Tree.methods import get_branch_order
+    from tmd.Tree.methods import get_parent_child_angles
+
 
     def __init__(self, x=_np.array([]), y=_np.array([]), z=_np.array([]),
                  d=_np.array([]), t=_np.array([]), p=_np.array([])):

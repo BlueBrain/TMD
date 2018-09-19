@@ -109,7 +109,7 @@ def get_persistence_diagram_rotation(tree, feature='radial_distances', **kwargs)
     return ph_rot
 
 
-def phi_theta(u, v):
+def _phi_theta(u, v):
     """Computes the angles between vectors u, v
     in the plane x-y (phi angle) and the plane x-z (theta angle).
     Returns phi, theta
@@ -126,35 +126,42 @@ def phi_theta(u, v):
     return delta_phi, delta_theta  # dphi, dtheta
 
 
+def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
+    '''Computes the x-y and x-z angles between parent
+       and children within the given tree.
+    '''
+
+    dirP = tree.get_direction_between(start_id=parID, end_id=parEND)
+    dirU = tree.get_direction_between(start_id=parEND, end_id=ch1ID)
+    dirV = tree.get_direction_between(start_id=parEND, end_id=ch2ID)
+
+    phi1, theta1 = _phi_theta(dirP, dirU)
+    phi2, theta2 = _phi_theta(dirP, dirV)
+
+    if np.abs(phi1) < np.abs(phi2):
+        dphi = phi1
+        dtheta = theta1
+        delta_phi, delta_theta = _phi_theta(dirU, dirV)
+    else:
+        dphi = phi2
+        dtheta = theta2
+        delta_phi, delta_theta = _phi_theta(dirV, dirU)
+
+    return [dphi, dtheta, delta_phi, delta_theta]
+
+
+
 def get_angles(tree, beg, parents, children):
     """Returns the angles between all the triplets (parent, child1, child2)
     of the tree"""
-
-    angles = [[0, 0, 0, 0], ]
+    angles = [[0, 0, 0, 0], ] # Null angle for non bif point
 
     for b in beg[1:]:
 
-        dirP = tree.get_direction_between(start_id=parents[b], end_id=b)
-
-        dirU = tree.get_direction_between(start_id=b,
-                                          end_id=children[b][0])
-
-        dirV = tree.get_direction_between(start_id=b,
-                                          end_id=children[b][1])
-
-        phi1, theta1 = phi_theta(dirP, dirU)
-        phi2, theta2 = phi_theta(dirP, dirV)
-
-        if np.abs(phi1) < np.abs(phi2):
-            dphi = phi1
-            dtheta = theta1
-            delta_phi, delta_theta = phi_theta(dirU, dirV)
-        else:
-            dphi = phi2
-            dtheta = theta2
-            delta_phi, delta_theta = phi_theta(dirV, dirU)
-
-        angles.append([dphi, dtheta, delta_phi, delta_theta])
+        angleBetween = _angles_tree(tree, parID=parents[b], parEND=b,
+                                    ch1ID=children[b][0],
+                                    ch2ID=children[b][1])
+        angles.append(angleBetween)
 
     return angles
 

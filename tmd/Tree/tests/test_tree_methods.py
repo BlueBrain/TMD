@@ -140,11 +140,11 @@ def test_get_sections_2():
     nt.ok_(np.allclose(secs[1], secs_h5_end))
 
 
-def test_get_sections_points():
-    secs = tree.get_sections_points()
+def test_get_sections__only_points():
+    secs = tree.get_sections_only_points()
     nt.ok_(np.allclose(secs[0], np.array([0, 2, 4])))
     nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
-    secs = tree_h5.get_sections_points()
+    secs = tree_h5.get_sections_only_points()
     nt.ok_(np.allclose(secs[0], secs_h5_beg_points))
     nt.ok_(np.allclose(secs[1], secs_h5_end_points))
 
