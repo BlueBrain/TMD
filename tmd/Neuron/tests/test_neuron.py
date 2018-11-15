@@ -17,7 +17,7 @@ axon_test = Tree.Tree(x=np.array([ 3.]), y=np.array([4.]), z=np.array([5.]),
 
 neu_test = Neuron.Neuron()
 neu_test.set_soma(soma_test)
-neu_test.append_tree(apical_test, td)
+neu_test.append_tree(apical_test)
 
 def test_neuron_init_():
     neu1 = Neuron.Neuron()
@@ -44,21 +44,21 @@ def test_copy_neuron():
 def test_neuron_is_equal():
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
-    neu1.append_tree(apical_test, td)
+    neu1.append_tree(apical_test)
     nt.ok_(neu1.is_equal(neu_test))
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test1)
-    neu1.append_tree(apical_test, td)
+    neu1.append_tree(apical_test)
     nt.ok_(not neu1.is_equal(neu_test))
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
-    neu1.append_tree(basal_test, td)
+    neu1.append_tree(basal_test)
     nt.ok_(not neu1.is_equal(neu_test))
 
 def test_neuron_is_same():
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
-    neu1.append_tree(apical_test, td)
+    neu1.append_tree(apical_test)
     nt.ok_(neu1.is_same(neu_test))
     neu1.name = 'test_not_same'
     nt.ok_(not neu1.is_same(neu_test))
@@ -70,10 +70,10 @@ def test_neuron_set_soma():
 
 def test_append_tree():
     neu1 = Neuron.Neuron()
-    neu1.append_tree(apical_test, td)
+    neu1.append_tree(apical_test)
     nt.ok_(len(neu1.neurites) == 1)
-    neu1.append_tree(basal_test, td)
-    neu1.append_tree(axon_test, td)
+    neu1.append_tree(basal_test)
+    neu1.append_tree(axon_test)
     nt.ok_(len(neu1.neurites) == 3)
     nt.ok_(len(neu1.basal) == 1)
     nt.ok_(len(neu1.axon) == 1)

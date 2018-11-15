@@ -18,6 +18,7 @@ config = {
         'numpy>=1.8.0',
         'scikit-learn>=0.19.1',
         'munkres>=1.0.12',
+        'morphio>=2.0.7',
     ],
     'extras_require': {
                        'viewer': ['matplotlib>=1.3.1',],

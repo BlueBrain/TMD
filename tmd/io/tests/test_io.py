@@ -88,7 +88,7 @@ def test_load_population():
     population = io.load_population(POP_PATH)
     nt.ok_(len(population.neurons) == 5)
     names = np.array([os.path.basename(n.name) for n in population.neurons])
-    
+
     L = glob.glob(POP_PATH + '/*')
     population1 = io.load_population(L)
     nt.ok_(len(population.neurons) == 5)

@@ -49,7 +49,7 @@ class Neuron(object):
         if isinstance(new_soma, Soma.Soma):
             self.soma = new_soma
 
-    def append_tree(self, new_tree, td):
+    def append_tree(self, new_tree):
         """
         If type of object is tree
         this function finds the type of tree
@@ -58,10 +58,9 @@ class Neuron(object):
         """
         from tmd.Tree import Tree
         import numpy as np
-        # from tmd.utils import tree_type as td
+        from tmd.utils import tree_type as td
 
         if isinstance(new_tree, Tree.Tree):
-
             if int(np.median(new_tree.t)) in td.keys():
                 tree_type = td[int(np.median(new_tree.t))]
             else:
@@ -101,13 +100,11 @@ class Neuron(object):
         '''Creates a copy of itself and simplifies all trees
            to create a skeleton of the neuron
         '''
-        from tmd.utils import tree_type as td
-
         neu = Neuron()
         neu.soma = self.soma.copy_soma()
 
         for tr in self.neurites:
             t = tr.extract_simplified()
-            neu.append_tree(t, td)
+            neu.append_tree(t)
 
         return neu
