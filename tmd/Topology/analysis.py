@@ -268,22 +268,31 @@ def transform_from_length(ph, keep_side='end'):
 
 # pylint: disable=unused-argument
 def average_image(ph_list, xlims=None, ylims=None,
-                  norm_factor=None, **kwargs):
-    '''Plots the gaussian kernel of a population of cells
-       as an average of the ph diagrams that are given.
-    '''
-    imgs_list = [persistence_image_data(p, norm_factor=norm_factor,
-                                        xlims=xlims, ylims=ylims)
-                 for p in ph_list]
-
-    average_imgs = imgs_list[0]
-
-    for im in imgs_list[1:]:
-        average_imgs = np.add(average_imgs, im)
-
-    average_imgs = average_imgs / len(imgs_list)
-
-    return average_imgs
+                   norm_factor=None, **kwargs):
+     '''Plots the gaussian kernel of a population of cells
+        as an average of the ph diagrams that are given.
+     '''
+     from tmd import analysis as an
+     
+     im_av = False
+     k = 1
+     
+     for i,p in enumerate(ph_list):
+         if type(im_av) != np.ndarray:
+             try:
+                 im_av = an.persistence_image_data(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims)
+             except:
+                 pass
+         else:
+             try:
+                 im = an.persistence_image_data(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims)
+                 if not np.isnan(np.sum(im)):
+                     im_av = np.add(im_av, im)
+                     k = k + 1
+             except:
+                 pass
+ 
+     return im_av / k
 
 
 def _marriage_problem(women_preferences, men_preferences):

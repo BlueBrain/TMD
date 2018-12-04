@@ -210,7 +210,7 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
 
                 rd[p] = rd[mx_id]
 
-    ph.append([rd[np.where(active)[0][0]], 0, None, None, None, None])
+    ph.append([rd[np.where(active)[0][0]], 0, np.nan, np.nan, np.nan, np.nan])
 
     return ph
 
@@ -262,6 +262,55 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
 
     ph.append([rd[np.where(active)[0][0]], 0, radii[beg[0]]])  # Add the last alive component
 
+    return ph
+
+
+def get_ph_branchorder(tree, feature='radial_distances', **kwargs):
+    """Returns the ph diagram enhanced with the corresponding encoded radii"""
+    ph = []
+
+    rd = getattr(tree, 'get_point_' + feature)(**kwargs)
+    bo = tree.get_point_section_branch_orders()
+
+    active = tree.get_bif_term() == 0
+
+    beg, end = tree.get_sections_2()
+
+    beg = np.array(beg)
+    end = np.array(end)
+
+    parents = {e: b for b, e in zip(beg, end)}
+    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
+
+    bos = tree.get_section_branch_orders()
+    #bos = np.array(get_section_branchorder(tree, beg, end))
+
+    while len(np.where(active)[0]) > 1:
+        alive = list(np.where(active)[0])
+        for l in alive:
+
+            p = parents[l]
+            c = children[p]
+
+            if np.alltrue(active[c]):
+                active[p] = True
+                active[c] = False
+
+                mx = np.argmax(abs(rd[c]))
+                mx_id = c[mx]
+
+                c = np.delete(c, mx)
+
+                for ci in c:
+                    bosID = np.array(bos)[np.where(beg == p)[0][0]]
+                    #print(np.array(bos)[np.where(beg == p)[0][0]], np.array(bos)[np.where(end == p)[0][0]])
+                    ph.append([rd[ci], rd[p], bo[p]])
+
+                rd[p] = rd[mx_id]
+                #print(bo[p], bo[mx_id])
+                bo[p] = bo[mx_id]
+
+    ph.append([rd[np.where(active)[0][0]], 0, bo[np.where(active)[0][0]]]) # Add the last alive component
     return ph
 
 

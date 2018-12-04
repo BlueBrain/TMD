@@ -11,6 +11,7 @@ class Neuron(object):
     from tmd.Neuron.methods import size
     from tmd.Neuron.methods import get_section_lengths
     from tmd.Neuron.methods import get_bounding_box
+    from tmd.Neuron.methods import simplify
 
     def __init__(self, name='Neuron'):
         '''Creates an empty Neuron object.
@@ -73,7 +74,6 @@ class Neuron(object):
         """
         Returns a deep copy of the Neuron.
         """
-
         import copy
 
         return copy.deepcopy(self)

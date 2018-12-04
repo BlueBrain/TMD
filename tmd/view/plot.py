@@ -71,7 +71,77 @@ def barcode(ph, new_fig=True, subplot=False, color='b', linewidth=1.2, **kwargs)
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
+def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2, valID=2, cmap=_cm.plt.cm.jet, **kwargs):
+    """
+    Generates a 2d figure (barcode) of the persistent homology
+    of a tree as it has been computed by
+    Topology.get_persistent_homology method.
+
+    Parameters
+    ----------
+    ph: 2d array
+        persistent homology array enhanced with radii values
+
+    Options
+    -------
+    color: str or None
+        Defines the color of the barcode.
+        Default value is 'red'.
+
+    new_fig: boolean
+        Defines if the tree will be plotted
+        in the current figure (False)
+        or in a new figure (True)
+        Default value is True.
+
+    subplot: matplotlib subplot value or False
+        If False the default subplot 111 will be used.
+        For any other value a matplotlib subplot
+        will be generated.
+        Default value is False.
+
+    Returns
+    --------
+    A 2D matplotlib figure with a barcode.
+
+    """
+    # Initialization of matplotlib figure and axes.
+    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
+    val_max = _np.max(ph, axis=0)[valID]
+
+    # Hach for colorbar creation
+    Z = [[0,0],[0,0]]
+    levels = _np.linspace(0.0,val_max,200)
+    CS3 = _cm.plt.contourf(Z, levels, cmap=cmap)
+
+    def _sort_ph_enhanced(ph, valID):
+        """
+        Sorts barcode according to length.
+        """
+        ph_sort = []
+
+        for ip, p in enumerate(ph):
+            ph_sort.append(p[:valID+1] + [_np.abs(p[0] - p[1])])
+        ph_sort.sort(key=lambda x: x[valID+1])
+
+        return ph_sort
+
+    ph_sort = _sort_ph_enhanced(ph, valID)
+
+    for ip, p in enumerate(ph_sort):
+        ax.plot(p[:2], [ip, ip], c=cmap(p[valID]/val_max), linewidth=linewidth)
+
+    kwargs['title'] = kwargs.get('title', 'Barcode of p.h.')
+    kwargs['xlabel'] = kwargs.get('xlabel', 'Lifetime')
+
+    _cm.plt.ylim([-1, len(ph_sort)])
+
+    _cm.plt.colorbar(CS3)
+
+    return _cm.plot_style(fig=fig, ax=ax, **kwargs)
+
+
+def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, edgecolors='black', s=30, **kwargs):
     """
     Generates a 2d figure (ph diagram) of the persistent homology
     of a tree as it has been computed by
@@ -110,12 +180,9 @@ def ph_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, **kwargs):
 
     bounds_max = _np.max(_np.max(ph))
     bounds_min = _np.min(_np.min(ph))
-
-    for p in ph:
-
-        ax.scatter(p[0], p[1], c=color, edgecolors='black', alpha=alpha)
-
     _cm.plt.plot([bounds_min, bounds_max], [bounds_min, bounds_max], c='black')
+
+    ax.scatter(_np.array(ph)[:,0], _np.array(ph)[:,1], c=color, alpha=alpha, edgecolors=edgecolors, s=s)
 
     kwargs['title'] = kwargs.get('title', 'Persistence diagram')
     kwargs['xlabel'] = kwargs.get('xlabel', 'End radial distance from soma')
@@ -390,7 +457,7 @@ def start_length_plot(ph, direction=False, new_fig=True, subplot=False, color='b
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None,
+def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None, colorbar=False,
                    cmap=_cm.plt.cm.jet, vmin=None, vmax=None, masked=False, threshold=0.01):
     '''Plots the gaussian kernel of the input image.
     '''
@@ -418,7 +485,8 @@ def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=N
     kwargs['ylim'] = ylims
     kwargs['title'] = title
 
-    #_cm.plt.colorbar(cax)
+    if colorbar:
+        _cm.plt.colorbar(cax)
 
     ax.set_aspect('equal')
 

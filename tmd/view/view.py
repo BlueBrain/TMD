@@ -398,7 +398,7 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,  **kwa
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type='all', rotation=None, **kwargs):
+def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type='all', rotation=None, nosoma=False, **kwargs):
     '''Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
@@ -476,7 +476,8 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neu
     kwargs['new_fig'] = False
     kwargs['subplot'] = subplot
 
-    soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
+    if not nosoma:
+        soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
     h = []
     v = []
@@ -1317,7 +1318,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
     d = []
 
     for nrn in pop.neurons:
-        soma3d(nrn.soma, **kwargs)
+        #soma3d(nrn.soma, **kwargs)
 
         for temp_tree in nrn.neurites:
 
@@ -1332,7 +1333,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
             tree3d(temp_tree, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', 'Neuron view')
+    kwargs['title'] = kwargs.get('title', '')
     white_space = _get_default('white_space', **kwargs)
     kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space,
                                          _np.max(h) + white_space])
@@ -1347,7 +1348,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
 def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
                         neurite_type='all', bins=100, plane='xy',
                         color_map=_cm.plt.cm.Blues, alpha=0.8,
-                        centered=True, **kwargs):
+                        centered=True, colorbar=True, **kwargs):
     """
     View the neuron morphologies of a population as a density cloud.
     """
@@ -1386,9 +1387,10 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
                         _np.transpose(H2), cmap=color_map,
                         alhpa=alpha)
 
-    cbar = _cm.plt.colorbar(plots)
+    if colorbar:
+        cbar = _cm.plt.colorbar(plots)
 
-    soma(neu.soma, new_fig=False)
+    #soma(neu.soma, new_fig=False)
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
