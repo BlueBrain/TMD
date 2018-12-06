@@ -88,14 +88,26 @@ def img_diff_data(Z1, Z2, norm=True):
     """Takes as input two images
        as exported from the gaussian kernel
        plotting function, and returns
-       their absolute difference:
-       diff(abs(Z1 - Z2))
+       their difference: diff(Z1 - Z2)
     """
     if norm:
         Z1 = Z1 / Z1.max()
         Z2 = Z2 / Z2.max()
 
     return Z1 - Z2
+
+
+def img_add_data(Z1, Z2, norm=True):
+    """Takes as input two images
+       as exported from the gaussian kernel
+       plotting function, and returns
+       their sum: add(Z1 - Z2)
+    """
+    if norm:
+        Z1 = Z1 / Z1.max()
+        Z2 = Z2 / Z2.max()
+
+    return Z1 + Z2
 
 
 def horizontal_hist(ph1, num_bins=100, min_bin=None, max_bin=None):
@@ -391,3 +403,25 @@ def matching_diagrams(p1, p2, plot=False, method='munkres',
     ssum = np.sum([D[i][j] for (i, j) in indices])
 
     return indices, ssum
+
+
+def find_apical_point_distance(ph):
+    '''
+    Finds the apical distance (measured in radial distance from soma)
+    based on the variation of the barcode.
+    '''
+    n_bins, counts = horizontal_hist(ph, num_bins=3*len(ph))
+    der1 = counts[1:] - counts[:-1] # first derivative
+    der2 = der1[1:] - der1[:-1] # second derivative
+    # Find all points that take minimum value, and have first derivative zero == no variation
+    inters = np.intersect1d(np.where(counts == min(counts))[0], np.where(der1 == 0)[0])
+    # Find all points that are also below a positive second derivative
+    # The definition of how positive the second derivative should be is arbitrary,
+    # but it is the only value that works nicely for cortical cells
+    best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100 )[0]))]
+
+    if len(best_all) > 0:
+        return n_bins[np.max(best_all)]
+    else:
+        return 0.0
+
