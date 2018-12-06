@@ -110,10 +110,11 @@ def img_add_data(Z1, Z2, norm=True):
     return Z1 + Z2
 
 
-def horizontal_hist(ph1, num_bins=100, min_bin=None, max_bin=None):
+def horizontal_hist(ph, num_bins=100, min_bin=None, max_bin=None):
     """Calculate how many barcode lines are found in each bin.
     """
     import math
+    ph1 = [p[:2] for p in ph] # simplify to ensure ph corresponds to 2d barcode
 
     if min_bin is None:
         min_bin = np.min(ph1)
