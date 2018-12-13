@@ -175,7 +175,7 @@ def get_point_path_distances(self):
 
     def path_length(seg_id):
         '''Returns path length of segment'''
-        return sum([seg_len[i] for i in get_way_to_root(tree, seg_id)[1:]])
+        return sum([seg_len[i] for i in get_way_to_root(self, seg_id)[1:]])
 
     return _np.array([path_length(i) for i in range(size(self))])
 
@@ -195,14 +195,14 @@ def get_point_section_lengths(self):
 
 def get_branch_order(tree, seg_id):
     '''Returns branch order of segment'''
-    B = self.get_multifurcations()
+    B = tree.get_multifurcations()
     return sum([1 if i in B else 0 for i in get_way_to_root(tree, seg_id)])
 
 
 def get_point_section_branch_orders(self):
     '''Tree method to get section lengths.
     '''
-    return _np.array([get_branch_order(tree, i) for i in range(size(self))])
+    return _np.array([get_branch_order(self, i) for i in range(size(self))])
 
 
 def get_point_projection(self, vect=(0, 1, 0), point=None):
