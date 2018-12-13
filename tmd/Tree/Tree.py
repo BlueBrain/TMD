@@ -6,19 +6,14 @@ tmd class : Tree
 class Tree(object):
     '''Tree class'''
     import numpy as _np
-    from tmd.Tree.methods import size
-    from tmd.Tree.methods import get_sections
     from tmd.Tree.methods import get_sections_2
     from tmd.Tree.methods import get_sections_only_points
-    from tmd.Tree.methods import get_section_points
-    from tmd.Tree.methods import get_section_number
-    from tmd.Tree.methods import get_section_lengths
-    from tmd.Tree.methods import get_section_radial_distances
-    from tmd.Tree.methods import get_section_path_distances
-    from tmd.Tree.methods import get_section_branch_orders
-    from tmd.Tree.methods import get_section_start
-    from tmd.Tree.methods import get_segment_lengths
-    from tmd.Tree.methods import get_segment_radial_distances
+    from tmd.Tree.methods import get_segments
+    from tmd.Tree.methods import get_bounding_box
+    from tmd.Tree.methods import get_pca
+    from tmd.Tree.methods import extract_simplified
+    from tmd.Tree.methods import get_type
+    from tmd.Tree.methods import get_direction_between
     from tmd.Tree.methods import get_point_radial_distances
     from tmd.Tree.methods import get_point_radial_distances_time
     from tmd.Tree.methods import get_point_weighted_radial_distances
@@ -27,25 +22,9 @@ class Tree(object):
     from tmd.Tree.methods import get_point_section_lengths
     from tmd.Tree.methods import get_point_section_branch_orders
     from tmd.Tree.methods import get_bif_term
-    from tmd.Tree.methods import get_trunk
     from tmd.Tree.methods import get_bifurcations
     from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
-    from tmd.Tree.methods import get_way_to_root
-    from tmd.Tree.methods import get_way_to_section_end
-    from tmd.Tree.methods import get_way_to_section_start
-    from tmd.Tree.methods import get_bounding_box
-    from tmd.Tree.methods import get_segments
-    from tmd.Tree.methods import get_type
-    from tmd.Tree.methods import get_children
-    from tmd.Tree.methods import get_bif_angles
-    from tmd.Tree.methods import get_direction
-    from tmd.Tree.methods import get_direction_between
-    from tmd.Tree.methods import get_pca
-    from tmd.Tree.methods import extract_simplified
-    from tmd.Tree.methods import get_angle_between
-    from tmd.Tree.methods import get_branch_order
-    from tmd.Tree.methods import get_parent_child_angles
 
 
     def __init__(self, x=_np.array([]), y=_np.array([]), z=_np.array([]),
@@ -56,19 +35,14 @@ class Tree(object):
         ----------
         x : numpy array
             The x-coordinates of neuron's tree segments.
-
         y : numpy array
             The y-coordinates of neuron's tree segments.
-
         z : numpy array
             The z-coordinate of neuron's tree segments.
-
         d : numpy array
             The diameters of neuron's tree segments.
-
         t : numpy array
             The types (basal, apical, axon) of neuron's tree segments.
-
         p : numpy array
             The index of the parent of neuron's tree segments.
 

@@ -63,18 +63,13 @@ def test_rd():
 
 
 def test_size():
-    nt.ok_(tree0.size() == 31.)
-    nt.ok_(tree1.size() == 21.)
+    nt.ok_(methods.size(tree0) == 31.)
+    nt.ok_(methods.size(tree1) == 21.)
 
 
 def test_get_type():
     nt.ok_(tree0.get_type() == 2)
     nt.ok_(tree1.get_type() == 3)
-
-
-def test_get_trunk():
-    nt.ok_(tree0.get_trunk() == 0)
-    nt.ok_(tree1.get_trunk() == 0)
 
 
 def test_get_bounding_box():
@@ -84,7 +79,6 @@ def test_get_bounding_box():
     nt.ok_(np.allclose(tree1.get_bounding_box(),
                        np.array([[-5.,  0., 0.],
                                  [5., 10., 0.]])))
-
 
 def test_get_segments():
     seg0 = tree0.get_segments()
@@ -101,35 +95,13 @@ def test_get_segments():
                              np.array([[1.,  2.,  3.],
                                        [4.,  5.,  6.]])]))
 
-
-def test_get_segment_lengths():
-    sl = tree.get_segment_lengths()
-    nt.ok_(np.allclose(sl, np.array([3.74165739, 1.73205081, 1.73205081, 5.19615242])))
-
-
-def test_get_segment_radial_dist():
-    rds = tree.get_segment_radial_distances()
-    nt.ok_(np.allclose(rds, np.array([3.74165739, 5.38516481, 7.07106781, 8.77496439])))
-
-
 def test_get_point_radial_dist():
     prds = tree.get_point_radial_distances()
     nt.ok_(np.allclose(prds, np.array([0., 3.74165739, 5.38516481, 7.07106781, 8.77496439])))
 
-# def test_get_point_weighted_radial_dist():
-#    prds = tree.get_point_weighted_radial_distances(w=(1, 1, 1), normed=False)
-#    nt.ok_(np.allclose(prds, np.array([ 0., 3.74165739, 5.38516481, 7.07106781, 8.77496439])))
-
-
 def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
     nt.ok_(np.allclose(pds, np.array([0., 5.19615242, 8.93780981, 10.66986062, 8.93780981])))
-
-
-def test_get_sections():
-    secs = tree.get_sections()
-    nt.ok_(np.allclose(secs, np.array([[0, 1, 1], [1, 3, 4]])))
-
 
 def test_get_sections_2():
     secs = tree.get_sections_2()
@@ -139,8 +111,7 @@ def test_get_sections_2():
     nt.ok_(np.allclose(secs[0], secs_h5_beg))
     nt.ok_(np.allclose(secs[1], secs_h5_end))
 
-
-def test_get_sections__only_points():
+def test_get_sections_only_points():
     secs = tree.get_sections_only_points()
     nt.ok_(np.allclose(secs[0], np.array([0, 2, 4])))
     nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
@@ -148,55 +119,14 @@ def test_get_sections__only_points():
     nt.ok_(np.allclose(secs[0], secs_h5_beg_points))
     nt.ok_(np.allclose(secs[1], secs_h5_end_points))
 
-
-def test_get_section_number():
-    nt.ok_(tree.get_section_number() == 3)
-    nt.ok_(tree0.get_section_number() == 5)
-    nt.ok_(tree1.get_section_number() == 3)
-
-
-def test_get_section_lengths():
-    nt.ok_(np.allclose(tree1.get_section_lengths(), np.array([10.00, 4.00, 4.00])))
-
-
-def test_get_section_radial_distances():
-    nt.ok_(np.allclose(tree.get_section_radial_distances(),
-                       np.array([3.74165739, 7.07106781, 8.77496439])))
-    nt.ok_(np.allclose(tree.get_section_radial_distances(
-        initial=True), np.array([0., 3.74165739, 3.74165739])))
-
-
-def test_get_section_path_distances():
-    pds = tree.get_section_path_distances()
-    nt.ok_(np.allclose(pds, np.array([3.74165739, 1.73205081, 1.73205081])))
-
-
 def test_get_bif_term():
     nt.ok_(np.allclose(tree.get_bif_term(), np.array([1.,  2.,  1.,  0.,  0.])))
-
 
 def test_get_bifurcations():
     nt.ok_(np.allclose(tree.get_bifurcations(), np.array([1])))
 
-
 def test_get_terminations():
     nt.ok_(np.allclose(tree.get_terminations(), np.array([3, 4])))
 
-
-def test_get_children():
-    nt.ok_(np.allclose(tree.get_children(), np.array([1])))
-    nt.ok_(np.allclose(tree.get_children(sec_id=1), np.array([2, 4])))
-    nt.ok_(np.allclose(tree.get_children(sec_id=2), np.array([3])))
-    nt.ok_(np.allclose(tree.get_children(sec_id=3), np.array([])))
-
-
 def test_get_way_to_root():
-    nt.ok_(np.allclose(tree.get_way_to_root(), np.array([-1])))
-
-
-def test_get_way_to_section_end():
-    nt.ok_(np.allclose(tree.get_way_to_section_end(), np.array([0, 1])))
-
-
-def test_get_way_to_section_start():
-    nt.ok_(np.allclose(tree.get_way_to_section_start(), np.array([0, -1])))
+    nt.ok_(np.allclose(methods.get_way_to_root(tree), np.array([-1])))
