@@ -19,24 +19,13 @@ class Soma(object):
         ----------
         x : numpy array
             The x-coordinates of surface trace of neuron soma.
-
         y : numpy array
             The y-coordinates of surface trace of neuron soma.
-
         z : numpy array
             The z-coordinate of surface trace of neuron soma.
-
         d : numpy array
             The diameters of surface trace of neuron soma.
-
-        Returns
-        -------
-        soma : Soma
-            tmd Soma object
-
-        Reference
-        ---------
-
+        ----------
         """
         import numpy as np
 
@@ -49,9 +38,7 @@ class Soma(object):
         """
         Returns a deep copy of the Soma.
         """
-
         import copy
-
         return copy.deepcopy(self)
 
     def is_equal(self, soma):

@@ -64,12 +64,6 @@ p2 = np.array([-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 1
 tree1 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
 
 
-def test_get_graph():
-    tt0 = methods.get_graph(tree0)
-    tt1 = methods.get_graph(tree1)
-    nt.ok_(tt0 == OrderedDict([(0, [10]), (10, [15, 20]), (20, [25, 30])]))
-    nt.ok_(tt1 == OrderedDict([(0, [10]), (10, [15, 20])]))
-
 def test_get_persistence_diagram():
     ph0 = methods.get_persistence_diagram(tree0)
     ph1 = methods.get_persistence_diagram(tree1)

@@ -2,45 +2,16 @@
 tmd Neuron's methods
 '''
 
-
 def size(self, neurite_type='all'):
     """
     Neuron method to get size.
     """
     if neurite_type == 'all':
         neurite_list = ['basal', 'axon', 'apical']
-    else:
-        neurite_list = list([neurite_type])
 
-    s = 0
-
-    for neu in neurite_list:
-
-        s = s + len(getattr(self, neu))
+    s = np.sum([len(getattr(self, neu)) for neu in neurite_list])
 
     return int(s)
-
-
-def get_section_lengths(self, neurite_type='all'):
-    """
-    Neuron method to get section lengths.
-    """
-    import numpy as np
-
-    if neurite_type == 'all':
-        neurite_list = ['basal', 'axon', 'apical']
-    else:
-        neurite_list = list([neurite_type])
-
-    lengths = []
-
-    for neu in neurite_list:
-
-        for tree in getattr(self, neu):
-
-            lengths = lengths + list(tree.get_section_lengths())
-
-    return np.array(lengths)
 
 
 def get_bounding_box(self):

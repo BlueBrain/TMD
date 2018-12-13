@@ -208,8 +208,6 @@ def save_plot(fig, **kwargs):
 
     plt.savefig(output, dpi=dpi, transparent=transparent)
 
-    #print 'Plot Saved:', output
-
     return fig
 
 
@@ -793,3 +791,36 @@ def plot_sphere(fig, ax, center, radius, color='black', alpha=1.):
     ax.plot_surface(x, y, z, linewidth=0.0, color=color, alpha=alpha)
 
     return fig, ax
+
+
+def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None, colorbar=False,
+                   cmap=plt.cm.jet, vmin=None, vmax=None, masked=False, threshold=0.01, **kwargs):
+    '''Plots the gaussian kernel of the input image.
+    '''
+    if xlims is None:
+        xlims = (0,100)
+    if ylims is None:
+        ylims = (0,100)
+
+    if vmin is None:
+        vmin = _np.min(img)
+    if vmax is None:
+        vmax = _np.max(img)
+
+    fig, ax = get_figure(new_fig=new_fig, subplot=subplot)
+
+    if masked:
+        img = _np.ma.masked_where((threshold > _np.abs(img)), img)
+
+    cax = ax.imshow(_np.rot90(img), vmin=vmin, vmax=vmax, cmap=cmap,
+                    interpolation='bilinear', extent=xlims+ylims)
+
+    kwargs['xlim'] = xlims
+    kwargs['ylim'] = ylims
+    kwargs['title'] = title
+
+    if colorbar:
+        plt.colorbar(cax)
+    ax.set_aspect('equal')
+
+    return plot_style(fig=fig, ax=ax, aspect='equal', **kwargs)

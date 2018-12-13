@@ -1,17 +1,7 @@
 '''
 tmd Topology algorithms implementation
 '''
-from __future__ import print_function
-
 import numpy as np
-
-
-def sort_ph(ph):
-    '''Sorts the persistence diagram
-    so that birth is always before death.
-    '''
-    for i in ph:
-        i.sort()
 
 
 def write_ph(ph, output_file='test.txt'):
@@ -21,29 +11,9 @@ def write_ph(ph, output_file='test.txt'):
     wfile = open(output_file, 'w')
 
     for p in ph:
-
         wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
 
     wfile.close()
-
-
-def get_graph(tree):
-    '''Generate tree graph'''
-    from collections import OrderedDict
-
-    graph = OrderedDict()
-
-    section_points = np.transpose(tree.get_sections())
-
-    for sp in section_points:
-
-        if sp[0] != sp[1]:
-            if sp[0] in graph.keys():
-                graph[sp[0]].append(sp[1])
-            else:
-                graph[sp[0]] = [sp[1]]
-
-    return graph
 
 
 def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
@@ -90,23 +60,6 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
     ph.append([rd[np.where(active)[0][0]], 0])  # Add the last alive component
 
     return ph
-
-
-def get_persistence_diagram_rotation(tree, feature='radial_distances', **kwargs):
-    '''Method to extract ph from tree that contains mutlifurcations'''
-
-    ph = get_persistence_diagram(tree, feature=feature, **kwargs)
-
-    tr_pca = tree.get_pca()
-
-    def rotation(x, y, angle=0.0):
-        '''Rotates coordinates x-y to the selected angle'''
-        return [np.cos(angle) * x - np.sin(angle) * y,
-                np.sin(angle) * x + np.cos(angle) * y]
-
-    ph_rot = [rotation(i[0], i[1], angle=np.arctan2(*tr_pca)) for i in ph]
-
-    return ph_rot
 
 
 def _phi_theta(u, v):
@@ -215,13 +168,12 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
     return ph
 
 
-def get_section_radii(tree, beg, end):
-    """Returns the mean radii of a section"""
-    return [np.mean(tree.d[beg[i]:end[i]]) for i in range(len(beg))]
-
-
 def get_ph_radii(tree, feature='radial_distances', **kwargs):
     """Returns the ph diagram enhanced with the corresponding encoded radii"""
+    def get_section_mean_radii(tree, beg, end):
+        """Returns the mean radii of a section"""
+        return [np.mean(tree.d[beg[i]:end[i]]) for i in range(len(beg))]
+
     ph = []
 
     rd = getattr(tree, 'get_point_' + feature)(**kwargs)
@@ -236,7 +188,7 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
     parents = {e: b for b, e in zip(beg, end)}
     children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
 
-    radii = get_section_radii(tree, beg, end)
+    radii = get_section_mean_radii(tree, beg, end)
 
     while len(np.where(active)[0]) > 1:
         alive = list(np.where(active)[0])
@@ -303,14 +255,13 @@ def get_ph_branchorder(tree, feature='radial_distances', **kwargs):
 
                 for ci in c:
                     bosID = np.array(bos)[np.where(beg == p)[0][0]]
-                    #print(np.array(bos)[np.where(beg == p)[0][0]], np.array(bos)[np.where(end == p)[0][0]])
                     ph.append([rd[ci], rd[p], bo[p]])
 
                 rd[p] = rd[mx_id]
-                #print(bo[p], bo[mx_id])
                 bo[p] = bo[mx_id]
 
     ph.append([rd[np.where(active)[0][0]], 0, bo[np.where(active)[0][0]]]) # Add the last alive component
+
     return ph
 
 
@@ -331,27 +282,9 @@ def get_ph_neuron(neuron, feature='radial_distances', neurite_type='all', **kwar
     return ph_all
 
 
-def get_ph_neuron_rot(neuron, feature='radial_distances', neurite_type='all', **kwargs):
-    '''Method to extract ph from a neuron that contains mutlifurcations'''
-
-    ph_all = []
-
-    if neurite_type == 'all':
-        neurite_list = ['basal', 'apical', 'axon']
-    else:
-        neurite_list = [neurite_type]
-
-    for t in neurite_list:
-        for tr in getattr(neuron, t):
-            ph_all = ph_all + get_persistence_diagram_rotation(tr, feature=feature, **kwargs)
-
-    return ph_all
-
-
 def extract_ph(tree, feature='radial_distances', output_file='test.txt',
                sort=False, **kwargs):
     '''Extracts persistent homology from tree'''
-
     ph = get_persistence_diagram(tree, feature=feature, **kwargs)
 
     if sort:
@@ -359,13 +292,10 @@ def extract_ph(tree, feature='radial_distances', output_file='test.txt',
 
     write_ph(ph, output_file)
 
-    print('File ' + output_file + ' completed!')
-
 
 def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
                       neurite_type='all', sort=False, **kwargs):
     '''Extracts persistent homology from tree'''
-
     ph = get_ph_neuron(neuron, feature=feature, neurite_type='all', **kwargs)
 
     if sort:
@@ -376,19 +306,14 @@ def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
 
     write_ph(ph, output_file)
 
-    print('File ' + output_file + ' completed!')
-
 
 def get_lifetime(tree, feature='point_radial_distances'):
     '''Returns the sequence of birth - death times for each section.
     This can be used as the first step for the approximation of P.H.
     of the radial distances of the neuronal branches.
     '''
-
     begs, ends = tree.get_sections()
-
     rd = getattr(tree, 'get_' + feature)()
-
     lifetime = np.array(len(begs) * [np.zeros(2)])
 
     for i, (beg, end) in enumerate(zip(begs, ends)):
@@ -402,9 +327,7 @@ def extract_connectivity_from_points(tree, threshold=1.0):
     import scipy.spatial as sp
 
     coords = np.transpose([tree.x, tree.y, tree.z])
-
     distances_matrix = sp.distance.cdist(coords, coords)
-
     mat = distances_matrix < threshold
 
     return mat

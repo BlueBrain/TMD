@@ -20,40 +20,6 @@ def _get_default(variable, **kwargs):
     return kwargs.get(variable, default[variable])
 
 
-
-def _get_polar_data(population, neurite_type='neurites', bins=20):
-    '''Extracts the data to plot the polar length distribution
-    of a neuron or a population of neurons.
-    '''
-
-    def seg_angle(seg):
-        '''mean x, y coordinates of a segment'''
-        mean_x = _np.mean([seg[0][0], seg[1][0]])
-        mean_y = _np.mean([seg[0][1], seg[1][1]])
-        return _np.arctan2(mean_y, mean_x)
-
-    segs = []
-    for tr in getattr(population, neurite_type):
-     segs = segs + tr.get_segments()
-
-    angles = _np.array([seg_angle(s) for s in segs])
-
-    lens = []
-    for tr in getattr(population, neurite_type):
-        lens = lens + tr.get_segment_lengths().tolist()
-    lens = _np.array(lens)
-
-    step = 2 * _np.pi / bins
-    ranges = [[i * step - _np.pi, (i + 1) * step - _np.pi] for i in xrange(bins)]
-
-    results = []
-
-    for r in ranges:
-        results.append(r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])])
-
-    return results
-
-
 def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10, **kwargs):
     '''Generates a 2d figure of the trunk = first N segments of the tree.
 
@@ -236,17 +202,6 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         with the diameter to define the width of the tree line.
         Default value is 1.
 
-    limits: list or boolean
-        List of type: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
-        If False the figure will not be scaled.
-        If True the figure will be scaled according to tree limits.
-        Default value is False.
-
-    white_space: float
-        Defines the white space around
-        the boundary box of the morphology.
-        Default value is 1.
-
     Returns
     --------
     A 2D matplotlib figure with a tree view, at the selected plane.
@@ -325,21 +280,6 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,  **kwa
         Accepted values: Any pair of of xyz
         Default value is 'xy'
 
-    linewidth: float
-        Defines the linewidth of the soma.
-        Default value is 1.2
-
-    alpha: float
-        Defines the transparency of the soma.
-        0.0 transparent through 1.0 opaque.
-        Default value is 0.8.
-
-    treecolor: str or None
-        Defines the color of the soma.
-        If None the default value will be used:
-        Soma : "black".
-        Default value is None.
-
     new_fig: boolean
         Defines if the tree will be plotted
         in the current figure (False)
@@ -350,12 +290,6 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,  **kwa
         If False the default subplot 111 will be used.
         For any other value a matplotlib subplot
         will be generated.
-        Default value is False.
-
-    limits: list or boolean
-        List of type: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
-        If False the figure will not be scaled.
-        If True the figure will be scaled according to tree limits.
         Default value is False.
 
     Returns
@@ -398,7 +332,8 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,  **kwa
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type='all', rotation=None, nosoma=False, **kwargs):
+def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
+           neurite_type='all', rotation=None, nosoma=False, **kwargs):
     '''Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
@@ -456,12 +391,6 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neu
         Defines the scale factor that will be multiplied
         with the diameter to define the width of the tree line.
         Default value is 1.
-
-    limits: list or boolean
-        List of type: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
-        If False the figure will not be scaled.
-        If True the figure will be scaled according to tree limits.
-        Default value is False.
 
     Returns
     --------
@@ -569,23 +498,6 @@ def all_trunks(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
         will be generated.
         Default value is False.
 
-    diameter: boolean
-        If True the diameter, scaled with diameter_scale factor,
-        will define the width of the tree lines.
-        If False use linewidth to select the width of the tree lines.
-        Default value is True.
-
-    diameter_scale: float
-        Defines the scale factor that will be multiplied
-        with the diameter to define the width of the tree line.
-        Default value is 1.
-
-    limits: list or boolean
-        List of type: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
-        If False the figure will not be scaled.
-        If True the figure will be scaled according to tree limits.
-        Default value is False.
-
     Returns
     --------
     A 3D matplotlib figure with a tree view, at the selected plane.
@@ -684,12 +596,6 @@ def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
         Defines the scale factor that will be multiplied
         with the diameter to define the width of the tree line.
         Default value is 1.
-
-    limits: list or boolean
-        List of type: [[xmin, ymin, zmin], [xmax, ymax, zmax]]
-        If False the figure will not be scaled.
-        If True the figure will be scaled according to tree limits.
-        Default value is False.
 
     Returns
     --------
@@ -1345,10 +1251,9 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
-                        neurite_type='all', bins=100, plane='xy',
-                        color_map=_cm.plt.cm.Blues, alpha=0.8,
-                        centered=True, colorbar=True, **kwargs):
+def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='all',
+                  bins=100, plane='xy', color_map=_cm.plt.cm.Blues, alpha=0.8,
+                  centered=True, colorbar=True, **kwargs):
     """
     View the neuron morphologies of a population as a density cloud.
     """
@@ -1395,8 +1300,38 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True,
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
+def _get_polar_data(population, neurite_type='neurites', bins=20):
+    '''Extracts the data to plot the polar length distribution
+    of a neuron or a population of neurons.
+    '''
+    def seg_angle(seg):
+        '''angle between mean x, y coordinates of a seg'''
+        mean_x = _np.mean([seg[0][0], seg[1][0]])
+        mean_y = _np.mean([seg[0][1], seg[1][1]])
+        return _np.arctan2(mean_y, mean_x)
+
+    def seg_length(seg):
+        '''compute the length of a seg'''
+        return _np.linalg.norm(_np.subtract(seg[1], seg[0]))
+
+    segs = []
+    for tr in getattr(population, neurite_type):
+        segs = segs + tr.get_segments()
+
+    angles = _np.array([seg_angle(s) for s in segs])
+    lens = _np.array([seg_length(s) for s in segs])
+
+    ranges = [[i * 2 * _np.pi / bins - _np.pi, (i + 1) * 2 * _np.pi / bins - _np.pi]
+              for i in xrange(bins)]
+    results = [r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])]
+               for r in ranges]
+
+    return results
+
+
 def polar_plot(population, neurite_type='neurites', bins=20):
     '''
+    Generates a polar plot of a neuron or population
     '''
     input_data = _get_polar_data(population, neurite_type=neurite_type, bins=bins)
 
@@ -1407,28 +1342,3 @@ def polar_plot(population, neurite_type='neurites', bins=20):
     radii = _np.array(input_data)[:,2] / _np.max(input_data)
     width = 2 * _np.pi / len(input_data)
     bars = ax.bar(theta, radii, width=width, bottom=0.0, alpha=0.8)
-
-
-def polar_plot_custom_color(population, bins=25, apical_color='purple', basal_color='r',
-                            edgecolor=None, alpha=0.8):
-    '''
-    '''
-    fig = _cm.plt.figure()
-    ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
-
-    input_data1 = _get_polar_data(population, neurite_type='basal', bins=bins)
-    input_data2 = _get_polar_data(population, neurite_type='apical', bins=bins)
-
-    maximum = _np.max(_np.array(input_data1)[:,2].tolist() + _np.array(input_data2)[:,2].tolist())
-
-    theta = _np.array(input_data1)[:,0]
-    radii = _np.array(input_data1)[:,2] / maximum
-    width = 2 * _np.pi / len(input_data1)
-    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
-                  bottom=0.0, alpha=alpha, color=basal_color)
-
-    theta = _np.array(input_data2)[:,0]
-    radii = _np.array(input_data2)[:,2] / maximum
-    width = 2 * _np.pi / len(input_data2)
-    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
-                  bottom=0.0, alpha=alpha, color=apical_color)

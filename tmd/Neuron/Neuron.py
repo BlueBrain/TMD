@@ -2,14 +2,12 @@
 tmd class : Neuron
 '''
 
-
 class Neuron(object):
     """
     A Neuron object is a container for Trees
     (basal, apical and axon) and a Soma.
     """
     from tmd.Neuron.methods import size
-    from tmd.Neuron.methods import get_section_lengths
     from tmd.Neuron.methods import get_bounding_box
     from tmd.Neuron.methods import simplify
 

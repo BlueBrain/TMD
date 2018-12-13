@@ -511,7 +511,6 @@ def get_angle_between(self, sec_id1, sec_id2):
     sec_id2: the start point of the section #2
     '''
     beg, end = self.get_sections_only_points()
-    print sec_id1, sec_id2
     b1 = _np.where(beg == sec_id1)[0][0]
     b2 = _np.where(beg == sec_id2)[0][0]
 

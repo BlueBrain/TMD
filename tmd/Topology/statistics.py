@@ -25,23 +25,41 @@ def get_lengths(ph):
     return np.array([np.abs(i[0] - i[1]) for i in ph])
 
 
-def get_apical_point(ph):
+def get_total_length(ph):
+    """Calculates the total length of a barcode
+       by summing the length of each bar. This should
+       be equivalent to the total length of the tree
+       if the barcode represents path distances.
     """
-    Experimental / untested function, not to be used yet.
-    Returns the apical point of the tree from the diagram
-    """
-    B = np.sort(get_bifurcations(ph))
+    return sum([np.abs(p[1] - p[0]) for p in ph])
 
-    # fig = plt.figure()
-    # plt.hist(B, bins=len(ph) / 4)
 
-    heights, bins = np.histogram(B, bins=len(ph) / 4)
-    empty_bins = np.where(heights == 0)[0]
-    consecutive_empty_bins = np.split(empty_bins, np.where(np.diff(empty_bins) != 1)[0] + 1)
-    max_separation = np.argmax([len(i) for i in consecutive_empty_bins])
-    separation = consecutive_empty_bins[max_separation][-1]
+def transform_ph_to_length(ph, keep_side='end'):
+    '''Transforms a persistence diagram into a
+    (start_point, length) equivalent diagram or a
+    (end, length) diagram depending on keep_side option.
+    Note: the direction of the diagram will be lost!
+    '''
+    if keep_side == 'start':
+        # keeps the start point and the length of the bar
+        return [[min(i), np.abs(i[1] - i[0])] for i in ph]
+    else:
+        # keeps the end point and the length of the bar
+        return [[max(i), np.abs(i[1] - i[0])] for i in ph]
 
-    return B[np.where(B > bins[separation + 1])[0][0]]
+
+def transform_ph_from_length(ph, keep_side='end'):
+    '''Transforms a persistence diagram into a
+    (start_point, length) equivalent diagram or a
+    (end, length) diagram depending on keep_side option.
+    Note: the direction of the diagram will be lost!
+    '''
+    if keep_side == 'start':
+        # keeps the start point and the length of the bar
+        return [[i[0], i[1] - i[0]] for i in ph]
+    else:
+        # keeps the end point and the length of the bar
+        return [[i[0] - i[1], i[0]] for i in ph]
 
 
 def nosify(var, noise=0.1):

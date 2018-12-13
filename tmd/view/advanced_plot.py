@@ -1,34 +1,18 @@
-"""Plotting functions of tmd"""
+"""Plotting functions of tmd (untested and more complex ploting)"""
 
 import numpy as _np
 from tmd import Topology as _tm
 import view as _view
 import common as _cm
+from tmd.analysis import sort_ph
 
-def _sort_ph(ph):
-    """
-    Sorts barcode according to length of bars.
-    """
-    ph_sort = []
-
-    for ip, p in enumerate(ph):
-        ph_sort.append([p[0], p[1], _np.abs(p[0] - p[1])])
-
-    ph_sort.sort(key=lambda x: x[2])
-
-    return ph_sort
 
 def _sort_ph_radii(ph):
     """
     Sorts barcode according to length of bars.
     """
-    ph_sort = []
-
-    for ip, p in enumerate(ph):
-        ph_sort.append([p[0], p[1], p[2], _np.abs(p[0] - p[1])])
-
+    ph_sort = [[p[0], p[1], p[2], _np.abs(p[0] - p[1])] for p in ph]
     ph_sort.sort(key=lambda x: x[3])
-
     return ph_sort
 
 
@@ -36,13 +20,8 @@ def _sort_ph_initial(ph):
     """
     Sorts barcode according to length of bars.
     """
-    ph_sort = []
-
-    for ip, p in enumerate(ph):
-        ph_sort.append([p[0], p[1], _np.abs(p[0] - p[1])])
-
+    ph_sort = [[p[0], p[1], p[2], _np.abs(p[0] - p[1])] for p in ph]
     ph_sort.sort(key=lambda x: x[2])
-
     return [p[:2] for p in ph_sort]
 
 
@@ -50,49 +29,89 @@ def _mirror_ph(ph):
     """
     Sorts barcode according to length of bars.
     """
-    ph_mirror = []
-
-    for ip, p in enumerate(ph):
-        ph_mirror.append([p[0], p[1], p[0] - p[1]])
-
+    ph_mirror = [[p[0], p[1], p[0] - p[1]] for p in ph]
     ph_mirror.sort(key=lambda x: x[2])
-
     return ph_mirror
+
+
+def tree_all(tree, plane='xy', feature='radial_distances', title='',
+             diameter=True, treecol='b', xlims=None, ylims=None, **kwargs):
+    '''Subplot with ph, barcode and tree
+    '''
+    from tmd import utils as _utils
+    from matplotlib.collections import LineCollection
+
+    kwargs['output_path'] = kwargs.get('output_path', None)
+
+    fig1, ax1 = _view.tree(tree, new_fig=True, subplot=221, plane='xy',
+                           title=title, treecolor=treecol, diameter=diameter)
+
+    feat = getattr(tree, 'get_section_' + feature)()
+    segs = tree.get_segments()
+
+    def _seg_2d(seg):
+        """2d coordinates required for the plotting of a segment"""
+
+        horz = _utils.term_dict[plane[0]]
+        vert = _utils.term_dict[plane[1]]
+
+        horz1 = seg[0][horz]
+        horz2 = seg[1][horz]
+        vert1 = seg[0][vert]
+        vert2 = seg[1][vert]
+
+        return ((horz1, vert1), (horz2, vert2))
+
+    if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
+        ph = _tm.methods.get_persistence_diagram(tree, feature=feature)
+    else:
+        raise Exception('Plane value not recognised')
+
+    bounds = max(max(ph))
+    fig1, ax2 = ph_diagram(ph, new_fig=False, subplot=222, color=treecol)
+    fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
+    fig1, ax4 = ph_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    _cm.plt.tight_layout(True)
+
+    if kwargs['output_path'] is not None:
+        fig = _cm.save_plot(fig=ax1, **kwargs)
+
+    return fig1, ax1
+
+
+def neu_all(neuron, plane='xy', feature='radial_distances', title='',
+            diameter=True, treecol='b', xlims=None, ylims=None, neurite_type='basal', **kwargs):
+    '''Subplot with ph, barcode
+       and tree within spheres
+    '''
+    from tmd import utils as _utils
+    from matplotlib.collections import LineCollection
+
+    kwargs['output_path'] = kwargs.get('output_path', None)
+
+    fig1, ax1 = _view.neuron(neuron, new_fig=True, subplot=221, plane='xy', neurite_type=[neurite_type],
+                             title=title, treecolor=treecol, diameter=diameter)
+
+    if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
+        ph = _tm.methods.get_ph_neuron(neuron, feature=feature, neurite_type=neurite_type)
+    else:
+        raise Exception('Plane value not recognised')
+
+    bounds = max(max(ph))
+    fig1, ax2 = ph_diagram(ph, new_fig=False, subplot=222, color=treecol)
+    fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
+    fig1, ax4 = ph_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    _cm.plt.tight_layout(True)
+
+    if kwargs['output_path'] is not None:
+        fig = _cm.save_plot(fig=ax1, **kwargs)
+
+    return fig1, ax1
 
 
 def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, **kwargs):
     """
     Generates a 2d figure (barcode) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
-
-    Parameters
-    ----------
-    ph: 2d array
-        persistent homology array enhanced with radii values
-
-    Options
-    -------
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 2D matplotlib figure with a barcode.
-
     """
     from pylab import cm
 
@@ -103,18 +122,15 @@ def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, 
     Z = [[0,0],[0,0]]
     levels = _np.linspace(0.0,diam_max,200)
     CS3 = _view.common.plt.contourf(Z, levels, cmap=cm.jet)
-
     ph_sort = sort_ph_radii(ph)
 
     for ip, p in enumerate(ph_sort):
-
         ax.plot(p[:2], [ip, ip], c=cm.jet(p[2]/diam_max), linewidth=linewidth)
 
     kwargs['title'] = kwargs.get('title', 'Barcode of p.h.')
     kwargs['xlabel'] = kwargs.get('xlabel', 'Lifetime')
 
     _view.common.plt.ylim([-1, len(ph_sort)])
-
     _view.common.plt.colorbar(CS3)
 
     return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
@@ -122,37 +138,7 @@ def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, 
 
 def barcode_mirror(ph, new_fig=True, subplot=False, color='b', **kwargs):
     """
-    Generates a 2d figure (barcode) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
-
-    Parameters
-    ----------
-    ph: 2d array
-        persistent homology array
-
-    Options
-    -------
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 2D matplotlib figure with a barcode.
-
+    Generates a mirrored 2d figure (barcode) of the persistent homology
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
@@ -160,7 +146,6 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color='b', **kwargs):
     ph_mirror = _mirror_ph(ph)
 
     for ip, p in enumerate(ph_mirror):
-
         if p[2] >= 0:
             ax.plot(p[:2], [ip, ip], c=color)
         if p[2] < 0:
@@ -168,7 +153,6 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color='b', **kwargs):
 
     kwargs['title'] = kwargs.get('title', 'Mirror Barcode of p.h.')
     kwargs['xlabel'] = kwargs.get('xlabel', 'Lifetime')
-
     _view.common.plt.ylim([-len(ph_mirror), len(ph_mirror)])
 
     return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
@@ -177,41 +161,11 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color='b', **kwargs):
 def ph_birth_length(ph, new_fig=True, subplot=False, color='b', **kwargs):
     """
     Generates a 2d figure (ph diagram) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
-
-    Parameters
-    ----------
-    ph: 2d array
-        persistent homology array
-
-    Options
-    -------
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 2D matplotlib figure with a barcode.
-
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
 
-    ph_sort = _sort_ph(ph)
+    ph_sort = sort_ph(ph)
 
     bounds = _np.max(_np.max(ph))
 
@@ -234,39 +188,6 @@ def ph_on_tree(tree, new_fig=True, subplot=False, plane='xy', alpha=0.05, **kwar
     the corresponding spheres that represent
     important events in the persistent homology
     diagram (birth and death of components).
-
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
-
-    Options
-    -------
-    linewidth: float
-        Defines the linewidth of the tree,
-        if diameter is set to False.
-        Default value is 1.2.
-
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 3D matplotlib figure of the tree.
-
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.tree(tree, new_fig=new_fig, subplot=subplot, plane=plane, **kwargs)
@@ -294,39 +215,6 @@ def barcode_tree(tree, new_fig=True, plane='xy', output_dir=None, **kwargs):
     Generates a 2d figure (barcode) of the persistent homology
     of a tree as it has been computed by
     Topology.get_persistent_homology method.
-
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
-
-    Options
-    -------
-    linewidth: float
-        Defines the linewidth of the tree,
-        if diameter is set to False.
-        Default value is 1.2.
-
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 2D matplotlib figure with a barcode.
-
     """
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
         ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
@@ -381,39 +269,6 @@ def ph_diagram_tree(tree, new_fig=True, plane='xy', output_dir=None, **kwargs):
     Generates a 2d figure (barcode) of the persistent homology
     of a tree as it has been computed by
     Topology.get_persistent_homology method.
-
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
-
-    Options
-    -------
-    linewidth: float
-        Defines the linewidth of the tree,
-        if diameter is set to False.
-        Default value is 1.2.
-
-    color: str or None
-        Defines the color of the barcode.
-        Default value is 'red'.
-
-    new_fig: boolean
-        Defines if the tree will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
-
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
-
-    Returns
-    --------
-    A 2D matplotlib figure with a barcode.
-
     """
     if plane in ['xy', 'yx', 'zx', 'xz', 'yz', 'zy']:
         ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
@@ -466,8 +321,7 @@ def ph_diagram_tree(tree, new_fig=True, plane='xy', output_dir=None, **kwargs):
 
 
 def tree_instance(tree, new_fig=True, plane='xy', component_num=1, feature='radial_distances', diameter=True, col='r', treecol='b', **kwargs):
-    '''Subplot with ph, barcode
-       and tree within spheres
+    '''Subplot with ph, barcode and tree within spheres
     '''
     from tmd import utils as _utils
     from matplotlib.collections import LineCollection
@@ -506,7 +360,7 @@ def tree_instance(tree, new_fig=True, plane='xy', component_num=1, feature='radi
         fig1, ax2 = _view.common.get_figure(new_fig=new_fig, subplot=222)
         fig1, ax3 = _view.common.get_figure(new_fig=new_fig, subplot=224)
 
-    ph = _sort_ph(ph)
+    ph = sort_ph(ph)
     select_section = ph[component_num]
 
     ax2.plot(select_section[:-1], [component_num, component_num], color=col, linewidth=2.)
@@ -529,19 +383,13 @@ def tree_instance(tree, new_fig=True, plane='xy', component_num=1, feature='radi
 
     collection = LineCollection(toplot_segs, color=col, linewidth=linewidth, alpha=1.)
     ax1.add_collection(collection)
-
-    #c1 = _view.common.plt.Circle([tree.x[0], tree.y[0]], select_section[0], color=col, alpha=0.1)
-    #c2 = _view.common.plt.Circle([tree.x[0], tree.y[0]], select_section[1], color=col, alpha=0.1)
-
-    #ax1.add_patch(c1) # pylint: disable=no-member
-    #ax1.add_patch(c2) # pylint: disable=no-member
-
     _view.common.plt.tight_layout(True)
 
     return ax1, collection
 
 
 def customized_cmap():
+    '''Returns a custom cmap'''
     import numpy as np
     import matplotlib.pyplot as plt
     import matplotlib.colors as mcolors
@@ -581,8 +429,7 @@ def customized_cmap():
 
 
 def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
-    '''Plots the gaussian kernel
-       of the ph diagram that is given.
+    '''Plots the gaussian kernel of the ph diagram that is given.
     '''
     from scipy import stats
     from numpy.random import multivariate_normal
@@ -598,8 +445,7 @@ def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
 
 
 def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, angle=0, **kwargs):
-    '''Plots the gaussian kernel
-       of the ph diagram that is given.
+    '''Plots the gaussian kernel of the ph diagram that is given.
     '''
     from scipy import stats
 
@@ -635,8 +481,7 @@ def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, a
 
 
 def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs):
-    '''Plots the gaussian kernel
-       of the ph diagram that is given.
+    '''Plots the gaussian kernel of the ph diagram that is given.
     '''
     from scipy import stats
     xmin = min(_np.transpose(ph)[0])
@@ -1156,3 +1001,28 @@ def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1='Asymmetry'):
 
         view.plot.barcode(phs[i], new_fig=False, subplot=(3,N,i+1+N) , title='', xlim=lims)
         view.plot.ph_image(phs[i], new_fig=False, subplot=(3,N,i+1+2*N) , title='', xlims=lims, ylims=lims)
+
+
+def polar_plot_custom_color(population, bins=25, apical_color='purple', basal_color='r',
+                            edgecolor=None, alpha=0.8):
+    '''
+    '''
+    fig = _cm.plt.figure()
+    ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
+
+    input_data1 = _get_polar_data(population, neurite_type='basal', bins=bins)
+    input_data2 = _get_polar_data(population, neurite_type='apical', bins=bins)
+
+    maximum = _np.max(_np.array(input_data1)[:,2].tolist() + _np.array(input_data2)[:,2].tolist())
+
+    theta = _np.array(input_data1)[:,0]
+    radii = _np.array(input_data1)[:,2] / maximum
+    width = 2 * _np.pi / len(input_data1)
+    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
+                  bottom=0.0, alpha=alpha, color=basal_color)
+
+    theta = _np.array(input_data2)[:,0]
+    radii = _np.array(input_data2)[:,2] / maximum
+    width = 2 * _np.pi / len(input_data2)
+    bars = ax.bar(theta, radii, width=width, edgecolor=edgecolor,
+                  bottom=0.0, alpha=alpha, color=apical_color)
