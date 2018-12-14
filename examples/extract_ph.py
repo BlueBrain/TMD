@@ -1,7 +1,6 @@
 # Example to extract the persistence diagram from a neuronal tree
 
 # Step 1: Import the tmd module
-
 import tmd
 
 # Step 2: Load your morphology
@@ -22,22 +21,19 @@ ph_axon = tmd.methods.get_ph_neuron(neu, neurite_type='axon')
 ph_basal = tmd.methods.get_ph_neuron(neu, neurite_type='basal')
 
 # Step 6: Plot the extracted topological data with three different ways
-import view
+from tmd.view import view, plot
 
 # Visualize the neuron
-view.view.neuron(neu)
+view.neuron(neu)
 
 # Visualize a selected neurite type or multiple of them
-view.view.neuron(neu, neurite_type=['apical'])
+view.neuron(neu, neurite_type=['apical'])
 
 # Visualize the persistence diagram
-view.plot.ph_diagram(ph_apical)
+plot.diagram(ph_apical)
 
 # Visualize the persistence barcode
-view.plot.barcode(ph_apical)
+plot.barcode(ph_apical)
 
 # Visualize the persistence image
-view.plot.ph_image(ph_apical)
-
-# Create an overview figure for the topology of a tree
-
+plot.persistence_image(ph_apical)

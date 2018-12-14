@@ -15,7 +15,6 @@ def _rd_w(p1, p2, w=(1., 1., 1.), normed=True):
     '''
     if normed:
         w = (_np.array(w) / _np.linalg.norm(w))
-
     return _np.dot(w, (_np.subtract(p1, p2)))
 
 
@@ -96,7 +95,7 @@ def get_segment_lengths(tree):
     return seg_len
 
 
-# Points features
+# Points features to be used for topological extraction
 def get_point_radial_distances(self, point=None, dim='xyz'):
     '''Tree method to get radial distances from a point.
     If point is None, the soma surface -defined by
@@ -178,6 +177,21 @@ def get_point_path_distances(self):
         return sum([seg_len[i] for i in get_way_to_root(self, seg_id)[1:]])
 
     return _np.array([path_length(i) for i in range(size(self))])
+
+
+def get_point_path_distances_2(self):
+    '''Tree method to get path distances from the root.
+    '''
+    import copy
+
+    seg_len = get_segment_lengths(self)
+    path_lengths = _np.append(0, copy.deepcopy(seg_len))
+    children = get_children(self)
+
+    for i in children.keys():     
+        path_lengths[children[i]] = path_lengths[children[i]] + path_lengths[i]
+
+    return path_lengths
 
 
 def get_point_section_lengths(self):
@@ -363,6 +377,14 @@ def get_way_to_root(tree, sec_id=0):
         tmp_id = tree.p[tmp_id]
 
     return way
+
+
+def get_children(tree):
+    '''Returns a dictionary of children
+       for each node of the tree
+    '''
+    from collections import OrderedDict
+    return OrderedDict({i: _np.where(tree.p == i)[0] for i in xrange(len(tree.p))})
 
 
 # PCA

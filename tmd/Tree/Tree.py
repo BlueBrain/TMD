@@ -18,6 +18,7 @@ class Tree(object):
     from tmd.Tree.methods import get_point_radial_distances_time
     from tmd.Tree.methods import get_point_weighted_radial_distances
     from tmd.Tree.methods import get_point_path_distances
+    from tmd.Tree.methods import get_point_path_distances_2
     from tmd.Tree.methods import get_point_projection
     from tmd.Tree.methods import get_point_section_lengths
     from tmd.Tree.methods import get_point_section_branch_orders
