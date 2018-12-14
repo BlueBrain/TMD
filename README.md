@@ -36,15 +36,13 @@ Required Dependencies
 ---------------------
 
 Python : 2.7+
-
 numpy : 1.8.1+
-
 scipy : 0.13.3+
 
+Optional Dependencies
+----------------------
 h5py : 2.8.0+ (optional)
-
-matplotlib : 1.3.1+ (optional)
-
+matplotlib : 1.3.1+ (required for viewer mode)
 
 Instalation instructions
 --------------------------------
@@ -53,6 +51,13 @@ Instalation instructions
 virtualenv test_tmd
 source ./test_tmd/bin/activate
 git clone https://github.com/BlueBrain/TMD
-pip install --upgrade pip
 pip install ./TMD
 ```
+
+For installation of viewers (only works in Python2)
+
+```bash
+pip install ./TMD[viewer]
+```
+
+
