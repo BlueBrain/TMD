@@ -2,6 +2,7 @@
 tmd Neuron's methods
 '''
 
+
 def size(self, neurite_type='all'):
     """
     Neuron method to get size.

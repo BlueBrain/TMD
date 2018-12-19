@@ -188,7 +188,7 @@ def get_point_path_distances_2(self):
     path_lengths = _np.append(0, copy.deepcopy(seg_len))
     children = get_children(self)
 
-    for i in children.keys():     
+    for i in children.keys():
         path_lengths[children[i]] = path_lengths[children[i]] + path_lengths[i]
 
     return path_lengths
@@ -286,15 +286,15 @@ def extract_simplified(self):
     t[0] = self.t[sections[0][0]]
     p[0] = -1
 
-    for i,s in enumerate(sections):
+    for i, s in enumerate(sections):
         x[i+1] = self.x[s[1]]
         y[i+1] = self.y[s[1]]
         z[i+1] = self.z[s[1]]
         d[i+1] = self.d[s[1]]
         t[i+1] = self.t[s[1]]
-        p[i+1] = _np.where(beg0 ==s[0])[0][0]
+        p[i+1] = _np.where(beg0 == s[0])[0][0]
 
-    return Tree.Tree(x,y,z,d,t,p)
+    return Tree.Tree(x, y, z, d, t, p)
 
 
 def get_bif_term(self):

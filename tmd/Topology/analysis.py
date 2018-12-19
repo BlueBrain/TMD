@@ -94,7 +94,7 @@ def histogram_horizontal(ph, num_bins=100, min_bin=None, max_bin=None):
     """Calculate how many barcode lines are found in each bin.
     """
     import math
-    ph1 = [p[:2] for p in ph] # simplify to ensure ph corresponds to 2d barcode
+    ph1 = [p[:2] for p in ph]  # simplify to ensure ph corresponds to 2d barcode
 
     if min_bin is None:
         min_bin = np.min(ph1)
@@ -177,21 +177,23 @@ def distance_horizontal_unnormed(ph1, ph2, norm=1, bins=100):
 def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=None, **kwargs):
     '''Plots the gaussian kernel of a population of cells
        as an average of the ph diagrams that are given.
-    '''     
+    '''
     im_av = False
     k = 1
-     
+
     for p in ph_list:
         if type(im_av) != np.ndarray:
             try:
                 if not np.isnan(np.sum(im)):
-                    im_av = get_persistence_image_data(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims)
+                    im_av = get_persistence_image_data(p, norm_factor=norm_factor,
+                                                       xlims=xlims, ylims=ylims)
             except:
                 pass
         else:
             try:
-                im = an.persistence_image_data(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims)
-                if not np.isnan(np.sum(im)):  
+                im = an.persistence_image_data(p, norm_factor=norm_factor,
+                                               xlims=xlims, ylims=ylims)
+                if not np.isnan(np.sum(im)):
                     im_av = np.add(im_av, im)
                     k = k + 1
             except:
@@ -205,14 +207,14 @@ def find_apical_point_distance(ph):
     based on the variation of the barcode.
     '''
     n_bins, counts = histogram_horizontal(ph, num_bins=3*len(ph))
-    der1 = counts[1:] - counts[:-1] # first derivative
-    der2 = der1[1:] - der1[:-1] # second derivative
+    der1 = counts[1:] - counts[:-1]  # first derivative
+    der2 = der1[1:] - der1[:-1]  # second derivative
     # Find all points that take minimum value, and have first derivative zero == no variation
     inters = np.intersect1d(np.where(counts == min(counts))[0], np.where(der1 == 0)[0])
     # Find all points that are also below a positive second derivative
     # The definition of how positive the second derivative should be is arbitrary,
     # but it is the only value that works nicely for cortical cells
-    best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100 )[0]))]
+    best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100)[0]))]
 
     if len(best_all) > 0:
         return n_bins[np.max(best_all)]
@@ -248,4 +250,3 @@ def matching_munkress_modified(p1, p2, use_diag=True):
     ssum = np.sum([D[i][j] for (i, j) in indices])
 
     return indices, ssum
-

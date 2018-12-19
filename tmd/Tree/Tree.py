@@ -27,7 +27,6 @@ class Tree(object):
     from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
 
-
     def __init__(self, x=_np.array([]), y=_np.array([]), z=_np.array([]),
                  d=_np.array([]), t=_np.array([]), p=_np.array([])):
         '''Constructor of tmd Tree Object

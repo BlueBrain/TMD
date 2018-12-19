@@ -103,11 +103,10 @@ def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
     return [dphi, dtheta, delta_phi, delta_theta]
 
 
-
 def get_angles(tree, beg, parents, children):
     """Returns the angles between all the triplets (parent, child1, child2)
     of the tree"""
-    angles = [[0, 0, 0, 0], ] # Null angle for non bif point
+    angles = [[0, 0, 0, 0], ]  # Null angle for non bif point
 
     for b in beg[1:]:
 

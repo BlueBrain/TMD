@@ -3,6 +3,7 @@ tmd Soma's methods
 '''
 import numpy as np
 
+
 def get_center(self):
     """
     Soma method to get the center of the soma.
