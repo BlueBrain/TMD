@@ -2,6 +2,7 @@
 tmd Topology algorithms implementation
 '''
 import numpy as np
+from tmd.Topology.analysis import sort_ph
 
 
 def write_ph(ph, output_file='test.txt'):
@@ -239,9 +240,11 @@ def extract_ph(tree, feature='radial_distances', output_file='test.txt',
     ph = get_persistence_diagram(tree, feature=feature, **kwargs)
 
     if sort:
-        sort_ph(ph)
+        p = sort_ph(ph)
+    else:
+        p = ph
 
-    write_ph(ph, output_file)
+    write_ph(p, output_file)
 
 
 def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
@@ -251,11 +254,13 @@ def extract_ph_neuron(neuron, feature='radial_distances', output_file=None,
 
     if sort:
         sort_ph(ph)
+    else:
+        p = ph
 
     if output_file is None:
         output_file = 'PH_' + neuron.name + '_' + neurite_type + '.txt'
 
-    write_ph(ph, output_file)
+    write_ph(p, output_file)
 
 
 def get_lifetime(tree, feature='point_radial_distances'):

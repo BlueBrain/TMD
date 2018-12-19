@@ -1,6 +1,7 @@
 '''
 tmd Topology analysis algorithms implementation
 '''
+# pylint: disable=invalid-slice-index
 
 import numpy as np
 
@@ -12,7 +13,7 @@ def collapse(ph_list):
     return [list(pi) for p in ph_list for pi in p]
 
 
-def sort_ph(ph, reverse=True):
+def sort_ph(ph):
     """
     Sorts barcode according to decreasing length of bars.
     """
@@ -105,9 +106,9 @@ def histogram_horizontal(ph, num_bins=100, min_bin=None, max_bin=None):
     binsize = (max_bin - min_bin) / (num_bins - 1.)
     results = np.zeros(num_bins - 1)
 
-    for ph in ph1:
-        ph_decompose = np.linspace(np.min(ph), np.max(ph),
-                                   math.ceil((np.max(ph) - np.min(ph)) / binsize),
+    for p in ph1:
+        ph_decompose = np.linspace(np.min(p), np.max(p),
+                                   math.ceil((np.max(p) - np.min(p)) / binsize),
                                    dtype=float)
 
         bin_ph = np.histogram(ph_decompose, bins=bins)[0]
@@ -174,7 +175,7 @@ def distance_horizontal_unnormed(ph1, ph2, norm=1, bins=100):
     return np.linalg.norm(np.abs(np.subtract(results1, results2)), norm)
 
 
-def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=None, **kwargs):
+def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=None):
     '''Plots the gaussian kernel of a population of cells
        as an average of the ph diagrams that are given.
     '''
@@ -182,21 +183,22 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=N
     k = 1
 
     for p in ph_list:
-        if type(im_av) != np.ndarray:
+        if not isinstance(im_av, np.ndarray):
             try:
+                im = get_persistence_image_data(p, norm_factor=norm_factor,
+                                                xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
-                    im_av = get_persistence_image_data(p, norm_factor=norm_factor,
-                                                       xlims=xlims, ylims=ylims)
-            except:
+                    im_av = im
+            except BaseException:
                 pass
         else:
             try:
-                im = an.persistence_image_data(p, norm_factor=norm_factor,
-                                               xlims=xlims, ylims=ylims)
+                im = get_persistence_image_data(p, norm_factor=norm_factor,
+                                                xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
                     im_av = np.add(im_av, im)
                     k = k + 1
-            except:
+            except BaseException:
                 pass
     return im_av / k
 

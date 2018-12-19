@@ -10,7 +10,6 @@ class Neuron(object):
     """
     from tmd.Neuron.methods import size
     from tmd.Neuron.methods import get_bounding_box
-    from tmd.Neuron.methods import simplify
 
     def __init__(self, name='Neuron'):
         '''Creates an empty Neuron object.
@@ -97,3 +96,18 @@ class Neuron(object):
                                      zip(self.neurites, neu.neurites)])])
 
         return eq
+
+    def simplify(self):
+        '''Creates a copy of itself and simplifies all trees
+           to create a skeleton of the neuron
+        '''
+        from tmd.utils import tree_type as td
+
+        neu = Neuron()
+        neu.soma = self.soma.copy_soma()
+
+        for tr in self.neurites:
+            t = tr.extract_simplified()
+            neu.append_tree(t, td)
+
+        return neu

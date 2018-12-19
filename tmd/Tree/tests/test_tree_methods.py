@@ -49,7 +49,6 @@ p1 = np.array([-1,  0,   1,   2,  1])
 
 tree = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
 
-
 def test_rd():
     nt.ok_(methods._rd([0, 0], [0, 1]) == 1.)
     nt.ok_(methods._rd([0, 0, 0], [0, 0, 1]) == 1.)

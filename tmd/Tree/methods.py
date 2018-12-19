@@ -264,39 +264,6 @@ def get_sections_only_points(self):
     return beg, end
 
 
-def extract_simplified(self):
-    """Returns a simplified tree that corresponds
-       to the start - end of the sections points
-    """
-    from tmd import Tree
-    beg0, end0 = self.get_sections_2()
-    sections = _np.transpose([beg0, end0])
-
-    x = _np.zeros([len(sections)+1])
-    y = _np.zeros([len(sections)+1])
-    z = _np.zeros([len(sections)+1])
-    d = _np.zeros([len(sections)+1])
-    t = _np.zeros([len(sections)+1])
-    p = _np.zeros([len(sections)+1])
-
-    x[0] = self.x[sections[0][0]]
-    y[0] = self.y[sections[0][0]]
-    z[0] = self.z[sections[0][0]]
-    d[0] = self.d[sections[0][0]]
-    t[0] = self.t[sections[0][0]]
-    p[0] = -1
-
-    for i, s in enumerate(sections):
-        x[i+1] = self.x[s[1]]
-        y[i+1] = self.y[s[1]]
-        z[i+1] = self.z[s[1]]
-        d[i+1] = self.d[s[1]]
-        t[i+1] = self.t[s[1]]
-        p[i+1] = _np.where(beg0 == s[0])[0][0]
-
-    return Tree.Tree(x, y, z, d, t, p)
-
-
 def get_bif_term(self):
     '''Returns number of children per point
     '''

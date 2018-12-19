@@ -21,6 +21,11 @@ TYPE_DCT = {'soma': 1,
             'axon': 2}
 
 
+class LoadNeuronError(BaseException):
+    '''Captures the exception of failing to create the dA matrix
+    '''
+
+
 def make_tree(data):
     '''Make tree structure from loaded data.
        Returns a tree of tmd.Tree
@@ -80,9 +85,12 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     neuron.set_soma(soma)
     p = _np.array(_np.transpose(data)[6], dtype=int) - _np.transpose(data)[0][0]
     # return p, soma_ids
-    dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
-                        (range(len(soma_ids), len(p)),
-                         p[len(soma_ids):])), shape=(len(p), len(p)))
+    try:
+        dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
+                           (range(len(soma_ids), len(p)),
+                            p[len(soma_ids):])), shape=(len(p), len(p)))
+    except:
+        raise LoadNeuronError
 
     # assuming soma points are in the beginning of the file.
     comp = cs.connected_components(dA[len(soma_ids):, len(soma_ids):])
@@ -112,7 +120,7 @@ def load_population(input_directory, tree_types=None):
         try:
             pop.append_neuron(load_neuron(os.path.join(input_directory, i),
                                           tree_types=tree_types))
-        except:
+        except LoadNeuronError:
             print('File failed to load: {}'.format(i))
 
     return pop

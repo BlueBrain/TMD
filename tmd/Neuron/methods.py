@@ -1,6 +1,7 @@
 '''
 tmd Neuron's methods
 '''
+import numpy as np
 
 
 def size(self, neurite_type='all'):
@@ -26,7 +27,6 @@ def get_bounding_box(self):
     bounding_box: np.array
         ([xmin,ymin,zmin], [xmax,ymax,zmax])
     """
-    import numpy as np
     x = []
     y = []
     z = []
@@ -44,20 +44,3 @@ def get_bounding_box(self):
     zmax = np.max(z)
 
     return np.array([[xmin, ymin, zmin], [xmax, ymax, zmax]])
-
-
-def simplify(self):
-    '''Creates a copy of itself and simplifies all trees
-       to create a skeleton of the neuron
-    '''
-    from tmd.utils import tree_type as td
-    from tmd import Neuron
-
-    neu = Neuron.Neuron()
-    neu.soma = self.soma.copy_soma()
-
-    for tr in self.neurites:
-        t = tr.extract_simplified()
-        neu.append_tree(t, td)
-
-    return neu

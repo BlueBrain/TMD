@@ -7,12 +7,12 @@ max-line-length=100
 
 [DESIGN]
 # Maximum number of arguments for function / method
-max-args=8
+max-args=13
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
 ignored-argument-names=_.*
 # Maximum number of locals for function / method body
-max-locals=15
+max-locals=21
 # Maximum number of return / yield for function / method body
 max-returns=6
 # Maximum number of branch for function / method body

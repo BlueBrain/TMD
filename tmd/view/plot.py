@@ -1,10 +1,9 @@
 """Plotting functions of tmd"""
 
 import numpy as _np
-from tmd import Topology as _tm
-from tmd.view import view as _view
 from tmd.view import common as _cm
 from tmd.Topology import analysis
+from tmd.view.common import jet_map
 
 
 def barcode(ph, new_fig=True, subplot=False, color='b', linewidth=1.2, **kwargs):
@@ -27,7 +26,8 @@ def barcode(ph, new_fig=True, subplot=False, color='b', linewidth=1.2, **kwargs)
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2, valID=2, cmap=_cm.plt.cm.jet, **kwargs):
+def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2,
+                     valID=2, cmap=jet_map, **kwargs):
     """
     Generates a 2d figure (barcode) of the persistent homology
     of a tree enhanced by a parameter encodes in ph[valID]
@@ -37,8 +37,8 @@ def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2, valID=2, cm
     val_max = _np.max(ph, axis=0)[valID]
 
     # Hack for colorbar creation
-    Z = [[0,0],[0,0]]
-    levels = _np.linspace(0.0,val_max,200)
+    Z = [[0, 0], [0, 0]]
+    levels = _np.linspace(0.0, val_max, 200)
     CS3 = _cm.plt.contourf(Z, levels, cmap=cmap)
 
     def sort_ph_enhanced(ph, valID):
@@ -62,7 +62,8 @@ def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2, valID=2, cm
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, edgecolors='black', s=30, **kwargs):
+def diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0,
+            edgecolors='black', s=30, **kwargs):
     """
     Generates a 2d figure (ph diagram) of the persistent homology of a tree.
     """
@@ -73,7 +74,8 @@ def diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, edgecolors='b
     bounds_min = _np.min(_np.min(ph))
     _cm.plt.plot([bounds_min, bounds_max], [bounds_min, bounds_max], c='black')
 
-    ax.scatter(_np.array(ph)[:,0], _np.array(ph)[:,1], c=color, alpha=alpha, edgecolors=edgecolors, s=s)
+    ax.scatter(_np.array(ph)[:, 0], _np.array(ph)[:, 1], c=color, alpha=alpha,
+               edgecolors=edgecolors, s=s)
 
     kwargs['title'] = kwargs.get('title', 'Persistence diagram')
     kwargs['xlabel'] = kwargs.get('xlabel', 'End radial distance from soma')
@@ -82,8 +84,9 @@ def diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, edgecolors='b
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, masked=False, colorbar=False,
-             norm_factor=None, threshold=0.01, vmin=None, vmax=None, cmap=_cm.plt.cm.jet, **kwargs):
+def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None,
+                      masked=False, colorbar=False, norm_factor=None, threshold=0.01,
+                      vmin=None, vmax=None, cmap=jet_map, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
     '''
@@ -96,7 +99,8 @@ def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, mas
     if masked:
         Zn = _np.ma.masked_where((threshold > Zn), Zn)
 
-    cax = ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap, interpolation='bilinear', extent=xlims+ylims)
+    cax = ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap,
+                    interpolation='bilinear', extent=xlims+ylims)
 
     if colorbar:
         _cm.plt.colorbar(cax)
@@ -111,12 +115,12 @@ def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None, mas
 
 
 def persistence_image_diff(Z1, Z2, new_fig=True, subplot=111, xlims=None, ylims=None,
-                           norm=True, vmin=-1., vmax=1., cmap=_cm.plt.cm.jet, **kwargs):
+                           norm=True, vmin=-1., vmax=1., cmap=jet_map, **kwargs):
     """Takes as input two images as exported from the gaussian kernel
        plotting function, and plots their difference.
     """
     if xlims is None or xlims is None:
-        xlims, ylims = ((0,100), (0,100))
+        xlims, ylims = ((0, 100), (0, 100))
 
     difference = analysis.get_image_diff_data(Z1, Z2, norm=norm)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -129,12 +133,12 @@ def persistence_image_diff(Z1, Z2, new_fig=True, subplot=111, xlims=None, ylims=
 
 
 def persistence_image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=None,
-                          norm=True, vmin=0, vmax=2., cmap=_cm.plt.cm.jet, **kwargs):
+                          norm=True, vmin=0, vmax=2., cmap=jet_map, **kwargs):
     """Takes as input two images as exported from the gaussian kernel
        plotting function, and plots their addition.
     """
     if xlims is None or xlims is None:
-        xlims, ylims = ((0,100), (0,100))
+        xlims, ylims = ((0, 100), (0, 100))
 
     addition = analysis.get_image_add_data(Z1, Z2, norm=norm)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -146,12 +150,12 @@ def persistence_image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=N
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None, bins=100j,
-                  norm_factor=1.0, masked=False, vmin=None, vmax=None, cmap=_cm.plt.cm.jet, **kwargs):
+def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None,
+                              norm_factor=1.0, vmin=None, vmax=None, cmap=jet_map, **kwargs):
     """Merges a list of ph diagrams and plots their respective average image.
     """
     av_imgs = analysis.get_average_persistence_image(ph_list, xlims=xlims, ylims=ylims,
-                                                     bins=bins, **kwargs)
+                                                     norm_factor=norm_factor)
     if xlims is None or xlims is None:
         xlims, ylims = analysis.get_limits(ph_list)
 
@@ -181,7 +185,7 @@ def start_length_diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0, 
     ph_transformed = transform_ph_to_length(ph)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    for p in ph:
+    for p in ph_transformed:
         ax.scatter(p[0], p[1], c=color, edgecolors='black', alpha=alpha)
 
     kwargs['title'] = kwargs.get('title', 'Transformed Persistence diagram')
@@ -200,7 +204,8 @@ def histogram_stepped(ph, new_fig=True, subplot=False, color='b', alpha=0.7, **k
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def histogram_stepped_population(ph_list, new_fig=True, subplot=False, color='b', alpha=0.7, **kwargs):
+def histogram_stepped_population(ph_list, new_fig=True, subplot=False,
+                                 color='b', alpha=0.7, **kwargs):
     '''Extracts and plots the stepped histogram of a list of persistence diagrams.
        The histogram is normalized acording to the number of persistence diagrams.
     '''
