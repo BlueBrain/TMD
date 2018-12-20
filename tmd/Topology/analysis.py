@@ -17,7 +17,7 @@ def sort_ph(ph):
     """
     Sorts barcode according to decreasing length of bars.
     """
-    return np.array(ph)[np.argsort([p[0]-p[1] for p in ph])].tolist()
+    return np.array(ph)[np.argsort([p[0] - p[1] for p in ph])].tolist()
 
 
 def load_file(filename, delimiter=' '):
@@ -208,7 +208,7 @@ def find_apical_point_distance(ph):
     Finds the apical distance (measured in radial distance from soma)
     based on the variation of the barcode.
     '''
-    n_bins, counts = histogram_horizontal(ph, num_bins=3*len(ph))
+    n_bins, counts = histogram_horizontal(ph, num_bins=3 * len(ph))
     der1 = counts[1:] - counts[:-1]  # first derivative
     der2 = der1[1:] - der1[:-1]  # second derivative
     # Find all points that take minimum value, and have first derivative zero == no variation

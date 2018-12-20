@@ -2,8 +2,9 @@
 """
 from setuptools import setup
 from setuptools import find_packages
+import imp
 
-exec(open('tmd/version.py').read())
+VERSION = imp.load_source("tmd.version", "tmd/version.py").VERSION
 
 config = {
     'description': 'TMD: a python package for the topological analysis of neurons',
@@ -14,7 +15,9 @@ config = {
         'h5py>=2.8.0',
         'enum34>=1.0.4',
         'scipy>=0.13.3',
-        'numpy>=1.8.0'
+        'numpy>=1.8.0',
+        'scikit-learn>=0.19.1',
+        'munkres>=1.0.12',
     ],
     'extras_require': {
                        'viewer': ['matplotlib>=1.3.1',],

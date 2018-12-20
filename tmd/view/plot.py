@@ -45,14 +45,14 @@ def barcode_enhanced(ph, new_fig=True, subplot=False, linewidth=1.2,
         """
         Sorts barcode according to length.
         """
-        ph_sort = [p[:valID+1] + [_np.abs(p[0] - p[1])] for p in ph]
-        ph_sort.sort(key=lambda x: x[valID+1])
+        ph_sort = [p[:valID + 1] + [_np.abs(p[0] - p[1])] for p in ph]
+        ph_sort.sort(key=lambda x: x[valID + 1])
         return ph_sort
 
     ph_sort = sort_ph_enhanced(ph, valID)
 
     for ip, p in enumerate(ph_sort):
-        ax.plot(p[:2], [ip, ip], c=cmap(p[valID]/val_max), linewidth=linewidth)
+        ax.plot(p[:2], [ip, ip], c=cmap(p[valID] / val_max), linewidth=linewidth)
 
     kwargs['title'] = kwargs.get('title', 'Barcode of p.h.')
     kwargs['xlabel'] = kwargs.get('xlabel', 'Lifetime')
@@ -100,7 +100,7 @@ def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None,
         Zn = _np.ma.masked_where((threshold > Zn), Zn)
 
     cax = ax.imshow(_np.rot90(Zn), vmin=vmin, vmax=vmax, cmap=cmap,
-                    interpolation='bilinear', extent=xlims+ylims)
+                    interpolation='bilinear', extent=xlims + ylims)
 
     if colorbar:
         _cm.plt.colorbar(cax)
@@ -125,7 +125,7 @@ def persistence_image_diff(Z1, Z2, new_fig=True, subplot=111, xlims=None, ylims=
     difference = analysis.get_image_diff_data(Z1, Z2, norm=norm)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
     ax.imshow(_np.rot90(difference), vmin=vmin, vmax=vmax, cmap=cmap,
-              interpolation='bilinear', extent=xlims+ylims)
+              interpolation='bilinear', extent=xlims + ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
@@ -143,7 +143,7 @@ def persistence_image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=N
     addition = analysis.get_image_add_data(Z1, Z2, norm=norm)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
     ax.imshow(_np.rot90(addition), vmin=vmin, vmax=vmax, cmap=cmap,
-              interpolation='bilinear', extent=xlims+ylims)
+              interpolation='bilinear', extent=xlims + ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
@@ -166,7 +166,7 @@ def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None, yl
 
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
     ax.imshow(_np.rot90(av_imgs), vmin=vmin, vmax=vmax, cmap=cmap,
-              interpolation='bilinear', extent=xlims+ylims)
+              interpolation='bilinear', extent=xlims + ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims
@@ -211,7 +211,7 @@ def histogram_stepped_population(ph_list, new_fig=True, subplot=False,
     '''
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
     hist_data = analysis.histogram_stepped(analysis.collapse(ph_list))
-    ax.fill_between(hist_data[0][:-1], 0, hist_data[1]/len(ph_list), color=color, alpha=alpha)
+    ax.fill_between(hist_data[0][:-1], 0, hist_data[1] / len(ph_list), color=color, alpha=alpha)
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 

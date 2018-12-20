@@ -16,7 +16,8 @@ sample_file2 = os.path.join(POP_PATH, 'C010398B-P2.h5')
 
 neu1 = io.load_neuron(sample_file)
 neu3 = io.load_neuron(sample_file2)
-tree_h5 = neu3.neurites[0]
+tree_h5 = neu3.axon[0]
+tree_h5_ap = neu3.apical[0]
 tree0 = neu1.neurites[0]
 tree1 = neu1.neurites[1]
 
@@ -29,6 +30,18 @@ secs_h5_end = np.array([16,  17,  21,  30,  52,  78,  86,  91, 190, 196, 219, 22
                         249, 256, 301, 330, 334, 385, 406, 409, 454, 482, 494, 508, 519,
                         522, 612, 640, 645, 678, 682, 684, 710, 730, 738, 772, 795, 804,
                         828, 829, 832, 838])
+
+secs_h5_beg_ap = np.array([0,   4,   5,   8,   9,  20,  33, 109, 109,  33,  20,   9,   8,
+                           213, 213,   5,   4])
+
+secs_h5_end_ap = np.array([4,   5,   8,   9,  20,  33, 109, 121, 130, 143, 176, 205, 213,
+                           225, 251, 267, 292])
+
+secs_h5_beg_points_ap = np.array([0,   5,   6,   9,  10,  21,  34, 110, 122, 131, 144, 177, 206,
+                                  214, 226, 252, 268])
+
+secs_h5_end_points_ap = np.array([4,   5,   8,   9,  20,  33, 109, 121, 130, 143, 176, 205, 213,
+                                  225, 251, 267, 292])
 
 secs_h5_beg_points = np.array([0,  17,  18,  22,  31,  53,  79,  87,  92, 191, 197, 220, 223,
                                231, 250, 257, 302, 331, 335, 386, 407, 410, 455, 483, 495, 509,
@@ -109,6 +122,9 @@ def test_get_sections_2():
     secs = tree_h5.get_sections_2()
     nt.ok_(np.allclose(secs[0], secs_h5_beg))
     nt.ok_(np.allclose(secs[1], secs_h5_end))
+    secs = tree_h5_ap.get_sections_2()
+    nt.ok_(np.allclose(secs[0], secs_h5_beg_ap))
+    nt.ok_(np.allclose(secs[1], secs_h5_end_ap))
 
 def test_get_sections_only_points():
     secs = tree.get_sections_only_points()
@@ -117,6 +133,9 @@ def test_get_sections_only_points():
     secs = tree_h5.get_sections_only_points()
     nt.ok_(np.allclose(secs[0], secs_h5_beg_points))
     nt.ok_(np.allclose(secs[1], secs_h5_end_points))
+    secs = tree_h5_ap.get_sections_only_points()
+    nt.ok_(np.allclose(secs[0], secs_h5_beg_points_ap))
+    nt.ok_(np.allclose(secs[1], secs_h5_end_points_ap))
 
 def test_get_bif_term():
     nt.ok_(np.allclose(tree.get_bif_term(), np.array([1.,  2.,  1.,  0.,  0.])))

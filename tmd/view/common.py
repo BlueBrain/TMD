@@ -3,8 +3,8 @@ Module containing the common functionality
 to be used by view-plot modules.
 """
 import os
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # pylint: disable=unused-import
 
 jet_map = plt.cm.get_cmap("jet")
@@ -817,7 +817,7 @@ def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=N
         img = np.ma.masked_where((threshold > np.abs(img)), img)
 
     cax = ax.imshow(np.rot90(img), vmin=vmin, vmax=vmax, cmap=cmap,
-                    interpolation='bilinear', extent=xlims+ylims)
+                    interpolation='bilinear', extent=xlims + ylims)
 
     kwargs['xlim'] = xlims
     kwargs['ylim'] = ylims

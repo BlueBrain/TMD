@@ -21,7 +21,7 @@ TYPE_DCT = {'soma': 1,
             'axon': 2}
 
 
-class LoadNeuronError(BaseException):
+class LoadNeuronError(Exception):
     '''Captures the exception of failing to create the dA matrix
     '''
 
@@ -89,7 +89,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
                            (range(len(soma_ids), len(p)),
                             p[len(soma_ids):])), shape=(len(p), len(p)))
-    except:
+    except Exception:
         raise LoadNeuronError
 
     # assuming soma points are in the beginning of the file.

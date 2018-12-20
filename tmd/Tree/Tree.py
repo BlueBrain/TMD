@@ -112,26 +112,26 @@ class Tree(object):
         beg0, end0 = self.get_sections_2()
         sections = np.transpose([beg0, end0])
 
-        x = np.zeros([len(sections)+1])
-        y = np.zeros([len(sections)+1])
-        z = np.zeros([len(sections)+1])
-        d = np.zeros([len(sections)+1])
-        t = np.zeros([len(sections)+1])
-        p = np.zeros([len(sections)+1])
+        x = np.zeros([len(sections) + 1])
+        y = np.zeros([len(sections) + 1])
+        z = np.zeros([len(sections) + 1])
+        d = np.zeros([len(sections) + 1])
+        t = np.zeros([len(sections) + 1])
+        p = np.zeros([len(sections) + 1])
 
         x[0] = self.x[sections[0][0]]
         y[0] = self.y[sections[0][0]]
         z[0] = self.z[sections[0][0]]
         d[0] = self.d[sections[0][0]]
         t[0] = self.t[sections[0][0]]
-        p[0] = -1
+        p[0] = - 1
 
         for i, s in enumerate(sections):
-            x[i+1] = self.x[s[1]]
-            y[i+1] = self.y[s[1]]
-            z[i+1] = self.z[s[1]]
-            d[i+1] = self.d[s[1]]
-            t[i+1] = self.t[s[1]]
-            p[i+1] = np.where(beg0 == s[0])[0][0]
+            x[i + 1] = self.x[s[1]]
+            y[i + 1] = self.y[s[1]]
+            z[i + 1] = self.z[s[1]]
+            d[i + 1] = self.d[s[1]]
+            t[i + 1] = self.t[s[1]]
+            p[i + 1] = np.where(beg0 == s[0])[0][0]
 
         return Tree(x, y, z, d, t, p)
