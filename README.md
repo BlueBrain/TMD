@@ -10,6 +10,8 @@ Author: Lida Kanari
 Contributors: Pawel Dlotko, Benoit Coste
 
 Publication: 
+
+
 A Topological Representation of Branching Neuronal Morphologies
 
 _Cite this article as:_
@@ -17,13 +19,16 @@ _Cite this article as:_
     DOI: <https://doi.org/10.1007/s12021-017-9341-1>
     
 Related publications:
+
+
 Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3 Pyramidal Neurons in Human Temporal Cortex.
 
 _Cite this article as:_
    Deitcher Y., Eyal G., Kanari L., et al. Cerebral Cortex (2017) 27:11
    DOI: <https://doi.org/10.1093/cercor/bhx226>
    
-Objective Classification of Neocortical Pyramidal Cells (http://dx.doi.org/10.1101/349977)
+Objective Classification of Neocortical Pyramidal Cells 
+    DOI: <http://dx.doi.org/10.1101/349977>
     
 Developed in Blue Brain Project
 
@@ -52,12 +57,16 @@ Required Dependencies
 ---------------------
 
 Python : 2.7+
-numpy : 1.8.1+
-scipy : 0.13.3+
+
+numpy : 1.8.1+,
+scipy : 0.13.3+,
+enum34 : 1.0.4+,
+scikit-learn : 0.19.1+,
+munkres: 1.0.12+
 
 Optional Dependencies
 ----------------------
-h5py : 2.8.0+ (optional)
+h5py : 2.8.0+ (optional),
 matplotlib : 1.3.1+ (required for viewer mode)
 
 Instalation instructions
