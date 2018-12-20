@@ -1,7 +1,7 @@
 TMD: Topological Morphology Descriptor
 ========================================
 
-The TMD performs topological analysis of neuronal morphologies and extracts the persistence of trees.
+The TMD performs the topological analysis of neuronal morphologies and extracts the persistence barcodes of trees.
 
 Details
 ---------
@@ -9,11 +9,27 @@ Author: Lida Kanari
 
 Contributors: Pawel Dlotko, Benoit Coste
 
-Publication: A Topological Representation of Branching Neuronal Morphologies
+Publication: 
+A Topological Representation of Branching Neuronal Morphologies
 
 _Cite this article as:_
     Kanari, L., Dłotko, P., Scolamiero, M. et al. Neuroinform (2018) 16:3.
     DOI: <https://doi.org/10.1007/s12021-017-9341-1>
+    
+Related publications:
+Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3 Pyramidal Neurons in Human Temporal Cortex.
+
+_Cite this article as:_
+   Deitcher Y., Eyal G., Kanari L., et al. Cerebral Cortex (2017) 27:11
+   DOI: <https://doi.org/10.1093/cercor/bhx226>
+   
+Objective Classification of Neocortical Pyramidal Cells (http://dx.doi.org/10.1101/349977)
+    
+Developed in Blue Brain Project
+
+Funding
+---------
+This work was supported by funding from the EPFL and the ETH Domain to the Blue Brain Project (BBP). 
 
 Sotware description
 ---------------------
