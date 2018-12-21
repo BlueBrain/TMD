@@ -34,7 +34,7 @@ Developed in Blue Brain Project
 
 Funding
 ---------
-This work was supported by funding from the EPFL and the ETH Domain to the Blue Brain Project (BBP). 
+The Blue Brain Project receives Swiss government funding from ETH Board of the ETH Domain (ETH = Swiss Federal Institutes of Technology) and receives support as a research center by the École polytechnique fédérale de Lausanne (EPFL).
 
 Sotware description
 ---------------------
