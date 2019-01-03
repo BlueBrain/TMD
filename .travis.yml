@@ -1,0 +1,29 @@
+dist: trusty
+language: python
+python:
+- 2.7
+- 3.5
+- 3.6
+addons:
+  apt:
+    packages:
+    - libhdf5-dev
+cache: pip
+install:
+- pip install tox
+- pip install .
+script:
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then tox -e py27; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then tox --skip-missing-interpreters; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then tox -e py36; fi
+
+before_deploy:
+- pip install twine
+deploy:
+  provider: pypi
+  user: wizmer
+  password:
+    secure: PLyBWobIFSu3iNYDcUNfF6WXMt5PkX4gaBeeR772zK1qWJ97doE6q0dwwO4Cd95CM6KZvhTeDmV1ov8d28S/unHyoQ7wHftPO+6EkRTqYxwWCgJo9yut6aAqHvBXlbAi9KZkWjdN4YSynP2C2eojPwFMOuSdFFQQuEx5f1k6ueGoEF3n3kp0AHbX/mgnOu7PKdSdPIAymUnTo4Ljc3PEMy/7GXHFmcG0Y+laWDUrKFfBHPw6fb54kbom2KZb1+3EOfOb6MYStS4ZnHX2tYVsTpRRlhGRBQRJWoITskmkMABZwa9X4ZxjSWkYDj8cS8Iafm4ortHMDwYISncIU749kIuI5GuDZ9mypz2FuuG2chQuo/VKKfAhovOzjmepPO239tXhExrl6U7OuL1OG0qb9TSip+zpFCgTby8cGB6ubRr3hdArg9wkoBE62wdQ6XaAGQG6bt07wYU4e95rso76Xpc0DUMw+hTr8Ij55YCiRWsfDrAYJL/OnPst6WHxbB1uFKAo/LQgYOI0UYwu7fAVrUgJkOQVJcvju85L/XPHTonOLR7L3M7oOjI3LydXKR+WdqtSBtJBbAjS0mynvSub13kR22omIIEdP4IRvXl6nufVxRqXOqdyAtv15n3sI+KdVmkWUOf9Zjvli7U85Ysa/P+RTM+RRk3Jy3nw2lwWQws=
+  on:
+    tags: true
+    branch: master
