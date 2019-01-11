@@ -2,6 +2,7 @@ TMD: Topological Morphology Descriptor
 ========================================
 
 The TMD performs the topological analysis of neuronal morphologies and extracts the persistence barcodes of trees.
+©Blue Brain Project/EPFL 2005 – 2019. All rights reserved
 
 Details
 ---------
