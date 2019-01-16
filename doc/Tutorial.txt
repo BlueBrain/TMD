@@ -14,7 +14,7 @@ Quick example
 import tmd
 
 # Load a neuron 
-neuron = tmd.io.load('input_path_to_file/input_file.swc')
+neuron = tmd.io.load_neuron('input_path_to_file/input_file.swc')
 
 # Extract the tmd of a neurite, i.e., neuronal tree
 pd = tmd.methods.get_ph_diagram(neuron.neurite[0])
