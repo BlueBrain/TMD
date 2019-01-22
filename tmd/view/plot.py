@@ -86,14 +86,15 @@ def diagram(ph, new_fig=True, subplot=False, color='b', alpha=1.0,
 
 def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None,
                       masked=False, colorbar=False, norm_factor=None, threshold=0.01,
-                      vmin=None, vmax=None, cmap=jet_map, **kwargs):
+                      vmin=None, vmax=None, cmap=jet_map, bw_method=None, **kwargs):
     '''Plots the gaussian kernel
        of the ph diagram that is given.
     '''
     if xlims is None or xlims is None:
         xlims, ylims = analysis.get_limits(ph, coll=False)
 
-    Zn = analysis.get_persistence_image_data(ph, norm_factor=norm_factor, xlims=xlims, ylims=ylims)
+    Zn = analysis.get_persistence_image_data(ph, norm_factor=norm_factor, bw_method=bw_method,
+                                             xlims=xlims, ylims=ylims)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
     if masked:
@@ -150,12 +151,13 @@ def persistence_image_add(Z2, Z1, new_fig=True, subplot=111, xlims=None, ylims=N
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None, ylims=None,
-                              norm_factor=1.0, vmin=None, vmax=None, cmap=jet_map, **kwargs):
+def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None,
+                              ylims=None, norm_factor=1.0, vmin=None, vmax=None,
+                              cmap=jet_map, weighted=False, **kwargs):
     """Merges a list of ph diagrams and plots their respective average image.
     """
     av_imgs = analysis.get_average_persistence_image(ph_list, xlims=xlims, ylims=ylims,
-                                                     norm_factor=norm_factor)
+                                                     norm_factor=norm_factor, weighted=weighted)
     if xlims is None or xlims is None:
         xlims, ylims = analysis.get_limits(ph_list)
 

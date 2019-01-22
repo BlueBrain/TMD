@@ -73,7 +73,10 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
         neuron = Neuron.Neuron(name=input_file.replace('.h5', ''))
 
-    soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
+    try:
+        soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
+    except IndexError:
+        raise LoadNeuronError
 
     # Extract soma information from swc
     soma = Soma.Soma(x=_np.transpose(data)[SWC_DCT['x']][soma_ids],

@@ -64,7 +64,7 @@ def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
     if _get_default('diameter', **kwargs):
 
         scale = _get_default('diameter_scale', **kwargs)
-        linewidth = [2 * d * scale for d in tr.d]
+        linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
                               _utils.tree_type[tr.get_type()])
@@ -122,7 +122,7 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     if _get_default('diameter', **kwargs):
 
         scale = _get_default('diameter_scale', **kwargs)
-        linewidth = [2 * d * scale for d in tr.d]
+        linewidth = [d * scale for d in tr.d]
 
     if tr.get_type() not in _utils.tree_type:
         treecolor = 'black'
@@ -195,7 +195,7 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
 
 def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
-           neurite_type='all', rotation=None, nosoma=False, **kwargs):
+           neurite_type='all', rotation=None, nosoma=False, new_axes=True, **kwargs):
     '''Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
@@ -262,7 +262,7 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
         return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
 
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
+    fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot, new_axes=new_axes)
 
     kwargs['new_fig'] = False
     kwargs['subplot'] = subplot
@@ -277,7 +277,6 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
     if rotation == 'apical':
         angle = _np.arctan2(nrn.apical[0].get_pca()[0], nrn.apical[0].get_pca()[1])
-    elif isinstance(rotation, list):
         angle = _np.arctan2(rotation[1], rotation[0])
 
     if neurite_type == 'all':
@@ -507,7 +506,7 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
     if _get_default('diameter', **kwargs):
 
         scale = _get_default('diameter_scale', **kwargs)
-        linewidth = [2 * d * scale for d in tr.d]
+        linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
                               _utils.tree_type[tr.get_type()])
@@ -578,7 +577,7 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
     if _get_default('diameter', **kwargs):
 
         scale = _get_default('diameter_scale', **kwargs)
-        linewidth = [2 * d * scale for d in tr.d]
+        linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
                               _utils.tree_type[tr.get_type()])
@@ -782,7 +781,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
 # pylint: disable=too-many-locals
 def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='all',
                   bins=100, plane='xy', color_map=blues_map, alpha=0.8,
-                  centered=True, colorbar=True, **kwargs):
+                  centered=True, colorbar=True, plot_neuron=False, **kwargs):
     """
     View the neuron morphologies of a population as a density cloud.
     """
@@ -816,6 +815,16 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='a
                         (yedges1[:-1] + yedges1[1:]) / 2,
                         _np.transpose(H2), cmap=color_map,
                         alhpa=alpha)
+
+    kwargs['new_fig'] = False
+    kwargs['subplot'] = subplot
+
+    if plot_neuron:
+        nrn = obj.neurons[0]
+        h, v, _ = nrn.soma.get_center()
+        soma(nrn.soma, plane='xy', hadd=-h, vadd=-v, **kwargs)
+        for temp_tree in getattr(nrn, ntypes):
+            tree(temp_tree, plane='xy', hadd=-h, vadd=-v, treecolor='r', **kwargs)
 
     if colorbar:
         _cm.plt.colorbar(plots)
