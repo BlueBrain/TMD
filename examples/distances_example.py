@@ -1,5 +1,5 @@
 import tmd
-import view
+import tmd.view as view
 
 pop1 = tmd.io.load_population(directory1)
 pop2 = tmd.io.load_population(directory2)
