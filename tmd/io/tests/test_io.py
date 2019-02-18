@@ -1,10 +1,12 @@
 '''Test tmd.io'''
 import os
 from nose import tools as nt
+from numpy.testing import assert_array_equal
 from tmd.io import io
 import numpy as np
 from tmd.Soma import Soma
 from tmd.Tree import Tree
+import glob
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, '../../../test_data')
@@ -85,4 +87,11 @@ def test_io_load():
 def test_load_population():
     population = io.load_population(POP_PATH)
     nt.ok_(len(population.neurons) == 5)
-    names = np.array([n.name for n in population.neurons])
+    names = np.array([n.name.split('/')[-1] for n in population.neurons])
+    
+    L = glob.glob(POP_PATH + '/*')
+    population1 = io.load_population(L)
+    nt.ok_(len(population.neurons) == 5)
+    names1 = np.array([n.name.split('/')[-1] for n in population1.neurons])
+    assert_array_equal(names, names1)
+    nt.ok_(population.neurons[0].is_equal(population1.neurons[0]))

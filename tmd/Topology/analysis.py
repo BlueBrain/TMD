@@ -43,7 +43,7 @@ def get_limits(phs_list, coll=True):
     return xlims, ylims
 
 
-def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None):
+def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_method=None):
     '''Create the data for the generation of the persistence image.
     If norm_factor is provided the data will be normalized based on this,
     otherwise they will be normalized to 1.
@@ -57,7 +57,7 @@ def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None):
     X, Y = np.mgrid[xlims[0]:xlims[1]:100j, ylims[0]:ylims[1]:100j]
 
     values = np.transpose(ph)
-    kernel = stats.gaussian_kde(values)
+    kernel = stats.gaussian_kde(values, bw_method=bw_method)
     positions = np.vstack([X.ravel(), Y.ravel()])
     Z = np.reshape(kernel(positions).T, X.shape)
 
@@ -175,20 +175,34 @@ def distance_horizontal_unnormed(ph1, ph2, norm=1, bins=100):
     return np.linalg.norm(np.abs(np.subtract(results1, results2)), norm)
 
 
-def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=None):
+def distance_persistence_image(ph1, ph2, xlims=None, ylims=None):
+    """Computes the absolute difference of the respective persistence images
+    """
+    p1 = get_persistence_image_data(ph1, xlims=xlims, ylims=ylims)
+    p2 = get_persistence_image_data(ph2, xlims=xlims, ylims=ylims)
+    return np.sum(np.abs(get_image_diff_data(p1, p2)))
+
+
+def get_average_persistence_image(ph_list, xlims=None, ylims=None,
+                                  norm_factor=None, weighted=False):
     '''Plots the gaussian kernel of a population of cells
        as an average of the ph diagrams that are given.
     '''
     im_av = False
     k = 1
+    if weighted:
+        weights = [len(p) for p in ph_list]
+        weights = np.array(weights, dtype=np.float) / np.max(weights)
+    else:
+        weights = [1 for p in ph_list]
 
-    for p in ph_list:
+    for i, p in enumerate(ph_list):
         if not isinstance(im_av, np.ndarray):
             try:
                 im = get_persistence_image_data(p, norm_factor=norm_factor,
                                                 xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
-                    im_av = im
+                    im_av = weights[i] * im
             except BaseException:
                 pass
         else:
@@ -196,7 +210,7 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None, norm_factor=N
                 im = get_persistence_image_data(p, norm_factor=norm_factor,
                                                 xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
-                    im_av = np.add(im_av, im)
+                    im_av = np.add(im_av, wieghts[i] * im)
                     k = k + 1
             except BaseException:
                 pass
@@ -237,7 +251,7 @@ def matching_munkress_modified(p1, p2, use_diag=True):
     '''
     from scipy.spatial.distance import cdist
     import munkres
-    from tmd.view import common as _cm
+    from view import common as _cm
 
     if use_diag:
         p1_enh = p1 + [_symmetric(i) for i in p2]
