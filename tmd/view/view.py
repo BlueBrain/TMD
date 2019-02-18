@@ -853,7 +853,7 @@ def _get_polar_data(pop, neurite_type='neurites', bins=20):
     angles = _np.array([seg_angle(s) for s in segs])
     lens = _np.array([seg_length(s) for s in segs])
     ranges = [[i * 2 * _np.pi / bins - _np.pi, (i + 1) * 2 * _np.pi / bins - _np.pi]
-              for i in xrange(bins)]
+              for i in range(bins)]
     results = [r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])]
                for r in ranges]
 
