@@ -20,10 +20,10 @@ def sort_ph(ph):
     return np.array(ph)[np.argsort([p[0] - p[1] for p in ph])].tolist()
 
 
-def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
+def closest_ph(ph_list, target_extent, method='from_above'):
     """
-    Returns the barcode list that has the maximum extent
-    that is closer to the target_extent according to the selected method.
+    Returns the index of the persistent homology in the ph_list that has the maximum extent
+    which is closer to the target_extent according to the selected method.
 
     method:
         from_above: smallest maximum extent that is greater or equal than target_extent
@@ -31,9 +31,7 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
         nearest: closest by absolute value
     """
     n_bars = len(ph_list)
-
-    max_extents = \
-    np.fromiter((max(get_lengths(barcode)) for barcode in ph_list), dtype=np.float)
+    max_extents = np.asarray([max(get_lengths(ph)) for ph in ph_list])
 
     sorted_indices = np.argsort(max_extents, kind='mergesort')
     sorted_extents = max_extents[sorted_indices]
@@ -43,7 +41,7 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
         above = np.searchsorted(sorted_extents, target_extent, side='right')
 
         # if target extent is close to current one, return this instead
-        if above - 1 >= 0 and np.isclose(sorted_extents[above - 1], target_extent):
+        if above >= 1 and np.isclose(sorted_extents[above - 1], target_extent):
             closest_index = above - 1
         else:
             closest_index = above
@@ -73,12 +71,7 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
     else:
         raise TypeError('Unknown method {} for closest_ph'.format(method))
 
-    index = sorted_indices[closest_index]
-
-    if return_index:
-        return ph_list[index], index
-    else:
-        return ph_list[index]
+    return sorted_indices[closest_index]
 
 
 def load_file(filename, delimiter=' '):
