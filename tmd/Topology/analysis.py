@@ -2,8 +2,6 @@
 tmd Topology analysis algorithms implementation
 '''
 # pylint: disable=invalid-slice-index
-
-import bisect
 import numpy as np
 from .statistics import get_lengths
 
@@ -25,9 +23,9 @@ def sort_ph(ph):
 def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
     """
     Returns the barcode list that has the maximum extent
-    that is closer to the target_extent according to the selected method. 
+    that is closer to the target_extent according to the selected method.
 
-    method: 
+    method:
         from_above: smallest maximum extent that is greater than target_extent
         from_below: biggest maximum extent that is smaller than target_extent
         nearest: closest by absolute value
@@ -35,9 +33,9 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
     n_bars = len(ph_list)
 
     max_extents = \
-    np.fromiter((max(get_lengths(bar)) for bar in ph_list), dtype=np.float)
+    np.fromiter((max(get_lengths(barcode)) for barcode in ph_list), dtype=np.float)
 
-    sorted_indices = np.argsort(max_extents,  kind='mergesort')
+    sorted_indices = np.argsort(max_extents, kind='mergesort')
     sorted_extents = max_extents[sorted_indices]
 
     #print("sorted_extents: ", sorted_extents, "pos: ", above)
@@ -64,7 +62,7 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
         else:
             closest_index = below - 1
 
-        closest_index = np.clip(closest_index, 0, n_bars - 1)     
+        closest_index = np.clip(closest_index, 0, n_bars - 1)
 
     elif method == 'nearest':
 
