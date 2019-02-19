@@ -1,7 +1,7 @@
 '''Test tmd.topology.analysis'''
 from nose import tools as nt
 import numpy as np
-from numpy.testing import assert_array_equal, assert_array_almost_equal
+from numpy.testing import assert_equal, assert_array_equal, assert_array_almost_equal
 from tmd.Topology import analysis
 import os
 
@@ -67,131 +67,105 @@ def test_distance_horizontal_unnormed():
     nt.ok_(analysis.distance_horizontal_unnormed(sample_data_0, sample_data_1, bins=4) == 1.0)
 
 
-def test_closest_ph():
+def _ph_list():
 
-    random_values = np.random.random(4).tolist()
-
-    ph_list = [
+    return [
                 [
-                    [16.90, 6.68],
-                    [10.52, 5.98],
-                    [74.11, 0.00]
+                    [16.90, 6.68, 0.1, 0.1, 0.1, 0.1],
+                    [10.52, 5.98, 0.1, 0.1, 0.1, 0.1],
+                    [74.11, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [3.01, 1.58],
-                    [15.22, 0.18],
-                    [60.48, 0.00]
+                    [3.010, 1.58, 0.1, 0.1, 0.1, 0.1],
+                    [15.22, 0.18, 0.1, 0.1, 0.1, 0.1],
+                    [60.48, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [9.78, 5.30],
-                    [7.66, 1.60],
-                    [24.00, 0.00]
+                    [9.78, 5.30, 0.1, 0.1, 0.1, 0.1],
+                    [7.66, 1.60, 0.1, 0.1, 0.1, 0.1],
+                    [24.0, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [6.05, 2.01],
-                    [3.91, 1.41],
-                    [8.05, 0.00]
+                    [6.05, 2.01, 0.1, 0.1, 0.1, 0.1],
+                    [3.91, 1.41, 0.1, 0.1, 0.1, 0.1],
+                    [8.05, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [2.78, 0.87],
-                    [6.12, 0.21],
-                    [21.24, 0.00]
+                    [2.78, 0.87, 0.1, 0.1, 0.1, 0.1],
+                    [6.12, 0.21, 0.1, 0.1, 0.1, 0.1],
+                    [21.2, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [4.99, 4.06],
-                    [4.38, 2.92],
-                    [6.79, 0.00]
+                    [4.99, 4.06, 0.1, 0.1, 0.1, 0.1],
+                    [4.38, 2.92, 0.1, 0.1, 0.1, 0.1],
+                    [6.79, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ],
                 [
-                    [4.99, 4.06],
-                    [4.38, 2.92],
-                    [4.79, 0.00]
+                    [4.99, 4.06, 0.1, 0.1, 0.1, 0.1],
+                    [4.38, 2.92, 0.1, 0.1, 0.1, 0.1],
+                    [4.79, 0.00, 0.1, 0.1, 0.1, 0.1]
                 ]
     ]
 
-    for ph in ph_list:
-        for bar in ph:
-            bar += random_values
+def test_closest_ph__reasonable_target_extent():
+
+    ph_list = _ph_list()
 
     target_extent = 6.0
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    assert_equal(closest_index, 5)
 
-    assert closest_index == 5, (closest_index, 5)
-    assert_array_equal(ph_list[5], closest_ph)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    assert_equal(closest_index, 6)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    assert_equal(closest_index, 5)
 
-    assert closest_index == 6, (closest_index, 6)
-    assert_array_equal(ph_list[6], closest_ph)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+def test_closest_ph__very_big_target_extent():
 
-    assert closest_index == 5, (closest_index, 5)
-    assert_array_equal(ph_list[5], closest_ph)
+    ph_list = _ph_list()
 
-    # extreme case, target_extent bigger than any other extent
     target_extent = 100.
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    assert_equal(closest_index, 0)
 
-    assert closest_index == 0, (closest_index, 0)
-    assert_array_equal(ph_list[0], closest_ph)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    assert_equal(closest_index, 0)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    assert_equal(closest_index, 0)
 
-    assert closest_index == 0, (closest_index, 0)
-    assert_array_equal(ph_list[0], closest_ph)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+def test_closest_ph__very_small_target_extent():
 
-    assert closest_index == 0, (closest_index, 0)
-    assert_array_equal(ph_list[0], closest_ph)
+    ph_list = _ph_list()
 
-    # extreme case, target_extent smaller than any other extent
     target_extent = 2.0
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    assert_equal(closest_index, 6)
 
-    assert closest_index == 6, (closest_index, 6)
-    assert_array_equal(ph_list[6], closest_ph)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    assert_equal(closest_index, 6)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    assert_equal(closest_index, 6)
 
-    assert closest_index == 6, (closest_index, 6)
-    assert_array_equal(ph_list[6], closest_ph)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+def test_closest_ph__exact_match_target_extent():
 
-    assert closest_index == 6, (closest_index, 6)
-    assert_array_equal(ph_list[6], closest_ph)
+    ph_list = _ph_list()
 
-    # particular case of exact match of extents
     target_extent = 24.0
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    assert_equal(closest_index, 2)
 
-    assert closest_index == 2, (closest_index, 2)
-    assert_array_equal(ph_list[2], closest_ph)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    assert_equal(closest_index, 2)
 
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
-
-    assert closest_index == 2, (closest_index, 2)
-    assert_array_equal(ph_list[2], closest_ph)
-
-    closest_ph, closest_index = \
-    analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
-
-    assert closest_index == 2, (closest_index, 2)
-    assert_array_equal(ph_list[2], closest_ph)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    assert_equal(closest_index, 2)
