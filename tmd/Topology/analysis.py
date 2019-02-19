@@ -38,8 +38,6 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
     sorted_indices = np.argsort(max_extents, kind='mergesort')
     sorted_extents = max_extents[sorted_indices]
 
-    #print("sorted_extents: ", sorted_extents, "pos: ", above)
-
     if method == 'from_above':
 
         above = np.searchsorted(sorted_extents, target_extent, side='right')
