@@ -26,8 +26,8 @@ def closest_ph(ph_list, target_extent, method='from_above', return_index=False):
     that is closer to the target_extent according to the selected method.
 
     method:
-        from_above: smallest maximum extent that is greater than target_extent
-        from_below: biggest maximum extent that is smaller than target_extent
+        from_above: smallest maximum extent that is greater or equal than target_extent
+        from_below: biggest maximum extent that is smaller or equal than target_extent
         nearest: closest by absolute value
     """
     n_bars = len(ph_list)
