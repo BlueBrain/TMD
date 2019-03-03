@@ -351,7 +351,7 @@ def get_children(tree):
        for each node of the tree
     '''
     from collections import OrderedDict
-    return OrderedDict({i: _np.where(tree.p == i)[0] for i in xrange(len(tree.p))})
+    return OrderedDict({i: _np.where(tree.p == i)[0] for i in range(len(tree.p))})
 
 
 # PCA
