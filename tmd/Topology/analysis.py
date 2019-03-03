@@ -2,8 +2,8 @@
 tmd Topology analysis algorithms implementation
 '''
 # pylint: disable=invalid-slice-index
-
 import numpy as np
+from .statistics import get_lengths
 
 
 def collapse(ph_list):
@@ -18,6 +18,60 @@ def sort_ph(ph):
     Sorts barcode according to decreasing length of bars.
     """
     return np.array(ph)[np.argsort([p[0] - p[1] for p in ph])].tolist()
+
+
+def closest_ph(ph_list, target_extent, method='from_above'):
+    """
+    Returns the index of the persistent homology in the ph_list that has the maximum extent
+    which is closer to the target_extent according to the selected method.
+
+    method:
+        from_above: smallest maximum extent that is greater or equal than target_extent
+        from_below: biggest maximum extent that is smaller or equal than target_extent
+        nearest: closest by absolute value
+    """
+    n_bars = len(ph_list)
+    max_extents = np.asarray([max(get_lengths(ph)) for ph in ph_list])
+
+    sorted_indices = np.argsort(max_extents, kind='mergesort')
+    sorted_extents = max_extents[sorted_indices]
+
+    if method == 'from_above':
+
+        above = np.searchsorted(sorted_extents, target_extent, side='right')
+
+        # if target extent is close to current one, return this instead
+        if above >= 1 and np.isclose(sorted_extents[above - 1], target_extent):
+            closest_index = above - 1
+        else:
+            closest_index = above
+
+        closest_index = np.clip(closest_index, 0, n_bars - 1)
+
+    elif method == 'from_below':
+
+        below = np.searchsorted(sorted_extents, target_extent, side='left')
+
+        # if target extent is close to current one, return this instead
+        if below < n_bars and np.isclose(sorted_extents[below], target_extent):
+            closest_index = below
+        else:
+            closest_index = below - 1
+
+        closest_index = np.clip(closest_index, 0, n_bars - 1)
+
+    elif method == 'nearest':
+
+        below = np.searchsorted(sorted_extents, target_extent, side="left")
+        pos = np.clip(below, 0, n_bars - 2)
+
+        closest_index = \
+        min((pos, pos + 1), key=lambda i: abs(sorted_extents[i] - target_extent))
+
+    else:
+        raise TypeError('Unknown method {} for closest_ph'.format(method))
+
+    return sorted_indices[closest_index]
 
 
 def load_file(filename, delimiter=' '):
