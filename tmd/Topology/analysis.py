@@ -66,7 +66,7 @@ def closest_ph(ph_list, target_extent, method='from_above'):
         pos = np.clip(below, 0, n_bars - 2)
 
         closest_index = \
-        min((pos, pos + 1), key=lambda i: abs(sorted_extents[i] - target_extent))
+            min((pos, pos + 1), key=lambda i: abs(sorted_extents[i] - target_extent))
 
     else:
         raise TypeError('Unknown method {} for closest_ph'.format(method))
@@ -99,9 +99,13 @@ def get_limits(phs_list, coll=True):
 
 def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_method=None):
     '''Create the data for the generation of the persistence image.
-    If norm_factor is provided the data will be normalized based on this,
-    otherwise they will be normalized to 1.
-    If xlims, ylims are provided the data will be scaled accordingly.
+    ph: persistence diagram
+    norm_factor: persistence image data are normalized according to this.
+        If norm_factor is provided the data will be normalized based on this,
+        otherwise they will be normalized to 1.
+    xlims, ylims: the image limits on x-y axes.
+        If xlims, ylims are provided the data will be scaled accordingly.
+    bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
     '''
     from scipy import stats
 
@@ -248,23 +252,23 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None,
         weights = [len(p) for p in ph_list]
         weights = np.array(weights, dtype=np.float) / np.max(weights)
     else:
-        weights = [1 for p in ph_list]
+        weights = [1 for _ in ph_list]
 
-    for i, p in enumerate(ph_list):
+    for weight, ph in zip(weights, ph_list):
         if not isinstance(im_av, np.ndarray):
             try:
-                im = get_persistence_image_data(p, norm_factor=norm_factor,
+                im = get_persistence_image_data(ph, norm_factor=norm_factor,
                                                 xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
-                    im_av = weights[i] * im
+                    im_av = weight * im
             except BaseException:
                 pass
         else:
             try:
-                im = get_persistence_image_data(p, norm_factor=norm_factor,
+                im = get_persistence_image_data(ph, norm_factor=norm_factor,
                                                 xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
-                    im_av = np.add(im_av, wieghts[i] * im)
+                    im_av = np.add(im_av, weight * im)
                     k = k + 1
             except BaseException:
                 pass
@@ -305,7 +309,6 @@ def matching_munkress_modified(p1, p2, use_diag=True):
     '''
     from scipy.spatial.distance import cdist
     import munkres
-    from view import common as _cm
 
     if use_diag:
         p1_enh = p1 + [_symmetric(i) for i in p2]

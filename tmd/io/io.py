@@ -4,7 +4,10 @@ about reading and writing files.
 '''
 from __future__ import print_function
 
+import os
 import numpy as _np
+from scipy import sparse as sp
+from scipy.sparse import csgraph as cs
 from tmd.io.swc import SWC_DCT
 from tmd.io.swc import read_swc
 from tmd.io.swc import swc_to_data
@@ -13,8 +16,7 @@ from tmd.Neuron import Neuron
 from tmd.Tree import Tree
 from tmd.Soma import Soma
 from tmd.Population import Population
-import os, glob
-
+from tmd.utils import tree_type as td
 
 # Definition of tree types
 TYPE_DCT = {'soma': 1,
@@ -51,9 +53,6 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     not include it in neuron structure and warn the user
     that there are disconnected components
     '''
-    from scipy import sparse as sp
-    from scipy.sparse import csgraph as cs
-    from tmd.utils import tree_type as td
 
     if tree_types is not None:
         td.update(tree_types)
