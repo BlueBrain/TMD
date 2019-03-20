@@ -113,13 +113,13 @@ def test_closest_ph__reasonable_target_extent():
 
     target_extent = 6.0
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above')
     assert_equal(closest_index, 5)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below')
     assert_equal(closest_index, 6)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest')
     assert_equal(closest_index, 5)
 
 
@@ -129,13 +129,13 @@ def test_closest_ph__very_big_target_extent():
 
     target_extent = 100.
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above')
     assert_equal(closest_index, 0)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below')
     assert_equal(closest_index, 0)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest')
     assert_equal(closest_index, 0)
 
 
@@ -145,13 +145,13 @@ def test_closest_ph__very_small_target_extent():
 
     target_extent = 2.0
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above')
     assert_equal(closest_index, 6)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below')
     assert_equal(closest_index, 6)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest')
     assert_equal(closest_index, 6)
 
 
@@ -161,11 +161,11 @@ def test_closest_ph__exact_match_target_extent():
 
     target_extent = 24.0
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_above')
     assert_equal(closest_index, 2)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='from_below')
     assert_equal(closest_index, 2)
 
-    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest', return_index=True)
+    closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest')
     assert_equal(closest_index, 2)

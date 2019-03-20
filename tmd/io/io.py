@@ -4,7 +4,10 @@ about reading and writing files.
 '''
 from __future__ import print_function
 
+import os
 import numpy as _np
+from scipy import sparse as sp
+from scipy.sparse import csgraph as cs
 from tmd.io.swc import SWC_DCT
 from tmd.io.swc import read_swc
 from tmd.io.swc import swc_to_data
@@ -12,7 +15,8 @@ from tmd.io.h5 import read_h5
 from tmd.Neuron import Neuron
 from tmd.Tree import Tree
 from tmd.Soma import Soma
-
+from tmd.Population import Population
+from tmd.utils import tree_type as td
 
 # Definition of tree types
 TYPE_DCT = {'soma': 1,
@@ -22,7 +26,7 @@ TYPE_DCT = {'soma': 1,
 
 
 class LoadNeuronError(Exception):
-    '''Captures the exception of failing to create the dA matrix
+    '''Captures the exception of failing to load a single neuron
     '''
 
 
@@ -49,10 +53,6 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     not include it in neuron structure and warn the user
     that there are disconnected components
     '''
-    import os
-    from scipy import sparse as sp
-    from scipy.sparse import csgraph as cs
-    from tmd.utils import tree_type as td
 
     if tree_types is not None:
         td.update(tree_types)
@@ -76,7 +76,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     try:
         soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
     except IndexError:
-        raise LoadNeuronError
+        raise LoadNeuronError('Soma points not in the expected format')
 
     # Extract soma information from swc
     soma = Soma.Soma(x=_np.transpose(data)[SWC_DCT['x']][soma_ids],
@@ -93,7 +93,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
                            (range(len(soma_ids), len(p)),
                             p[len(soma_ids):])), shape=(len(p), len(p)))
     except Exception:
-        raise LoadNeuronError
+        raise LoadNeuronError('Cannot create connectivity, nodes not connected correctly.')
 
     # assuming soma points are in the beginning of the file.
     comp = cs.connected_components(dA[len(soma_ids):, len(soma_ids):])
@@ -107,22 +107,25 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     return neuron
 
 
-def load_population(input_directory, tree_types=None):
+def load_population(neurons, tree_types=None, name=None):
     '''Loads all data of recognised format (swc, h5)
        into a Population object.
+       Takes as input a directory or a list of files to load.
     '''
-    import os
-    from tmd.Population import Population
+    if isinstance(neurons, (list, tuple)):
+        files = neurons
+        name = name if name is not None else 'Population'
+    elif os.path.isdir(neurons):  # Assumes given input is a directory
+        files = [os.path.join(neurons, l) for l in os.listdir(neurons)]
+        name = name if name is not None else os.path.basename(neurons)
 
-    files_h5 = [i for i in os.listdir(input_directory) if i.endswith(".h5")]
-    files_swc = [i for i in os.listdir(input_directory) if i.endswith(".swc")]
+    pop = Population.Population(name=name)
 
-    pop = Population.Population(name=os.path.relpath(input_directory))
+    files2load = [i for i in files if (i.endswith(".h5") or i.endswith(".swc"))]
 
-    for i in files_h5 + files_swc:
+    for i in files2load:
         try:
-            pop.append_neuron(load_neuron(os.path.join(input_directory, i),
-                                          tree_types=tree_types))
+            pop.append_neuron(load_neuron(i, tree_types=tree_types))
         except LoadNeuronError:
             print('File failed to load: {}'.format(i))
 
