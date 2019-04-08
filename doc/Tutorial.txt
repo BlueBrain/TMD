@@ -17,4 +17,4 @@ import tmd
 neuron = tmd.io.load_neuron('input_path_to_file/input_file.swc')
 
 # Extract the tmd of a neurite, i.e., neuronal tree
-pd = tmd.methods.get_persistence_diagram(neuron.neurite[0])
+pd = tmd.methods.get_persistence_diagram(neuron.neurites[0])
