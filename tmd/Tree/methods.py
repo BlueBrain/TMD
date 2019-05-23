@@ -170,18 +170,6 @@ def get_point_weighted_radial_distances(self, point=None, dim='xyz', w=(1, 1, 1)
 def get_point_path_distances(self):
     '''Tree method to get path distances from the root.
     '''
-    seg_len = get_segment_lengths(self)
-
-    def path_length(seg_id):
-        '''Returns path length of segment'''
-        return sum([seg_len[i] for i in get_way_to_root(self, seg_id)[1:]])
-
-    return _np.array([path_length(i) for i in range(size(self))])
-
-
-def get_point_path_distances_2(self):
-    '''Tree method to get path distances from the root.
-    '''
     import copy
 
     seg_len = get_segment_lengths(self)

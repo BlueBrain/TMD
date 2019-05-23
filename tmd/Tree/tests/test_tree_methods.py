@@ -113,7 +113,7 @@ def test_get_point_radial_dist():
 
 def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
-    nt.ok_(np.allclose(pds, np.array([0., 5.19615242, 8.93780981, 10.66986062, 8.93780981])))
+    nt.ok_(np.allclose(pds, np.array([0., 3.74165739, 5.47370819, 7.205759  , 8.93780981])))
 
 def test_get_sections_2():
     secs = tree.get_sections_2()
