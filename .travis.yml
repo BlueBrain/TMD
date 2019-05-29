@@ -8,6 +8,8 @@ addons:
   apt:
     packages:
     - libhdf5-dev
+    - python-tk
+
 cache: pip
 install:
 - pip install tox
