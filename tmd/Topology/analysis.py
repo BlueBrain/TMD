@@ -261,7 +261,7 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None,
                                                 xlims=xlims, ylims=ylims)
                 if not np.isnan(np.sum(im)):
                     im_av = weight * im
-            except BaseException:
+            except BaseException:  # pylint: disable=broad-except
                 pass
         else:
             try:
@@ -270,7 +270,7 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None,
                 if not np.isnan(np.sum(im)):
                     im_av = np.add(im_av, weight * im)
                     k = k + 1
-            except BaseException:
+            except BaseException:  # pylint: disable=broad-except
                 pass
     return im_av / k
 
