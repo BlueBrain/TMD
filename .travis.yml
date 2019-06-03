@@ -16,8 +16,8 @@ install:
 - pip install .
 script:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then tox -e py27; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then tox --skip-missing-interpreters; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then tox -e py36; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then tox -e py35; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then tox -e py36 -e lint; fi
 before_deploy:
 - pip install twine
 deploy:
