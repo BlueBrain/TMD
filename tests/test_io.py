@@ -104,8 +104,8 @@ def test_tree_type():
                   8: 'apical'}
 
     neuron = io.load_neuron(os.path.join(DATA_PATH, 'basic_exotic_section_types.swc'),
-                               soma_type=5,
-                               tree_types=tree_types)
+                            soma_type=5,
+                            tree_types=tree_types)
 
     def point(section):
         return np.column_stack([section.x, section.y, section.z])
