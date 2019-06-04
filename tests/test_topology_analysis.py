@@ -6,7 +6,7 @@ from tmd.Topology import analysis
 import os
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, '../../../test_data')
+DATA_PATH = os.path.join(_path, 'data')
 
 # Filenames for testing
 sample_ph_0_file = os.path.join(DATA_PATH, 'sample_ph_0.txt')

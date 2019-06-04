@@ -9,8 +9,8 @@ from tmd.Tree import Tree
 import glob
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, '../../../test_data')
-POP_PATH = os.path.join(_path, '../../../test_data/valid')
+DATA_PATH = os.path.join(_path, 'data')
+POP_PATH = os.path.join(DATA_PATH, 'valid')
 
 # Filenames for testing
 basic_file = os.path.join(DATA_PATH, 'basic.swc')
@@ -88,7 +88,7 @@ def test_load_population():
     population = io.load_population(POP_PATH)
     nt.ok_(len(population.neurons) == 5)
     names = np.array([os.path.basename(n.name) for n in population.neurons])
-    
+
     L = glob.glob(POP_PATH + '/*')
     population1 = io.load_population(L)
     nt.ok_(len(population.neurons) == 5)
