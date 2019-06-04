@@ -95,3 +95,20 @@ def test_load_population():
     names1 = np.array([os.path.basename(n.name) for n in population1.neurons])
     assert_array_equal(names, names1)
     nt.ok_(population.neurons[0].is_equal(population1.neurons[0]))
+
+
+def test_tree_type():
+    tree_types = {5: 'soma',
+                  6: 'axon',
+                  7: 'basal',
+                  8: 'apical'}
+
+    neuron = io.load_neuron(os.path.join(DATA_PATH, 'basic_exotic_section_types.swc'),
+                               soma_type=5,
+                               tree_types=tree_types)
+
+    def point(section):
+        return np.column_stack([section.x, section.y, section.z])
+    assert_array_equal(point(neuron.apical[0]), [[3, 4, 5]])
+    assert_array_equal(point(neuron.basal[0]), [[4, 5, 6]])
+    assert_array_equal(point(neuron.axon[0]), [[5, 6, 7], [5, 6, 7]])
