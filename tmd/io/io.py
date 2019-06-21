@@ -5,6 +5,7 @@ about reading and writing files.
 from __future__ import print_function
 
 import os
+import sys
 import numpy as _np
 from scipy import sparse as sp
 from scipy.sparse import csgraph as cs
@@ -47,16 +48,15 @@ def make_tree(data):
 
 def load_neuron(input_file, line_delimiter='\n', soma_type=None,
                 tree_types=None, remove_duplicates=True):
-    '''
+    """
     Io method to load an swc or h5 file into a Neuron object.
     TODO: Check if tree is connected to soma, otherwise do
     not include it in neuron structure and warn the user
     that there are disconnected components
-    '''
+    """
 
-    tree_types_final = td.copy()
     if tree_types is not None:
-        tree_types_final.update(tree_types)
+        td.update(tree_types)
 
     # Definition of swc types from type_dict function
     if soma_type is None:
@@ -69,41 +69,73 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         data = swc_to_data(read_swc(input_file=input_file,
                                     line_delimiter=line_delimiter))
         neuron = Neuron.Neuron(name=input_file.replace('.swc', ''))
-
     elif os.path.splitext(input_file)[-1] == '.h5':
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
         neuron = Neuron.Neuron(name=input_file.replace('.h5', ''))
+    else:
+        return None
 
-    try:
-        soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
-    except IndexError:
-        raise LoadNeuronError('Soma points not in the expected format')
+    # Get soma ids
+    soma_ids = [node[SWC_DCT['index']] for node in data if node[SWC_DCT['type']] == soma_index]
+    soma_ids = _np.array(soma_ids, dtype=_np.int)
+    if len(soma_ids) == 0:
+        print("WARNING: file contains no soma. ({})".format(os.path.split(str(input_file))[-1]), file=sys.stderr)
 
-    # Extract soma information from swc
-    soma = Soma.Soma(x=_np.transpose(data)[SWC_DCT['x']][soma_ids],
-                     y=_np.transpose(data)[SWC_DCT['y']][soma_ids],
-                     z=_np.transpose(data)[SWC_DCT['z']][soma_ids],
-                     d=_np.transpose(data)[SWC_DCT['radius']][soma_ids])
+    # Extract soma information from swc;
+    # This should normally work even if len(soma_ids) == 0
+    soma = Soma.Soma(x=data[soma_ids, SWC_DCT['x']],
+                     y=data[soma_ids, SWC_DCT['y']],
+                     z=data[soma_ids, SWC_DCT['z']],
+                     d=data[soma_ids, SWC_DCT['radius']])
 
     # Save soma in Neuron
     neuron.set_soma(soma)
-    p = _np.array(_np.transpose(data)[6], dtype=int) - _np.transpose(data)[0][0]
-    # return p, soma_ids
-    try:
-        dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
-                           (range(len(soma_ids), len(p)),
-                            p[len(soma_ids):])), shape=(len(p), len(p)))
-    except Exception:
-        raise LoadNeuronError('Cannot create connectivity, nodes not connected correctly.')
+    soma_ids = set(soma_ids)
 
-    # assuming soma points are in the beginning of the file.
-    comp = cs.connected_components(dA[len(soma_ids):, len(soma_ids):])
+    # Extract neurites by computing connected components of the adjacency matrix
+    def construct_adj():
+        """ Construct adjacency matrix for all nodes except the soma
+
+        The adjacency matrix will be such that the nodes belonging to
+        a given neurite end up in the same connected component.
+
+        Nodes that either connect to soma, or have no parent get
+        self-connections so that they end up in the same right connected
+        component.
+        """
+
+        # Construct (child, parent) pairs
+        pairs = data[:, [SWC_DCT['index'], SWC_DCT['parent']]].astype(_np.int)
+        max_index = pairs.max()
+        # Remove points belonging to soma
+        pairs = [pair for pair in pairs if pair[0] not in soma_ids]
+        # Add self-connections to end-points of trees
+        pairs = [(p0, p1) if p1 not in soma_ids and p1 != -1 else (p0, p0) for p0, p1 in pairs]
+        pairs = _np.array(pairs)
+
+        # Prepare data for sparse matrix construction
+        values = _np.ones(shape=len(pairs))
+        dim = max_index + 1
+
+        return sp.coo_matrix((values, pairs.T), shape=(dim, dim))
+
+    def get_connected_components(adj):
+        """ Extracts non-trivial connected components from adj disregarding the soma """
+
+        n_conn, conn = cs.connected_components(adj)
+        indices = [_np.where(conn == c)[0] for c in range(n_conn)]
+
+        # Remove trivial components originating from the soma
+        indices = [idx for idx in indices if len(idx) > 1]
+
+        return indices
 
     # Extract trees
-    for i in range(comp[0]):
-        tree_ids = _np.where(comp[1] == i)[0] + len(soma_ids)
-        tree = make_tree(data[tree_ids])
-        neuron.append_tree(tree, td=tree_types_final)
+    for tree_ids in get_connected_components(construct_adj()):
+        selector = _np.vectorize(lambda x: x in tree_ids)
+        selection = selector(data[:, SWC_DCT['index']].astype(_np.int))
+        tree = make_tree(data[selection])
+        neuron.append_tree(tree, td=td)
 
     return neuron
 
