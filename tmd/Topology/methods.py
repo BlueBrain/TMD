@@ -69,8 +69,10 @@ def _phi_theta(u, v):
     Returns phi, theta
     """
     phi1 = np.arctan2(u[1], u[0])
+    # pylint: disable=assignment-from-no-return
     theta1 = np.arccos(u[2] / np.linalg.norm(u))
 
+    # pylint: disable=assignment-from-no-return
     phi2 = np.arctan2(v[1], v[0])
     theta2 = np.arccos(v[2] / np.linalg.norm(v))
 
