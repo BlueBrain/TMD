@@ -93,6 +93,7 @@ def persistence_image(ph, new_fig=True, subplot=111, xlims=None, ylims=None,
     if xlims is None or xlims is None:
         xlims, ylims = analysis.get_limits(ph, coll=False)
 
+    # pylint: disable=unexpected-keyword-arg
     Zn = analysis.get_persistence_image_data(ph, norm_factor=norm_factor, bw_method=bw_method,
                                              xlims=xlims, ylims=ylims)
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -156,6 +157,7 @@ def persistence_image_average(ph_list, new_fig=True, subplot=111, xlims=None,
                               cmap=jet_map, weighted=False, **kwargs):
     """Merges a list of ph diagrams and plots their respective average image.
     """
+    # pylint: disable=unexpected-keyword-arg
     av_imgs = analysis.get_average_persistence_image(ph_list, xlims=xlims, ylims=ylims,
                                                      norm_factor=norm_factor, weighted=weighted)
     if xlims is None or xlims is None:

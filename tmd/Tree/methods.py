@@ -288,6 +288,7 @@ def get_direction_between(self, start_id=0, end_id=1):
     defined as end point - start point
     normalized as a unit vector.
     '''
+    # pylint: disable=assignment-from-no-return
     vect = _np.subtract([self.x[end_id], self.y[end_id], self.z[end_id]],
                         [self.x[start_id], self.y[start_id], self.z[start_id]])
 
