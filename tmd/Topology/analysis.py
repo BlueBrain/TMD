@@ -283,22 +283,20 @@ def find_apical_point_distance(ph):
     # Computation of number of components within the barcode
     # as the number of bars with at least max length / 2
     lengths = tmd.analysis.get_lengths(ph)
-    number_of_components = len(np.where(np.array(lengths) >= max(lens)/2.)[0])
+    num_components = len(np.where(np.array(lengths) >= max(lens) / 2.)[0])
     # Separate the barcode into sufficiently many bins
     n_bins, counts = histogram_horizontal(ph, num_bins=3 * len(ph))
     # Compute derivatives
     der1 = counts[1:] - counts[:-1]  # first derivative
     der2 = der1[1:] - der1[:-1]  # second derivative
     # Find all points that take minimum value, defined as the number of components,
-    #and have the first derivative zero == no variation
-    inters = np.intersect1d(np.where(counts == number_of_components)[0], np.where(der1 == 0)[0])
+    # and have the first derivative zero == no variation
+    inters = np.intersect1d(np.where(counts == num_components)[0], np.where(der1 == 0)[0])
     # Find all points that are also below a positive second derivative
     # The definition of how positive the second derivative should be is arbitrary,
     # but it is the only value that works nicely for cortical cells
-    best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100)[0]))]
-
     try:
-        best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / positiveness)[0]))]
+        best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100)[0]))]
     except ValueError:
         return 0.0
 
