@@ -4,7 +4,7 @@
 import tmd
 
 # Step 2: Load your morphology
-filename = './test_data/valid/C010398B-P2.CNG.swc'
+filename = '../tests/data/valid/C010398B-P2.CNG.swc'
 neu = tmd.io.load_neuron(filename)
 
 # Step 3: Extract the ph diagram of a tree

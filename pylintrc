@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=bad-continuation,fixme,invalid-name,len-as-condition,no-else-return,ungrouped-imports,useless-object-inheritance
+disable=bad-continuation,fixme,invalid-name,len-as-condition,no-else-return,ungrouped-imports,useless-object-inheritance,import-outside-toplevel
 
 [FORMAT]
 # Maximum number of characters on a single line.
