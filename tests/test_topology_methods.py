@@ -9,7 +9,7 @@ import os
 from collections import OrderedDict
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, '../../../test_data')
+DATA_PATH = os.path.join(_path, 'data')
 
 sample_ph_0 = os.path.join(DATA_PATH, 'sample_ph_0.txt')
 sample_ph_1 = os.path.join(DATA_PATH, 'sample_ph_1.txt')
@@ -70,7 +70,7 @@ def test_get_persistence_diagram():
     nt.ok_(np.allclose(ph0, [[12.24744871391589, 11.180339887498949],
                              [11.180339887498949, 10.0],
                              [12.24744871391589, 0]]))
-    nt.ok_(np.allclose(ph1, [[11.180339887498949, 10.0], 
+    nt.ok_(np.allclose(ph1, [[11.180339887498949, 10.0],
                              [11.180339887498949, 0]]))
     ph0 = methods.get_persistence_diagram(tree0, feature='path_distances')
     ph1 = methods.get_persistence_diagram(tree1, feature='path_distances')

@@ -54,8 +54,9 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     that there are disconnected components
     '''
 
+    tree_types_final = td.copy()
     if tree_types is not None:
-        td.update(tree_types)
+        tree_types_final.update(tree_types)
 
     # Definition of swc types from type_dict function
     if soma_type is None:
@@ -102,7 +103,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     for i in range(comp[0]):
         tree_ids = _np.where(comp[1] == i)[0] + len(soma_ids)
         tree = make_tree(data[tree_ids])
-        neuron.append_tree(tree, td=td)
+        neuron.append_tree(tree, td=tree_types_final)
 
     return neuron
 
