@@ -471,6 +471,7 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
     tr: Tree
         neurom.Tree object
     '''
+    # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
     # Initialization of matplotlib figure and axes.
@@ -542,6 +543,7 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
     tr: Tree
         neurom.Tree object
     '''
+    # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
     # Initialization of matplotlib figure and axes.

@@ -2,6 +2,7 @@
 tmd statistical analysis on PH diagrams algorithms implementation
 '''
 import numpy as np
+from scipy import stats
 
 
 def get_bifurcations(ph):
@@ -75,7 +76,6 @@ def nosify(var, noise=0.1):
         F.write(towrite)
     F.close()
     '''
-    from scipy import stats
     var_new = np.zeros(len(var))
     for i, v in enumerate(var):
         var_new[i] = stats.norm.rvs(v, noise)

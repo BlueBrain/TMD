@@ -1,7 +1,7 @@
 '''Test tmd.topology.analysis'''
 from nose import tools as nt
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal, assert_array_almost_equal
+from numpy.testing import assert_equal, assert_array_equal, assert_array_almost_equal, assert_almost_equal
 from tmd.Topology import analysis
 import os
 
@@ -11,6 +11,8 @@ DATA_PATH = os.path.join(_path, 'data')
 # Filenames for testing
 sample_ph_0_file = os.path.join(DATA_PATH, 'sample_ph_0.txt')
 sample_ph_1_file = os.path.join(DATA_PATH, 'sample_ph_1.txt')
+neuron_ph_1_file = os.path.join(DATA_PATH, 'neuron_ph_1.txt')
+neuron_ph_2_file = os.path.join(DATA_PATH, 'neuron_ph_2.txt')
 
 sample_data_0 = np.array([[10, 8], [9, 8], [9, 8]])
 sample_data_1 = np.array([[10, 7], [9, 8], [9, 8]])
@@ -169,3 +171,12 @@ def test_closest_ph__exact_match_target_extent():
 
     closest_index = analysis.closest_ph(ph_list, target_extent, method='nearest')
     assert_equal(closest_index, 2)
+
+
+def test_apical_point():
+    p1 = analysis.load_file(neuron_ph_1_file)
+    p2 = analysis.load_file(neuron_ph_2_file)
+    ap1 = analysis.find_apical_point_distance(p1)
+    ap2 = analysis.find_apical_point_distance(p2)
+    assert_almost_equal(ap1, 413.2151457659, decimal=5)
+    assert_almost_equal(ap2, 335.8844214625, decimal=5)
