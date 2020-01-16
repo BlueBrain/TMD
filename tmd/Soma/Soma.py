@@ -1,17 +1,19 @@
 '''
 tmd class : Soma
 '''
+import copy
+import numpy as np
 
 
 class Soma(object):
     '''Class of neuron soma
     '''
-    import numpy as _np
+    # pylint: disable=import-outside-toplevel
     from tmd.Soma.methods import get_center
     from tmd.Soma.methods import get_diameter
 
-    def __init__(self, x=_np.array([]), y=_np.array([]), z=_np.array([]),
-                 d=_np.array([])):
+    def __init__(self, x=np.array([]), y=np.array([]), z=np.array([]),
+                 d=np.array([])):
         """
         Constructor for tmd Soma Object
 
@@ -27,8 +29,6 @@ class Soma(object):
             The diameters of surface trace of neuron soma.
         ----------
         """
-        import numpy as np
-
         self.x = np.array(x, dtype=float)
         self.y = np.array(y, dtype=float)
         self.z = np.array(z, dtype=float)
@@ -38,13 +38,10 @@ class Soma(object):
         """
         Returns a deep copy of the Soma.
         """
-        import copy
         return copy.deepcopy(self)
 
     def is_equal(self, soma):
         '''Tests if all soma data are the same'''
-        import numpy as np
-
         eq = np.alltrue([np.allclose(self.x, soma.x, atol=1e-4),
                          np.allclose(self.y, soma.y, atol=1e-4),
                          np.allclose(self.z, soma.z, atol=1e-4),

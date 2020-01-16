@@ -1,6 +1,7 @@
 '''
 tmd class : Population
 '''
+from tmd.Neuron import Neuron
 
 
 class Population(object):
@@ -50,7 +51,5 @@ class Population(object):
         the new_neuron to the list of neurons
         of the population.
         """
-        from tmd.Neuron import Neuron
-
         if isinstance(new_neuron, Neuron.Neuron):
             self.neurons.append(new_neuron)
