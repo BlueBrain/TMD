@@ -211,7 +211,7 @@ def distance_stepped(ph1, ph2, order=1):
     return norm(np.abs(np.subtract(results1, results2)) * (bins[1:] + bins[:-1]) / 2, order)
 
 
-def distance_horizontal(ph1, ph2, normalized=1, bins=100):
+def distance_horizontal(ph1, ph2, normalized=True, bins=100):
     """Calculate distance between two ph diagrams.
        Distance definition:
     """
@@ -220,7 +220,7 @@ def distance_horizontal(ph1, ph2, normalized=1, bins=100):
     return norm(np.abs(np.subtract(data_1, data_2)), normalized)
 
 
-def distance_horizontal_unnormed(ph1, ph2, normalized=1, bins=100):
+def distance_horizontal_unnormed(ph1, ph2, normalized=True, bins=100):
     """Calculate unnormed distance between two ph diagrams.
     """
     maxb = np.max([np.max(ph1), np.max(ph2)])
