@@ -54,9 +54,8 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     that there are disconnected components
     '''
 
-    tree_types_final = td.copy()
     if tree_types is not None:
-        tree_types_final.update(tree_types)
+        td.update(tree_types)
 
     # Definition of swc types from type_dict function
     if soma_type is None:
@@ -103,7 +102,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     for i in range(comp[0]):
         tree_ids = _np.where(comp[1] == i)[0] + len(soma_ids)
         tree = make_tree(data[tree_ids])
-        neuron.append_tree(tree, td=tree_types_final)
+        neuron.append_tree(tree, td=td)
 
     return neuron
 
@@ -121,6 +120,9 @@ def load_population(neurons, tree_types=None, name=None):
         name = name if name is not None else os.path.basename(neurons)
 
     pop = Population.Population(name=name)
+
+    if any([i.endswith(".asc") for i in files]):
+        raise Exception('You have some .asc files which cannot be used with TMD, please only use .h5 or .swc.')
 
     files2load = [i for i in files if (i.endswith(".h5") or i.endswith(".swc"))]
 
