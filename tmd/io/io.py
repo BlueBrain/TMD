@@ -122,6 +122,9 @@ def load_population(neurons, tree_types=None, name=None):
 
     pop = Population.Population(name=name)
 
+    if any([i.endswith(".asc") for i in files]):
+        raise Exception('You have some .asc files which cannot be used with TMD, please only use .h5 or .swc.')
+
     files2load = [i for i in files if (i.endswith(".h5") or i.endswith(".swc"))]
 
     for i in files2load:
