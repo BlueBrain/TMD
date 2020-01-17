@@ -122,15 +122,13 @@ def load_population(neurons, tree_types=None, name=None):
 
     pop = Population.Population(name=name)
 
-    if any([i.endswith(".asc") for i in files]):
-        raise Warning('You have some .asc files which cannot be used with TMD, please only use .h5 or .swc.')
-
-    files2load = [i for i in files if (i.endswith(".h5") or i.endswith(".swc"))]
-
-    for i in files2load:
+    for filename in files:
         try:
-            pop.append_neuron(load_neuron(i, tree_types=tree_types))
+            assert filename.endswith(('.h5', '.swc'))
+            pop.append_neuron(load_neuron(filename, tree_types=tree_types))
+        except AssertionError:
+                raise Warning("{} is not  a valid h5 or swc file".format(filename))
         except LoadNeuronError:
-            print('File failed to load: {}'.format(i))
+                print('File failed to load: {}'.format(filename))
 
     return pop
