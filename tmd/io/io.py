@@ -87,7 +87,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         in_type_dct[:, ind] = data[:, 1] == int(TYPE)
     in_type_dct = _np.sum(in_type_dct, axis=1).astype(bool)
     if verbose and len(data) > _np.sum(in_type_dct):
-        raise LoadNeuronError('Loaded neuron data contains structural '
+        print('LoadNeuronWarning: Loaded neuron data contains structural '
                               'annotations that are ignored in current TMD '
                               ' package. Processed data only contains: %s'
                               % str(TYPE_DCT))
