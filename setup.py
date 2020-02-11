@@ -27,6 +27,7 @@ config = {
     'scripts': [],
     'name': 'tmd',
     'include_package_data': True,
+    'use_scm_version': True,
     'version': VERSION,  # pylint: disable=undefined-variable
 }
 
