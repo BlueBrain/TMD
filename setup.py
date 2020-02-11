@@ -4,7 +4,6 @@ from setuptools import setup
 from setuptools import find_packages
 import imp
 
-VERSION = imp.load_source("tmd.version", "tmd/version.py").VERSION
 
 config = {
     'description': 'TMD: a python package for the topological analysis of neurons',
@@ -19,6 +18,7 @@ config = {
         'scikit-learn>=0.19.1',
         'munkres>=1.0.12',
     ],
+    'setup_requires':['setuptools_scm'],
     'extras_require': {
                        'viewer': ['matplotlib>=1.3.1',],
                        },
@@ -28,7 +28,6 @@ config = {
     'name': 'tmd',
     'include_package_data': True,
     'use_scm_version': True,
-    'version': VERSION,  # pylint: disable=undefined-variable
 }
 
 setup(**config)
