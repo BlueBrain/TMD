@@ -1,2 +1,2 @@
 """ tmd version """
-VERSION = "2.0.5"
+VERSION = "2.0.6"
