@@ -201,11 +201,14 @@ def barcode_bin_centers(ph, num_bins=100, min_bin=None, max_bin=None):
         max_bin = np.max(ph_2D)
     bins = np.linspace(min_bin, max_bin, num_bins, dtype=float)
     bin_centers = 0.5 * (bins[:-1] + bins[1:])
-    data = []
-    for i in range(num_bins -1):
-        for p in ph1:
-            if np.max(p) > bins[i+1] and np.min(p) < bins[i]:
-                data.append(bin_centers[i])
+
+    data = [bin_centers[i] for p in ph_2D for i in range(num_bins - 1)
+            if np.max(p) > bins[i + 1] and np.min(p) < bins[i]]
+    # data = []
+    # for i in range(num_bins - 1):
+    #    for p in ph_2D:
+    #        if np.max(p) > bins[i + 1] and np.min(p) < bins[i]:
+    #            data.append(bin_centers[i])
     return bin_centers, data
 
 
@@ -343,7 +346,7 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
         # Compute minima of distribution
         minimas = np.where(abs(der1) < threshold * np.max(abs(der1)))[0]
         minimas = minimas[der2[minimas] > 0]
-        threshold *= 2. # if threshold was too small, increase and retry
+        threshold *= 2.  # if threshold was too small, increase and retry
     return bin_centers[minimas[0]]
 
 
