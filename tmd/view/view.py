@@ -159,7 +159,7 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         neurom.Soma object
     '''
     treecolor = kwargs.get('treecolor', None)
-    outline = kwargs.get('outline', True)
+    outline = kwargs.get('outline', False)
 
     if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
         return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
