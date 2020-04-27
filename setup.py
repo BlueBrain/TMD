@@ -20,7 +20,7 @@ config = {
     ],
     'setup_requires':['setuptools_scm'],
     'extras_require': {
-                       'viewer': ['matplotlib>=1.3.1',],
+                       'viewer': ['matplotlib>=3.2.0',],
                        },
     'packages': find_packages(),
     'license': 'LGPL',
