@@ -159,7 +159,7 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         neurom.Soma object
     '''
     treecolor = kwargs.get('treecolor', None)
-    outline = kwargs.get('outline', False)
+    outline = kwargs.get('outline', True)
 
     if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
         return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
@@ -177,12 +177,8 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
                                      alpha=_get_default('alpha', **kwargs))
         ax.add_artist(soma_circle)
     else:
-        horz = getattr(sm, plane[0]) + hadd
-        vert = getattr(sm, plane[1]) + vadd
-
-        horz = _np.append(horz, horz[0]) + hadd  # To close the loop for a soma viewer.
-        vert = _np.append(vert, vert[0]) + vadd  # To close the loop for a soma viewer.
-
+        horz = _np.append(getattr(sm, plane[0]), horz[0]) + hadd
+        vert = _np.append(getattr(sm, plane[1]), vert[0]) + vadd
         _cm.plt.plot(horz, vert, color=treecolor,
                      alpha=_get_default('alpha', **kwargs),
                      linewidth=_get_default('linewidth', **kwargs))
