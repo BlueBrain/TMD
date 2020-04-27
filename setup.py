@@ -28,6 +28,7 @@ config = {
     'name': 'tmd',
     'include_package_data': True,
     'use_scm_version': True,
+    'python_requires': '>=3.6',
 }
 
 setup(**config)
