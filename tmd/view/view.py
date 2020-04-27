@@ -177,8 +177,11 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
                                      alpha=_get_default('alpha', **kwargs))
         ax.add_artist(soma_circle)
     else:
-        horz = _np.append(getattr(sm, plane[0]), horz[0]) + hadd
-        vert = _np.append(getattr(sm, plane[1]), vert[0]) + vadd
+        horz = getattr(sm, plane[0]) + hadd
+        vert = getattr(sm, plane[1]) + vadd
+
+        horz = _np.append(horz, horz[0])  # To close the loop for a soma
+        vert = _np.append(vert, vert[0])  # To close the loop for a soma
         _cm.plt.plot(horz, vert, color=treecolor,
                      alpha=_get_default('alpha', **kwargs),
                      linewidth=_get_default('linewidth', **kwargs))
