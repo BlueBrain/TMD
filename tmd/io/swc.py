@@ -2,8 +2,9 @@
 Python module that contains the functions
 about reading swc files.
 '''
+import re
+import numpy as np
 
-import numpy as _np
 
 # Definition of swc data container
 SWC_DCT = {'index': 0,
@@ -21,7 +22,6 @@ def read_swc(input_file, line_delimiter='\n'):
        into a 'Data' format that contains all
        info extracting comments.
     '''
-
     # Read all data from file.
     with open(input_file, 'r') as f:
 
@@ -34,14 +34,12 @@ def read_swc(input_file, line_delimiter='\n'):
     split_data = [a for a in split_data if '#' not in a]
     split_data = [a for a in split_data if a != '']
 
-    return _np.array(split_data)
+    return np.array(split_data)
 
 
 def swc_to_data(data_swc):
     '''Transform swc to data to be used in make_tree.
     '''
-    import re
-
     expected_data = re.compile(r'^\s*([-+]?\d*\.\d+|[-+]?\d+)'
                                r'\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
                                r'*([-+]?\d*\.\d+|[-+]?\d+)\s*'
@@ -56,15 +54,15 @@ def swc_to_data(data_swc):
 
         if expected_data.match(dpoint.replace('\r', '')):
 
-            segment_point = _np.array(expected_data.match(dpoint.replace('\r', '')).groups(),
-                                      dtype=_np.float)
+            segment_point = np.array(expected_data.match(dpoint.replace('\r', '')).groups(),
+                                     dtype=np.float)
 
             # make the radius diameter
             segment_point[SWC_DCT['radius']] = 2. * segment_point[SWC_DCT['radius']]
 
             data.append(segment_point)
 
-    return _np.array(data)
+    return np.array(data)
 
 
 def swc_data_to_lists(data):
@@ -92,11 +90,7 @@ def swc_data_to_lists(data):
 
     ch: dictionary
         children id(s)
-
     """
-
-    import re
-
     length = len(data)
 
     # Here we define the expected structure of the data.
@@ -113,12 +107,12 @@ def swc_data_to_lists(data):
 
     # Definition of swc data from SWC_DCT function
 
-    x = _np.zeros(length, dtype=float)
-    y = _np.zeros(length, dtype=float)
-    z = _np.zeros(length, dtype=float)
-    d = _np.zeros(length, dtype=float)
-    t = _np.zeros(length, dtype=int)
-    p = _np.zeros(length, dtype=int)
+    x = np.zeros(length, dtype=float)
+    y = np.zeros(length, dtype=float)
+    z = np.zeros(length, dtype=float)
+    d = np.zeros(length, dtype=float)
+    t = np.zeros(length, dtype=int)
+    p = np.zeros(length, dtype=int)
     ch = {}
 
     first_line_data = expected_data.match(data[0].replace('\r', ''))
@@ -146,6 +140,6 @@ def swc_data_to_lists(data):
 
     for enline in range(length):
 
-        ch[enline] = list(_np.where(p == enline)[0])
+        ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch

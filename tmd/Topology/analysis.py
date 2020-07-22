@@ -2,7 +2,13 @@
 tmd Topology analysis algorithms implementation
 '''
 # pylint: disable=invalid-slice-index
+import copy
+import math
+from itertools import chain
 import numpy as np
+from numpy.linalg import norm
+from scipy.spatial.distance import cdist
+from scipy import stats
 from .statistics import get_lengths
 
 
@@ -87,7 +93,6 @@ def get_limits(phs_list, coll=True):
     '''Returns the x-y coordinates limits (min, max)
     for a list of persistence diagrams
     '''
-    import copy
     if coll:
         ph = collapse(phs_list)
     else:
@@ -107,8 +112,6 @@ def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_
         If xlims, ylims are provided the data will be scaled accordingly.
     bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
     '''
-    from scipy import stats
-
     if xlims is None or xlims is None:
         xlims, ylims = get_limits(ph, coll=False)
 
@@ -125,25 +128,25 @@ def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_
     return Z / norm_factor
 
 
-def get_image_diff_data(Z1, Z2, norm=True):
+def get_image_diff_data(Z1, Z2, normalized=True):
     """Takes as input two images
        as exported from the gaussian kernel
        plotting function, and returns
        their difference: diff(Z1 - Z2)
     """
-    if norm:
+    if normalized:
         Z1 = Z1 / Z1.max()
         Z2 = Z2 / Z2.max()
     return Z1 - Z2
 
 
-def get_image_add_data(Z1, Z2, norm=True):
+def get_image_add_data(Z1, Z2, normalized=True):
     """Takes as input two images
        as exported from the gaussian kernel
        plotting function, and returns
        their sum: add(Z1 - Z2)
     """
-    if norm:
+    if normalized:
         Z1 = Z1 / Z1.max()
         Z2 = Z2 / Z2.max()
     return Z1 + Z2
@@ -152,7 +155,6 @@ def get_image_add_data(Z1, Z2, norm=True):
 def histogram_horizontal(ph, num_bins=100, min_bin=None, max_bin=None):
     """Calculate how many barcode lines are found in each bin.
     """
-    import math
     ph1 = [p[:2] for p in ph]  # simplify to ensure ph corresponds to 2d barcode
 
     if min_bin is None:
@@ -177,8 +179,6 @@ def histogram_horizontal(ph, num_bins=100, min_bin=None, max_bin=None):
 
 def histogram_stepped(ph1):
     '''Calculate step distance of ph data'''
-    from itertools import chain
-
     bins = np.unique(list(chain(*ph1)))
     results = np.zeros(len(bins) - 1)
 
@@ -192,9 +192,6 @@ def histogram_stepped(ph1):
 
 def distance_stepped(ph1, ph2, order=1):
     '''Calculate step distance difference between two ph'''
-    from itertools import chain
-    from numpy.linalg import norm
-
     bins1 = np.unique(list(chain(*ph1)))
     bins2 = np.unique(list(chain(*ph2)))
     bins = np.unique(np.append(bins1, bins2))
@@ -214,23 +211,23 @@ def distance_stepped(ph1, ph2, order=1):
     return norm(np.abs(np.subtract(results1, results2)) * (bins[1:] + bins[:-1]) / 2, order)
 
 
-def distance_horizontal(ph1, ph2, norm=1, bins=100):
+def distance_horizontal(ph1, ph2, normalized=True, bins=100):
     """Calculate distance between two ph diagrams.
        Distance definition:
     """
     _, data_1 = histogram_horizontal(ph1, num_bins=bins)
     _, data_2 = histogram_horizontal(ph2, num_bins=bins)
-    return np.linalg.norm(np.abs(np.subtract(data_1, data_2)), norm)
+    return norm(np.abs(np.subtract(data_1, data_2)), normalized)
 
 
-def distance_horizontal_unnormed(ph1, ph2, norm=1, bins=100):
+def distance_horizontal_unnormed(ph1, ph2, normalized=True, bins=100):
     """Calculate unnormed distance between two ph diagrams.
     """
     maxb = np.max([np.max(ph1), np.max(ph2)])
     minb = np.min([np.min(ph1), np.min(ph2)])
     _, results1 = histogram_horizontal(ph1, num_bins=bins, min_bin=minb, max_bin=maxb)
     _, results2 = histogram_horizontal(ph2, num_bins=bins, min_bin=minb, max_bin=maxb)
-    return np.linalg.norm(np.abs(np.subtract(results1, results2)), norm)
+    return norm(np.abs(np.subtract(results1, results2)), normalized)
 
 
 def distance_persistence_image(ph1, ph2, xlims=None, ylims=None):
@@ -277,23 +274,32 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None,
 
 def find_apical_point_distance(ph):
     '''
-    Finds the apical distance (measured in radial distance from soma)
+    Finds the apical distance (measured in distance from soma)
     based on the variation of the barcode.
     '''
+    # Computation of number of components within the barcode
+    # as the number of bars with at least max length / 2
+    lengths = get_lengths(ph)
+    num_components = len(np.where(np.array(lengths) >= max(lengths) / 2.)[0])
+    # Separate the barcode into sufficiently many bins
     n_bins, counts = histogram_horizontal(ph, num_bins=3 * len(ph))
+    # Compute derivatives
     der1 = counts[1:] - counts[:-1]  # first derivative
     der2 = der1[1:] - der1[:-1]  # second derivative
-    # Find all points that take minimum value, and have first derivative zero == no variation
-    inters = np.intersect1d(np.where(counts == min(counts))[0], np.where(der1 == 0)[0])
+    # Find all points that take minimum value, defined as the number of components,
+    # and have the first derivative zero == no variation
+    inters = np.intersect1d(np.where(counts == num_components)[0], np.where(der1 == 0)[0])
     # Find all points that are also below a positive second derivative
     # The definition of how positive the second derivative should be is arbitrary,
     # but it is the only value that works nicely for cortical cells
-    best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100)[0]))]
-
-    if len(best_all) > 0:
-        return n_bins[np.max(best_all)]
-    else:
+    try:
+        best_all = inters[np.where(inters <= np.max(np.where(der2 > len(n_bins) / 100)[0]))]
+    except ValueError:
         return 0.0
+
+    if len(best_all) == 0 or n_bins[np.max(best_all)] == 0:
+        return np.inf
+    return n_bins[np.max(best_all)]
 
 
 def _symmetric(p):
@@ -307,9 +313,7 @@ def matching_munkress_modified(p1, p2, use_diag=True):
        and the corresponding distance between
        the two input diagrams
     '''
-    from scipy.spatial.distance import cdist
-    import munkres
-
+    import munkres  # pylint: disable=import-outside-toplevel
     if use_diag:
         p1_enh = p1 + [_symmetric(i) for i in p2]
         p2_enh = p2 + [_symmetric(i) for i in p1]

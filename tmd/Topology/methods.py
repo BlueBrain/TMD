@@ -2,6 +2,7 @@
 tmd Topology algorithms implementation
 '''
 import numpy as np
+import scipy.spatial as sp
 from tmd.Topology.analysis import sort_ph
 
 
@@ -282,8 +283,6 @@ def get_lifetime(tree, feature='point_radial_distances'):
 
 def extract_connectivity_from_points(tree, threshold=1.0):
     '''Extract connectivity from list of points'''
-    import scipy.spatial as sp
-
     coords = np.transpose([tree.x, tree.y, tree.z])
     distances_matrix = sp.distance.cdist(coords, coords)
     mat = distances_matrix < threshold

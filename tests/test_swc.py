@@ -5,7 +5,7 @@ from tmd.io import swc
 import numpy as np
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, '../../../test_data')
+DATA_PATH = os.path.join(_path, 'data')
 
 # Filenames for testing
 basic_file = os.path.join(DATA_PATH, 'basic.swc')

@@ -1,11 +1,14 @@
 '''
 tmd class : Tree
 '''
+import copy
+import numpy as np
+import scipy.sparse as sp
 
 
 class Tree(object):
     '''Tree class'''
-    import numpy as _np
+    # pylint: disable=import-outside-toplevel
     from tmd.Tree.methods import get_sections_2
     from tmd.Tree.methods import get_sections_only_points
     from tmd.Tree.methods import get_segments
@@ -25,8 +28,7 @@ class Tree(object):
     from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
 
-    def __init__(self, x=_np.array([]), y=_np.array([]), z=_np.array([]),
-                 d=_np.array([]), t=_np.array([]), p=_np.array([])):
+    def __init__(self, x, y, z, d, t, p):
         '''Constructor of tmd Tree Object
 
         Parameters
@@ -49,16 +51,13 @@ class Tree(object):
         tree : Tree
             tmd Tree object
         '''
-        import numpy as _np
-        import scipy.sparse as sp
-
-        self.x = _np.array(x, dtype=float)
-        self.y = _np.array(y, dtype=float)
-        self.z = _np.array(z, dtype=float)
-        self.d = _np.array(d, dtype=float)
-        self.t = _np.array(t, dtype=int)
-        self.p = _np.array(p, dtype=int)
-        self.dA = sp.csr_matrix((_np.ones(len(self.x) - 1),
+        self.x = np.array(x, dtype=float)
+        self.y = np.array(y, dtype=float)
+        self.z = np.array(z, dtype=float)
+        self.d = np.array(d, dtype=float)
+        self.t = np.array(t, dtype=int)
+        self.p = np.array(p, dtype=int)
+        self.dA = sp.csr_matrix((np.ones(len(self.x) - 1),
                                  (range(1, len(self.x)), self.p[1:])),
                                 shape=(len(self.x), len(self.x)))
 
@@ -66,15 +65,10 @@ class Tree(object):
         """
         Returns a deep copy of the Tree.
         """
-
-        import copy
-
         return copy.deepcopy(self)
 
     def is_equal(self, tree):
         '''Tests if all tree lists are the same'''
-        import numpy as np
-
         eq = np.alltrue([np.allclose(self.x, tree.x, atol=1e-4),
                          np.allclose(self.y, tree.y, atol=1e-4),
                          np.allclose(self.z, tree.z, atol=1e-4),
@@ -87,8 +81,6 @@ class Tree(object):
         """Rotates the tree in the x-y plane
         by the defined angle.
         """
-        import numpy as np
-
         new_x = self.x * np.cos(angle) - self.y * np.sin(angle)
         new_y = self.x * np.sin(angle) + self.y * np.cos(angle)
 
@@ -107,7 +99,6 @@ class Tree(object):
         """Returns a simplified tree that corresponds
            to the start - end of the sections points
         """
-        import numpy as np
         beg0, end0 = self.get_sections_2()
         sections = np.transpose([beg0, end0])
 

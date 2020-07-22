@@ -79,7 +79,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     soma_ids = [node[SWC_DCT['index']] for node in data if node[SWC_DCT['type']] == soma_index]
     soma_ids = _np.array(soma_ids, dtype=_np.int)
     if len(soma_ids) == 0:
-        print("WARNING: file contains no soma.", file=sys.stderr)
+        print("WARNING: file contains no soma. ({})".format(os.path.split(str(input_file))[-1]), file=sys.stderr)
 
     # Extract soma information from swc;
     # This should normally work even if len(soma_ids) == 0

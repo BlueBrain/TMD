@@ -3,7 +3,8 @@ Python module that contains the functions
 about reading h5 files.
 '''
 
-import numpy as _np
+import numpy as np
+import h5py
 from tmd.io.swc import SWC_DCT
 
 # Definition of h5 data container
@@ -23,7 +24,7 @@ def _find_group(point_id, groups):
        Return: group or section point_id belongs to. Last group if
                point_id out of bounds.
     '''
-    bs = _np.searchsorted(groups[:, h5_dct['GPFIRST']], point_id, side='right')
+    bs = np.searchsorted(groups[:, h5_dct['GPFIRST']], point_id, side='right')
     bs = max(bs - 1, 0)
     return groups[bs]
 
@@ -43,10 +44,10 @@ def _find_parent_id(point_id, groups):
 
 def _find_last_point(group_id, groups, points):
     ''' Identifies and returns the id of the last point of a group'''
-    group_initial_ids = _np.sort(_np.transpose(groups)[0])
+    group_initial_ids = np.sort(np.transpose(groups)[0])
 
     if group_id != len(group_initial_ids) - 1:
-        return group_initial_ids[_np.where(group_initial_ids == groups[group_id][0])[0][0] + 1] - 1
+        return group_initial_ids[np.where(group_initial_ids == groups[group_id][0])[0][0] + 1] - 1
     return len(points) - 1
 
 
@@ -59,7 +60,7 @@ def remove_duplicate_points(points, groups):
 
     group_initial_ids = groups[:, h5_dct['GPFIRST']]
 
-    to_be_reduced = _np.zeros(len(group_initial_ids))
+    to_be_reduced = np.zeros(len(group_initial_ids))
     to_be_removed = []
 
     for ig, g in enumerate(groups):
@@ -74,27 +75,26 @@ def remove_duplicate_points(points, groups):
             to_be_reduced[ig + 1:] += 1
 
     groups[:, h5_dct['GPFIRST']] = groups[:, h5_dct['GPFIRST']] - to_be_reduced
-    points = _np.delete(points, to_be_removed, axis=0)
+    points = np.delete(points, to_be_removed, axis=0)
 
     return points, groups
 
 
 def _unpack_data(points, groups):
     '''Unpack data from h5 data groups into internal format'''
-
-    return _np.array([(i, _find_group(i, groups)[h5_dct['GTYPE']],
-                       p[h5_dct['PX']], p[h5_dct['PY']],
-                       p[h5_dct['PZ']], p[h5_dct['PD']],
-                       _find_parent_id(i, groups))
-                      for i, p in enumerate(points)])
+    return np.array([(i, _find_group(i, groups)[h5_dct['GTYPE']],
+                     p[h5_dct['PX']], p[h5_dct['PY']],
+                     p[h5_dct['PZ']], p[h5_dct['PD']],
+                     _find_parent_id(i, groups))
+                     for i, p in enumerate(points)])
 
 
 def _unpack_v1(h5file):
     '''Unpacks data of h5_v1 file
        in a simplified data structure.
     '''
-    points = _np.array(h5file['points'])
-    groups = _np.array(h5file['structure'])
+    points = np.array(h5file['points'])
+    groups = np.array(h5file['structure'])
     return points, groups
 
 
@@ -104,10 +104,10 @@ def _unpack_v2(h5file, stage):
         stage1 = 'raw'
     else:
         stage1 = stage
-    points = _np.array(h5file['neuron1/%s/points' % stage])
-    groups = _np.array(h5file['neuron1/structure/%s' % stage1])
-    stypes = _np.array(h5file['neuron1/structure/sectiontype'])
-    groups = _np.hstack([groups, stypes])
+    points = np.array(h5file['neuron1/%s/points' % stage])
+    groups = np.array(h5file['neuron1/structure/%s' % stage1])
+    stypes = np.array(h5file['neuron1/structure/sectiontype'])
+    groups = np.hstack([groups, stypes])
     groups[:, [1, 2]] = groups[:, [2, 1]]
     return points, groups
 
@@ -129,8 +129,6 @@ def read_h5(input_file, remove_duplicates=True):
     '''Function to properly load sn h5 file,
        of v1 or v2 format.
     '''
-    import h5py
-
     h5file = h5py.File(input_file, mode='r')
     version = _get_h5_version(h5file)
 
@@ -180,16 +178,16 @@ def h5_data_to_lists(data):
     """
     length = len(data)
 
-    x = _np.transpose(data)[SWC_DCT['x']]
-    y = _np.transpose(data)[SWC_DCT['y']]
-    z = _np.transpose(data)[SWC_DCT['z']]
-    d = _np.transpose(data)[SWC_DCT['radius']]
-    t = _np.transpose(data)[SWC_DCT['type']]
-    p = _np.transpose(data)[SWC_DCT['parent']]
+    x = np.transpose(data)[SWC_DCT['x']]
+    y = np.transpose(data)[SWC_DCT['y']]
+    z = np.transpose(data)[SWC_DCT['z']]
+    d = np.transpose(data)[SWC_DCT['radius']]
+    t = np.transpose(data)[SWC_DCT['type']]
+    p = np.transpose(data)[SWC_DCT['parent']]
     ch = {}
 
     for enline in range(length):
 
-        ch[enline] = list(_np.where(p == enline)[0])
+        ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch

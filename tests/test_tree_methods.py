@@ -7,8 +7,8 @@ from tmd.Tree import methods
 import os
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, '../../../test_data')
-POP_PATH = os.path.join(_path, '../../../test_data/valid')
+DATA_PATH = os.path.join(_path, 'data')
+POP_PATH = os.path.join(DATA_PATH, 'valid')
 
 # Filenames for testing
 sample_file = os.path.join(DATA_PATH, 'sample.swc')
