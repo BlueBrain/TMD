@@ -89,7 +89,7 @@ def get_color(treecolor, tree_type):
     return treecolor
 
 
-def get_figure(new_fig=True, new_axes=True, subplot=False, params=None,
+def get_figure(new_fig=True, new_axes=False, subplot=False, params=None,
                no_axes=False):
     """
     Function to be used for viewing - plotting,

@@ -1,25 +1,14 @@
-dist: trusty
 language: python
 python:
-- 2.7
-- 3.5
-- 3.6
-addons:
-  apt:
-    packages:
-    - libhdf5-dev
-    - python-tk
-
+  - "3.6"
+  - "3.7"
 cache: pip
 install:
-- pip install 'matplotlib==1.5.2' tox
-- pip install .
+  - pip install tox-travis
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then tox -e py27; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.5 ]]; then tox -e py35; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then tox -e py36 -e lint; fi
+  tox
 before_deploy:
-- pip install twine
+  - pip install twine
 deploy:
   provider: pypi
   user: bbp.opensource
@@ -28,3 +17,4 @@ deploy:
   on:
     tags: true
     branch: master
+    condition: "$TRAVIS_PYTHON_VERSION == 3.6"

@@ -180,3 +180,12 @@ def test_apical_point():
     ap2 = analysis.find_apical_point_distance(p2)
     assert_almost_equal(ap1, 413.2151457659, decimal=5)
     assert_almost_equal(ap2, 335.8844214625, decimal=5)
+
+
+def test_apical_point_smoothed():
+    p1 = analysis.load_file(neuron_ph_1_file)
+    p2 = analysis.load_file(neuron_ph_2_file)
+    ap1 = analysis.find_apical_point_distance_smoothed(p1, threshold=0.1)
+    ap2 = analysis.find_apical_point_distance_smoothed(p2, threshold=0.1)
+    assert_almost_equal(ap1, 355.1980697442, decimal=5)
+    assert_almost_equal(ap2, 199.5273018308, decimal=5)

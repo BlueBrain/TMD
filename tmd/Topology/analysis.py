@@ -190,6 +190,28 @@ def histogram_stepped(ph1):
     return bins, results
 
 
+def barcode_bin_centers(ph, num_bins=100, min_bin=None, max_bin=None):
+    """Calculate how many barcode lines are found in each bin.
+       Returns the bin centers and the number of bars that fall within a bin.
+    """
+    ph_2D = [p[:2] for p in ph]  # simplify to ensure ph corresponds to 2d barcode
+    if min_bin is None:
+        min_bin = np.min(ph_2D)
+    if max_bin is None:
+        max_bin = np.max(ph_2D)
+    bins = np.linspace(min_bin, max_bin, num_bins, dtype=float)
+    bin_centers = 0.5 * (bins[:-1] + bins[1:])
+
+    data = [bin_centers[i] for p in ph_2D for i in range(num_bins - 1)
+            if np.max(p) > bins[i + 1] and np.min(p) < bins[i]]
+    # data = []
+    # for i in range(num_bins - 1):
+    #    for p in ph_2D:
+    #        if np.max(p) > bins[i + 1] and np.min(p) < bins[i]:
+    #            data.append(bin_centers[i])
+    return bin_centers, data
+
+
 def distance_stepped(ph1, ph2, order=1):
     '''Calculate step distance difference between two ph'''
     bins1 = np.unique(list(chain(*ph1)))
@@ -300,6 +322,32 @@ def find_apical_point_distance(ph):
     if len(best_all) == 0 or n_bins[np.max(best_all)] == 0:
         return np.inf
     return n_bins[np.max(best_all)]
+
+
+def find_apical_point_distance_smoothed(ph, threshold=0.1):
+    '''
+    Finds the apical distance (measured in distance from soma)
+    based on the variation of the barcode.
+    This algorithm always computes a distance, even if
+    there is no obvious apical point.
+    Threshold corresponds to percent of minimum derivative variation
+    that is used to select the minima.
+    '''
+    bin_centers, data = barcode_bin_centers(ph, num_bins=100)
+
+    # Gaussian kernel to smooth distribution of bars
+    kde = stats.gaussian_kde(data)
+    minimas = []
+    while len(minimas) == 0:
+        # Compute first derivative
+        der1 = np.gradient(kde(bin_centers))
+        # Compute second derivative
+        der2 = np.gradient(der1)
+        # Compute minima of distribution
+        minimas = np.where(abs(der1) < threshold * np.max(abs(der1)))[0]
+        minimas = minimas[der2[minimas] > 0]
+        threshold *= 2.  # if threshold was too small, increase and retry
+    return bin_centers[minimas[0]]
 
 
 def _symmetric(p):
