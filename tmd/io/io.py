@@ -117,7 +117,7 @@ def load_population(neurons, tree_types=None, name=None):
         files = neurons
         name = name if name is not None else 'Population'
     elif os.path.isdir(neurons):  # Assumes given input is a directory
-        files = [os.path.join(neurons, l) for l in os.listdir(neurons)]
+        files = [os.path.join(neurons, neuron_dir) for neuron_dir in os.listdir(neurons)]
         name = name if name is not None else os.path.basename(neurons)
 
     pop = Population.Population(name=name)

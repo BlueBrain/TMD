@@ -39,10 +39,10 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
     children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
 
     while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+        alives = list(np.where(active)[0])
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
@@ -145,10 +145,10 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
     angles = get_angles(tree, beg, parents, children)
 
     while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+        alives = list(np.where(active)[0])
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
@@ -194,10 +194,10 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
     radii = get_section_mean_radii(tree, beg, end)
 
     while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+        alives = list(np.where(active)[0])
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
