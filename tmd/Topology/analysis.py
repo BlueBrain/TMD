@@ -350,7 +350,7 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
         minimas = minimas[der2[minimas] > 0]
         threshold *= 2.  # if threshold was too small, increase and retry
 
-    last_bif = 0.9 * max([tmd_bar[1] for tmd_bar in ph])
+    last_bif = 0.9 * max(tmd_bar[1] for tmd_bar in ph)
     return min(last_bif, bin_centers[minimas[0]])
 
 
