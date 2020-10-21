@@ -330,8 +330,6 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
     based on the variation of the barcode.
     This algorithm always computes a distance, even if
     there is no obvious apical point.
-    If the apical point is after the distance to last bifurcation,
-    the returned distance is 0.9 times the last bifurcation distance.
     Threshold corresponds to percent of minimum derivative variation
     that is used to select the minima.
     '''
@@ -349,9 +347,7 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
         minimas = np.where(abs(der1) < threshold * np.max(abs(der1)))[0]
         minimas = minimas[der2[minimas] > 0]
         threshold *= 2.  # if threshold was too small, increase and retry
-
-    last_bif = 0.9 * max(tmd_bar[1] for tmd_bar in ph)
-    return min(last_bif, bin_centers[minimas[0]])
+    return bin_centers[minimas[0]]
 
 
 def _symmetric(p):
