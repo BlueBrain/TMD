@@ -76,8 +76,8 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
 
     try:
         soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
-    except IndexError:
-        raise LoadNeuronError('Soma points not in the expected format')
+    except IndexError as exc:
+        raise LoadNeuronError('Soma points not in the expected format') from exc
 
     # Extract soma information from swc
     soma = Soma.Soma(x=_np.transpose(data)[SWC_DCT['x']][soma_ids],
@@ -93,8 +93,8 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         dA = sp.csr_matrix((_np.ones(len(p) - len(soma_ids)),
                            (range(len(soma_ids), len(p)),
                             p[len(soma_ids):])), shape=(len(p), len(p)))
-    except Exception:
-        raise LoadNeuronError('Cannot create connectivity, nodes not connected correctly.')
+    except Exception as exc:
+        raise LoadNeuronError('Cannot create connectivity, nodes not connected correctly.') from exc
 
     # assuming soma points are in the beginning of the file.
     comp = cs.connected_components(dA[len(soma_ids):, len(soma_ids):])
@@ -117,7 +117,7 @@ def load_population(neurons, tree_types=None, name=None):
         files = neurons
         name = name if name is not None else 'Population'
     elif os.path.isdir(neurons):  # Assumes given input is a directory
-        files = [os.path.join(neurons, l) for l in os.listdir(neurons)]
+        files = [os.path.join(neurons, neuron_dir) for neuron_dir in os.listdir(neurons)]
         name = name if name is not None else os.path.basename(neurons)
 
     pop = Population.Population(name=name)
@@ -126,8 +126,8 @@ def load_population(neurons, tree_types=None, name=None):
         try:
             assert filename.endswith(('.h5', '.swc'))
             pop.append_neuron(load_neuron(filename, tree_types=tree_types))
-        except AssertionError:
-            raise Warning("{} is not a valid h5 or swc file".format(filename))
+        except AssertionError as exc:
+            raise Warning("{} is not a valid h5 or swc file".format(filename)) from exc
         except LoadNeuronError:
             print('File failed to load: {}'.format(filename))
 

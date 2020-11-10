@@ -38,11 +38,11 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
 
     children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
 
-    while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+    alives = np.where(active)[0]
+    while len(alives) > 1:
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
@@ -58,8 +58,9 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
                     ph.append([rd[ci], rd[p]])
 
                 rd[p] = rd[mx_id]
+        alives = np.where(active)[0]
 
-    ph.append([rd[np.where(active)[0][0]], 0])  # Add the last alive component
+    ph.append([rd[alives[0]], 0])  # Add the last alive component
 
     return ph
 
@@ -144,11 +145,11 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
 
     angles = get_angles(tree, beg, parents, children)
 
-    while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+    alives = np.where(active)[0]
+    while len(alives) > 1:
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
@@ -165,8 +166,9 @@ def get_ph_angles(tree, feature='radial_distances', **kwargs):
                     ph.append([rd[ci], rd[p], angID[0], angID[1], angID[2], angID[3]])
 
                 rd[p] = rd[mx_id]
+        alives = np.where(active)[0]
 
-    ph.append([rd[np.where(active)[0][0]], 0, np.nan, np.nan, np.nan, np.nan])
+    ph.append([rd[alives[0]], 0, np.nan, np.nan, np.nan, np.nan])
 
     return ph
 
@@ -193,11 +195,11 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
 
     radii = get_section_mean_radii(tree, beg, end)
 
-    while len(np.where(active)[0]) > 1:
-        alive = list(np.where(active)[0])
-        for l in alive:
+    alives = np.where(active)[0]
+    while len(alives) > 1:
+        for alive in alives:
 
-            p = parents[l]
+            p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
@@ -214,8 +216,9 @@ def get_ph_radii(tree, feature='radial_distances', **kwargs):
                     ph.append([rd[ci], rd[p], radiiID])
 
                 rd[p] = rd[mx_id]
+        alives = np.where(active)[0]
 
-    ph.append([rd[np.where(active)[0][0]], 0, radii[beg[0]]])  # Add the last alive component
+    ph.append([rd[alives[0]], 0, radii[beg[0]]])  # Add the last alive component
 
     return ph
 
