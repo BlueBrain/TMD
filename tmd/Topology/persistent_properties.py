@@ -20,7 +20,7 @@ class PersistentProperty(ABC):
 class NoProperty(PersistentProperty):
     """Function class for extracting a barcode without properties
     """
-    def __init__(self, *_):
+    def __init__(self, _):
         pass
 
     def get(self, _):
@@ -36,12 +36,11 @@ class PersistentAngles(PersistentProperty):
     """Bifurcation angles per component
     Args:
         tree (Tree): A tree object
-        section_begs (np.ndarray): (N,) Int array of section node starts
-        section_ends (np.ndarray): (N,) Int array of section node ends
-        section_parents (np.ndarray): (N,) Int array of section parent ids
-        section_children (np.ndarray): (N,) Int array of section children ids
     """
-    def __init__(self, tree, section_begs, _, section_parents, section_children):
+    def __init__(self, tree):
+
+        section_begs, _ = tree.sections
+        section_parents, section_children = tree.parents_children
 
         self._angles = get_angles(
             tree, section_begs, section_parents, section_children)
@@ -72,12 +71,10 @@ class PersistentMeanRadius(PersistentProperty):
     """Component mean radii
     Args:
         tree (Tree): A tree object
-        section_begs (np.ndarray): (N,) Int array of section node starts
-        section_ends (np.ndarray): (N,) Int array of section node ends
-        section_parents (np.ndarray): (N,) Int array of section parent ids
-        section_children (np.ndarray): (N,) Int array of section children ids
     """
-    def __init__(self, tree, section_begs, section_ends, *_):
+    def __init__(self, tree):
+
+        section_begs, section_ends = tree.sections
         self._radii = _section_mean_radii(0.5 * tree.d, section_begs, section_ends)
 
     def get(self, component_start):
@@ -93,7 +90,7 @@ class PersistentMeanRadius(PersistentProperty):
         """Returns mean radius corresponding to inf
         component
         """
-        return [self._radii[component_start]]
+        return self.get(component_start)
 
 
 def _phi_theta(u, v):

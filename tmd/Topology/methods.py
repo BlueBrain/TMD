@@ -21,32 +21,6 @@ def write_ph(ph, output_file='test.txt'):
     wfile.close()
 
 
-def _node_connectivity(tree, beg, end):
-    """Returns the parents and children nodes of each section
-    Args:
-        tree (Tree): Tree object
-        beg (np.ndarray): Starting nodes of sections
-        end (np.ndarray): Ending nodes of sections
-
-    Returns:
-        parents (dict): Each key corresponds to a section id
-            and the respective values to the parent section ids
-        children (dict): Each key corresponds to a section id
-            and the respective values to the children section ids
-
-    Notes:
-        If 0 exists in starting nodes, the parent from tree is assigned
-    """
-    parents = {e: b for b, e in zip(beg, end)}
-
-    if 0 in beg:
-        parents[0] = tree.p[0]
-
-    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
-
-    return parents, children
-
-
 def tree_to_property_barcode(tree, filtration_function, property_class=NoProperty):
     """Decompose a tree data structure into a barcode, where each bar in the barcode
     is optionally linked with a property determined by property_class.
@@ -71,11 +45,10 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
     """
     point_values = filtration_function(tree)
 
-    beg, end = tree.get_sections_2()
+    beg, _ = tree.sections
+    parents, children = tree.parents_children
 
-    parents, children = _node_connectivity(tree, beg, end)
-
-    prop = property_class(tree, beg, end, parents, children)
+    prop = property_class(tree)
 
     active = tree.get_bif_term() == 0
     alives = np.where(active)[0]

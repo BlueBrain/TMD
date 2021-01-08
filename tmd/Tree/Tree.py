@@ -2,6 +2,7 @@
 tmd class : Tree
 '''
 import copy
+from cached_property import cached_property
 import numpy as np
 import scipy.sparse as sp
 
@@ -125,3 +126,52 @@ class Tree(object):
             p[i + 1] = np.where(beg0 == s[0])[0][0]
 
         return Tree(x, y, z, d, t, p)
+
+    @cached_property
+    def sections(self):
+        """
+        Returns:
+            tuple:
+                section_beg_point_ids (np.ndarray):
+                    The starting point ids of sections
+                section_end_point_ids (np.ndarray)
+                    The ending point ids of actions
+        """
+        return self.get_sections_2()
+
+    @cached_property
+    def parents_children(self):
+        """
+        Returns:
+            tuple:
+                parents (dict): The parent id for each point
+                children (dict): The children ids for each point
+        """
+        begs, ends = self.sections
+        return _node_connectivity(self, begs, ends)
+
+
+def _node_connectivity(tree, beg, end):
+    """Returns the parents and children nodes of each section
+    Args:
+        tree (Tree): Tree object
+        beg (np.ndarray): Starting nodes of sections
+        end (np.ndarray): Ending nodes of sections
+
+    Returns:
+        parents (dict): Each key corresponds to a section id
+            and the respective values to the parent section ids
+        children (dict): Each key corresponds to a section id
+            and the respective values to the children section ids
+
+    Notes:
+        If 0 exists in starting nodes, the parent from tree is assigned
+    """
+    parents = {e: b for b, e in zip(beg, end)}
+
+    if 0 in beg:
+        parents[0] = tree.p[0]
+
+    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
+
+    return parents, children

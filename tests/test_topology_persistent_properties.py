@@ -6,14 +6,26 @@ from tmd.Topology import persistent_properties as tested
 
 class MockTree:
 
-    def __init__(self, points):
+    def __init__(self, points, parents=None, children=None, begs=None, ends=None):
 
         self._points = points
+        self._parents = parents
+        self._children = children
+        self._begs = begs
+        self._ends = ends
 
     def get_direction_between(self, start_id, end_id):
         vec = self._points[end_id] - self._points[start_id]
         vec /= np.linalg.norm(vec)
         return vec
+
+    @property
+    def sections(self):
+        return self._begs, self._ends
+
+    @property
+    def parents_children(self):
+        return self._parents, self._children
 
 
 def test_no_property():
@@ -38,15 +50,13 @@ def test_persistent_angles():
             [0., 0., 0.],
             [0., 0., -1.],
             [0., 1., 0.]
-        ])
+        ]),
+        parents={1: 0},
+        children={1: [2, 3]},
+        begs=[-1, 1]
     )
 
-    begs = [-1, 1]
-
-    children = {1: [2, 3]}
-    parents = {1: 0}
-
-    prop = tested.PersistentAngles(tree, begs, None, parents, children)
+    prop = tested.PersistentAngles(tree)
 
     res_get = prop.get(1)
     res_inf = prop.infinite_component(0)
@@ -81,15 +91,13 @@ def test_persistent_mean_radius():
             [0., 0., 0.],
             [0., 0., -1.],
             [0., 1., 0.]
-        ])
+        ]),
+        begs=np.array([0, 1, 2, 3]),
+        ends=np.array([1, 2, 3, 4])
     )
     tree.d = 2.0 * np.array([0.1, 0.2, 0.3, 0.4])
 
-    # get one value per section
-    section_begs = np.array([0, 1, 2, 3])
-    section_ends = section_begs + 1
-
-    prop = tested.PersistentMeanRadius(tree, section_begs, section_ends)
+    prop = tested.PersistentMeanRadius(tree)
 
     res_get = prop.get(2)
     res_inf = prop.infinite_component(0)

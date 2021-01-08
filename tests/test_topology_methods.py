@@ -128,30 +128,6 @@ def test_extract_connectivity_from_points():
                                        [ True,  True,  True,  True,  True]], dtype=bool))
 
 
-def test_node_connectivity():
-
-    tree = mock.Mock()
-    tree.p = [-1]
-
-    edges = np.array([
-        [0, 2],
-        [2, 3],
-        [2, 5]
-    ])
-
-    beg = edges[:, 0]
-    end = edges[:, 1]
-
-    parents, children = methods._node_connectivity(tree, beg, end)
-
-    assert parents == {0: -1, 2: 0, 3: 2, 5: 2}
-
-    expected_children = {0: [2], 2: [3, 5]}
-
-    for key, values in expected_children.items():
-        npt.assert_array_equal(children[key], values)
-
-
 def test_filtration_function():
 
     feature = 'radial_distances'
