@@ -78,7 +78,7 @@ class PersistentMeanRadius(PersistentProperty):
         section_children (np.ndarray): (N,) Int array of section children ids
     """
     def __init__(self, tree, section_begs, section_ends, *_):
-        self._radii = _section_mean_radii(tree.d, section_begs, section_ends)
+        self._radii = _section_mean_radii(0.5 * tree.d, section_begs, section_ends)
 
     def get(self, component_start):
         """

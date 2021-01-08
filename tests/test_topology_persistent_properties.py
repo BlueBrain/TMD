@@ -83,7 +83,7 @@ def test_persistent_mean_radius():
             [0., 1., 0.]
         ])
     )
-    tree.d = [0.1, 0.2, 0.3, 0.4]
+    tree.d = 2.0 * np.array([0.1, 0.2, 0.3, 0.4])
 
     # get one value per section
     section_begs = np.array([0, 1, 2, 3])
