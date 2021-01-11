@@ -1,6 +1,8 @@
 '''Test tmd.Tree'''
+import mock
 from nose import tools as nt
 import numpy as np
+from numpy import testing as npt
 from tmd.Tree import Tree
 from tmd.io import io
 from tmd.Tree import methods
@@ -148,3 +150,24 @@ def test_get_terminations():
 
 def test_get_way_to_root():
     nt.ok_(np.allclose(methods.get_way_to_root(tree), np.array([-1])))
+
+
+def test_parents_children():
+
+    tree = Tree.Tree(
+        x=np.zeros(5),
+        y=np.zeros(5),
+        z=np.zeros(5),
+        d=np.zeros(5),
+        t=np.zeros(5),
+        p=np.array([-1, 0, 1, 2, 2])
+    )
+
+    parents, children = tree.parents_children
+
+    assert parents == {0: -1, 2: 0, 3: 2, 4: 2}
+
+    expected_children = {2: [3, 4]}
+
+    for key, values in expected_children.items():
+        npt.assert_array_equal(children[key], values)

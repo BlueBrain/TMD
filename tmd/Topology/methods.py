@@ -3,6 +3,9 @@ tmd Topology algorithms implementation
 '''
 import numpy as np
 import scipy.spatial as sp
+from tmd.Topology.persistent_properties import NoProperty
+from tmd.Topology.persistent_properties import PersistentAngles
+from tmd.Topology.persistent_properties import PersistentMeanRadius
 from tmd.Topology.analysis import sort_ph
 
 
@@ -18,27 +21,39 @@ def write_ph(ph, output_file='test.txt'):
     wfile.close()
 
 
-def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
-    '''Method to extract ph from tree that contains mutlifurcations'''
-    ph = []
+def tree_to_property_barcode(tree, filtration_function, property_class=NoProperty):
+    """Decompose a tree data structure into a barcode, where each bar in the barcode
+    is optionally linked with a property determined by property_class.
 
-    rd = getattr(tree, 'get_point_' + feature)(**kwargs)
+    Args:
+
+        filtration_function (Callable[tree] -> np.ndarray):
+            The filtration function to apply on the tree
+
+        property_class (PersistentProperty, optional): A PersistentProperty class.By
+            default the NoProperty is used which does not add entries in the barcode.
+
+    Returns:
+        barcode (list): A list of bars [bar1, bar2, ..., barN], where each bar is a
+            list of:
+                - filtration value start
+                - filtration value end
+                - property_value1
+                - property_value2
+                - ...
+                - property_valueN
+    """
+    point_values = filtration_function(tree)
+
+    beg, _ = tree.sections
+    parents, children = tree.parents_children
+
+    prop = property_class(tree)
 
     active = tree.get_bif_term() == 0
-
-    beg, end = tree.get_sections_2()
-
-    beg = np.array(beg)
-    end = np.array(end)
-
-    parents = {e: b for b, e in zip(beg, end)}
-
-    if 0 in beg:
-        parents[0] = tree.p[0]
-
-    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
-
     alives = np.where(active)[0]
+
+    ph = []
     while len(alives) > 1:
         for alive in alives:
 
@@ -46,181 +61,62 @@ def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
             c = children[p]
 
             if np.alltrue(active[c]):
+
                 active[p] = True
                 active[c] = False
 
-                mx = np.argmax(abs(rd[c]))
+                mx = np.argmax(abs(point_values[c]))
                 mx_id = c[mx]
 
                 c = np.delete(c, mx)
 
                 for ci in c:
-                    ph.append([rd[ci], rd[p]])
+                    component_id = np.where(beg == p)[0][0]
+                    ph.append(
+                        [point_values[ci], point_values[p]] + prop.get(component_id)
+                    )
 
-                rd[p] = rd[mx_id]
+                point_values[p] = point_values[mx_id]
         alives = np.where(active)[0]
 
-    ph.append([rd[alives[0]], 0])  # Add the last alive component
+    ph.append(
+        [point_values[alives[0]], 0] + prop.infinite_component(beg[0])
+    )  # Add the last alive component
 
     return ph
 
 
-def _phi_theta(u, v):
-    """Computes the angles between vectors u, v
-    in the plane x-y (phi angle) and the plane x-z (theta angle).
-    Returns phi, theta
-    """
-    phi1 = np.arctan2(u[1], u[0])
-    # pylint: disable=assignment-from-no-return
-    theta1 = np.arccos(u[2] / np.linalg.norm(u))
-
-    # pylint: disable=assignment-from-no-return
-    phi2 = np.arctan2(v[1], v[0])
-    theta2 = np.arccos(v[2] / np.linalg.norm(v))
-
-    delta_phi = phi2 - phi1  # np.abs(phi1 - phi2)
-    delta_theta = theta2 - theta1  # np.abs(theta1 - theta2)
-
-    return delta_phi, delta_theta  # dphi, dtheta
+def _filtration_function(feature, **kwargs):
+    """Returns filtration function lambda that will be applied point-wise
+    on the tree"""
+    return lambda tree: getattr(tree, 'get_point_' + feature)(**kwargs)
 
 
-def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
-    '''Computes the x-y and x-z angles between parent
-       and children within the given tree.
-    '''
-
-    dirP = tree.get_direction_between(start_id=parID, end_id=parEND)
-    dirU = tree.get_direction_between(start_id=parEND, end_id=ch1ID)
-    dirV = tree.get_direction_between(start_id=parEND, end_id=ch2ID)
-
-    phi1, theta1 = _phi_theta(dirP, dirU)
-    phi2, theta2 = _phi_theta(dirP, dirV)
-
-    if np.abs(phi1) < np.abs(phi2):
-        dphi = phi1
-        dtheta = theta1
-        delta_phi, delta_theta = _phi_theta(dirU, dirV)
-    else:
-        dphi = phi2
-        dtheta = theta2
-        delta_phi, delta_theta = _phi_theta(dirV, dirU)
-
-    return [dphi, dtheta, delta_phi, delta_theta]
-
-
-def get_angles(tree, beg, parents, children):
-    """Returns the angles between all the triplets (parent, child1, child2)
-    of the tree"""
-    angles = [[0, 0, 0, 0], ]  # Null angle for non bif point
-
-    for b in beg[1:]:
-
-        angleBetween = _angles_tree(tree, parID=parents[b], parEND=b,
-                                    ch1ID=children[b][0],
-                                    ch2ID=children[b][1])
-        angles.append(angleBetween)
-
-    return angles
+def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
+    '''Method to extract ph from tree that contains mutlifurcations'''
+    return tree_to_property_barcode(
+        tree,
+        filtration_function=_filtration_function(feature, **kwargs),
+        property_class=NoProperty
+    )
 
 
 def get_ph_angles(tree, feature='radial_distances', **kwargs):
     '''Method to extract ph from tree that contains mutlifurcations'''
-    ph = []
-
-    rd = getattr(tree, 'get_point_' + feature)(**kwargs)
-
-    active = tree.get_bif_term() == 0
-
-    beg, end = tree.get_sections_2()
-
-    beg = np.array(beg)
-    end = np.array(end)
-
-    parents = {e: b for b, e in zip(beg, end)}
-
-    if 0 in beg:
-        parents[0] = tree.p[0]
-
-    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
-
-    angles = get_angles(tree, beg, parents, children)
-
-    alives = np.where(active)[0]
-    while len(alives) > 1:
-        for alive in alives:
-
-            p = parents[alive]
-            c = children[p]
-
-            if np.alltrue(active[c]):
-                active[p] = True
-                active[c] = False
-
-                mx = np.argmax(abs(rd[c]))
-                mx_id = c[mx]
-
-                c = np.delete(c, mx)
-
-                for ci in c:
-                    angID = np.array(angles)[np.where(beg == p)[0][0]]
-                    ph.append([rd[ci], rd[p], angID[0], angID[1], angID[2], angID[3]])
-
-                rd[p] = rd[mx_id]
-        alives = np.where(active)[0]
-
-    ph.append([rd[alives[0]], 0, np.nan, np.nan, np.nan, np.nan])
-
-    return ph
+    return tree_to_property_barcode(
+        tree,
+        filtration_function=_filtration_function(feature, **kwargs),
+        property_class=PersistentAngles
+    )
 
 
 def get_ph_radii(tree, feature='radial_distances', **kwargs):
     """Returns the ph diagram enhanced with the corresponding encoded radii"""
-    def get_section_mean_radii(tree, beg, end):
-        """Returns the mean radii of a section"""
-        return [np.mean(tree.d[beg[i]:end[i]]) for i in range(len(beg))]
-
-    ph = []
-
-    rd = getattr(tree, 'get_point_' + feature)(**kwargs)
-
-    active = tree.get_bif_term() == 0
-
-    beg, end = tree.get_sections_2()
-
-    beg = np.array(beg)
-    end = np.array(end)
-
-    parents = {e: b for b, e in zip(beg, end)}
-    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
-
-    radii = get_section_mean_radii(tree, beg, end)
-
-    alives = np.where(active)[0]
-    while len(alives) > 1:
-        for alive in alives:
-
-            p = parents[alive]
-            c = children[p]
-
-            if np.alltrue(active[c]):
-                active[p] = True
-                active[c] = False
-
-                mx = np.argmax(abs(rd[c]))
-                mx_id = c[mx]
-
-                c = np.delete(c, mx)
-
-                for ci in c:
-                    radiiID = np.array(radii)[np.where(beg == p)[0][0]]
-                    ph.append([rd[ci], rd[p], radiiID])
-
-                rd[p] = rd[mx_id]
-        alives = np.where(active)[0]
-
-    ph.append([rd[alives[0]], 0, radii[beg[0]]])  # Add the last alive component
-
-    return ph
+    return tree_to_property_barcode(
+        tree,
+        filtration_function=_filtration_function(feature, **kwargs),
+        property_class=PersistentMeanRadius
+    )
 
 
 def get_ph_neuron(neuron, feature='radial_distances', neurite_type='all', **kwargs):
@@ -289,5 +185,4 @@ def extract_connectivity_from_points(tree, threshold=1.0):
     coords = np.transpose([tree.x, tree.y, tree.z])
     distances_matrix = sp.distance.cdist(coords, coords)
     mat = distances_matrix < threshold
-
     return mat
