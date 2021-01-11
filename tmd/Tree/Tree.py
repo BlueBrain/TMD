@@ -141,37 +141,23 @@ class Tree(object):
 
     @cached_property
     def parents_children(self):
-        """
+        """Returns the parents and children nodes of each section
+
         Returns:
-            tuple:
-                parents (dict): The parent id for each point
-                children (dict): The children ids for each point
+            parents (dict): Each key corresponds to a section id
+                and the respective values to the parent section ids
+            children (dict): Each key corresponds to a section id
+                and the respective values to the children section ids
+
+        Notes:
+            If 0 exists in starting nodes, the parent from tree is assigned
         """
         begs, ends = self.sections
-        return _node_connectivity(self, begs, ends)
+        parents = {e: b for b, e in zip(begs, ends)}
 
+        if 0 in begs:
+            parents[0] = self.p[0]
 
-def _node_connectivity(tree, beg, end):
-    """Returns the parents and children nodes of each section
-    Args:
-        tree (Tree): Tree object
-        beg (np.ndarray): Starting nodes of sections
-        end (np.ndarray): Ending nodes of sections
+        children = {b: ends[np.where(begs == b)[0]] for b in np.unique(begs)}
 
-    Returns:
-        parents (dict): Each key corresponds to a section id
-            and the respective values to the parent section ids
-        children (dict): Each key corresponds to a section id
-            and the respective values to the children section ids
-
-    Notes:
-        If 0 exists in starting nodes, the parent from tree is assigned
-    """
-    parents = {e: b for b, e in zip(beg, end)}
-
-    if 0 in beg:
-        parents[0] = tree.p[0]
-
-    children = {b: end[np.where(beg == b)[0]] for b in np.unique(beg)}
-
-    return parents, children
+        return parents, children

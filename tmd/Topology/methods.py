@@ -27,7 +27,8 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
 
     Args:
 
-        filtration_function (Callable): The filtration function to apply on the tree
+        filtration_function (Callable[tree] -> np.ndarray):
+            The filtration function to apply on the tree
 
         property_class (PersistentProperty, optional): A PersistentProperty class.By
             default the NoProperty is used which does not add entries in the barcode.
@@ -39,8 +40,7 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
                 - filtration value end
                 - property_value1
                 - property_value2
-                - .
-                - .
+                - ...
                 - property_valueN
     """
     point_values = filtration_function(tree)

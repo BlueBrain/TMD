@@ -152,25 +152,22 @@ def test_get_way_to_root():
     nt.ok_(np.allclose(methods.get_way_to_root(tree), np.array([-1])))
 
 
-def test_node_connectivity():
+def test_parents_children():
 
-    tree = mock.Mock()
-    tree.p = [-1]
+    tree = Tree.Tree(
+        x=np.zeros(5),
+        y=np.zeros(5),
+        z=np.zeros(5),
+        d=np.zeros(5),
+        t=np.zeros(5),
+        p=np.array([-1, 0, 1, 2, 2])
+    )
 
-    edges = np.array([
-        [0, 2],
-        [2, 3],
-        [2, 5]
-    ])
+    parents, children = tree.parents_children
 
-    beg = edges[:, 0]
-    end = edges[:, 1]
+    assert parents == {0: -1, 2: 0, 3: 2, 4: 2}
 
-    parents, children = Tree._node_connectivity(tree, beg, end)
-
-    assert parents == {0: -1, 2: 0, 3: 2, 5: 2}
-
-    expected_children = {0: [2], 2: [3, 5]}
+    expected_children = {2: [3, 4]}
 
     for key, values in expected_children.items():
         npt.assert_array_equal(children[key], values)

@@ -8,6 +8,7 @@ class PersistentProperty(ABC):
     """Abstract class for persistent properties that are defined
     on persistent components.
     """
+
     @abstractmethod
     def get(self, component_start):
         """Get component property"""
@@ -129,15 +130,16 @@ def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
     Args:
         tree (Tree): Morphology tree
         parID (int): Id of parent section
-        parEnd (int): Id ofparent section end
+        parEnd (int): Id of parent section end
         ch1ID (int): ID of first child
         ch2ID (int): ID of section child
 
     Returns:
         list:
-            dphi (float): Absolute ifference of phi_angles between parent and first
-
-            dtheta (float)
+            dphi (float):
+                Absolute difference of phi_angles between parent and first child
+            dtheta (float):
+                Absolute difference of theta_angles between parent and first child
             delta_phi (float): Difference of phi_angles phi_v - phi_u
                 on the x-y plane
             delta_theta (float): Difference of theta_angles th_v - th_u
