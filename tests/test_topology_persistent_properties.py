@@ -78,7 +78,7 @@ def test_section_mean_radii():
     expected_mean_radii = [0.15, 0.4, 0.6]
 
     npt.assert_allclose(
-        tested._section_mean_radii(radii, section_begs, section_ends),
+        tested.PersistentMeanRadius._section_mean_radii(radii, section_begs, section_ends),
         expected_mean_radii
     )
 
@@ -111,36 +111,40 @@ def test_persistent_mean_radius():
 
 def test_phi_theta():
 
+    func = tested.PersistentAngles._phi_theta
+
     u = np.array([1., 0., 0.])
     v = np.array([1., 0., 0.])
 
-    npt.assert_allclose(tested._phi_theta(u, v), [0., 0.])
-    npt.assert_allclose(tested._phi_theta(v, u), [0., 0.])
-    npt.assert_allclose(tested._phi_theta(3. * u, 4. * v), [0., 0.])
+    npt.assert_allclose(func(u, v), [0., 0.])
+    npt.assert_allclose(func(v, u), [0., 0.])
+    npt.assert_allclose(func(3. * u, 4. * v), [0., 0.])
 
     u = np.array([1., 0., 0.])
     v = np.array([0., 0., 1.])
 
-    npt.assert_allclose(tested._phi_theta(u, v), [0., -np.pi * 0.5])
-    npt.assert_allclose(tested._phi_theta(v, u), [0., +np.pi * 0.5])
-    npt.assert_allclose(tested._phi_theta(2. * v, 3. * u), [0., np.pi * 0.5])
+    npt.assert_allclose(func(u, v), [0., -np.pi * 0.5])
+    npt.assert_allclose(func(v, u), [0., +np.pi * 0.5])
+    npt.assert_allclose(func(2. * v, 3. * u), [0., np.pi * 0.5])
 
     u = np.array([1., 0., 0.])
     v = np.array([-1., 0., 0.])
 
-    npt.assert_allclose(tested._phi_theta(u, v), [np.pi, 0.])
-    npt.assert_allclose(tested._phi_theta(v, u), [-np.pi, 0.])
-    npt.assert_allclose(tested._phi_theta(2. * v, 3. * u), [-np.pi, 0.])
+    npt.assert_allclose(func(u, v), [np.pi, 0.])
+    npt.assert_allclose(func(v, u), [-np.pi, 0.])
+    npt.assert_allclose(func(2. * v, 3. * u), [-np.pi, 0.])
 
     u = np.array([1., 1., 0.])
     v = np.array([1., 0., 1.])
 
-    npt.assert_allclose(tested._phi_theta(u, v), [-0.25 * np.pi, -0.25 * np.pi])
-    npt.assert_allclose(tested._phi_theta(v, u), [0.25 * np.pi, 0.25 * np.pi])
-    npt.assert_allclose(tested._phi_theta(2. * v, 3. * u), [0.25 * np.pi, 0.25 * np.pi])
+    npt.assert_allclose(func(u, v), [-0.25 * np.pi, -0.25 * np.pi])
+    npt.assert_allclose(func(v, u), [0.25 * np.pi, 0.25 * np.pi])
+    npt.assert_allclose(func(2. * v, 3. * u), [0.25 * np.pi, 0.25 * np.pi])
 
 
 def test_angles_tree():
+
+    func = tested.PersistentAngles._angles_tree
 
     tree = MockTree(
         np.array([
@@ -151,7 +155,7 @@ def test_angles_tree():
         ])
     )
 
-    angles = tested._angles_tree(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
+    angles = func(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
     npt.assert_allclose(angles, [0., -0.5 * np.pi, 0.5 * np.pi, 0.])
 
     tree = MockTree(
@@ -163,7 +167,7 @@ def test_angles_tree():
         ])
     )
 
-    angles = tested._angles_tree(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
+    angles = func(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
     npt.assert_allclose(angles, [0., 0., 0.5 * np.pi, -0.5 * np.pi])
 
     tree = MockTree(
@@ -175,7 +179,7 @@ def test_angles_tree():
         ])
     )
 
-    angles = tested._angles_tree(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
+    angles = func(tree, parID=0, parEND=1, ch1ID=2, ch2ID=3)
     npt.assert_allclose(angles, [0., 0., 0.5 * np.pi, -0.5 * np.pi])
 
 
@@ -195,6 +199,6 @@ def test_get_angles():
     children = {1: [2, 3]}
     parents = {1: 0}
 
-    angles = tested.get_angles(tree, begs, parents, children)
+    angles = tested.PersistentAngles._get_angles(tree, begs, parents, children)
     npt.assert_allclose(angles, [[0., 0., 0., 0.], [0., 0., 0.5 * np.pi, -0.5 * np.pi]])
 
