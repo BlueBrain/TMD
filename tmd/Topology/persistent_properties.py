@@ -64,7 +64,7 @@ class PersistentMeanRadius(PersistentProperty):
         return np.fromiter(
             (np.mean(tree_radii[b: e]) for b, e in zip(section_begs, section_ends)),
             dtype=np.float
-    )
+        )
 
 
 class PersistentAngles(PersistentProperty):
@@ -94,7 +94,6 @@ class PersistentAngles(PersistentProperty):
         component, nans are returned.
         """
         return [np.nan, np.nan, np.nan, np.nan]
-
 
     @staticmethod
     def _phi_theta(u, v):
