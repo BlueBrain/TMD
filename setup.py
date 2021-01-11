@@ -18,6 +18,7 @@ config = {
         'scikit-learn>=0.19.1',
         'munkres>=1.0.12',
         'cached-property>=1.5.1'
+        'morphio>=2.3.11'
     ],
     'setup_requires':['setuptools_scm'],
     'extras_require': {
