@@ -79,11 +79,11 @@ def convert_morphio_trees(morphio_neuron):
 
     section_final_nodes = np.empty(total_points, dtype=np.int)
 
-    total = 0
+    tree_end = 0
     for root in morphio_neuron.root_sections:
 
         tree_length = 0
-        tree_beg = tree_end = total
+        tree_beg = tree_end
 
         for section in root.iter():
 
@@ -125,5 +125,3 @@ def convert_morphio_trees(morphio_neuron):
             ),
             TREE_TYPES
         )
-
-        total = tree_end
