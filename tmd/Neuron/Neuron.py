@@ -31,7 +31,6 @@ class Neuron(object):
             neuron (Neuron): tmd Neuron object
         """
         from morphio import Morphology
-        from tmd.utils import tree_type
         from tmd.Neuron.conversion import convert_morphio_soma
         from tmd.Neuron.conversion import convert_morphio_trees
 
