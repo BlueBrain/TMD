@@ -129,8 +129,7 @@ def test_convert_morphio_trees():
 
     assert len(trees) == 1
 
-    tree, tree_types = trees[0]
-    print(tree, tree_types)
+    tree = trees[0]
 
     npt.assert_allclose(tree.x, [0.1, 0.4, 0.7, 0.4, 0.7, 0.4, 0.7])
     npt.assert_allclose(tree.y, [0.2, 0.5, 0.8, 0.5, 0.8, 0.5, 0.8])
@@ -138,8 +137,6 @@ def test_convert_morphio_trees():
     npt.assert_allclose(tree.d, [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7])
     npt.assert_array_equal(tree.t, [2, 2, 2, 2, 2, 2, 2])
     npt.assert_array_equal(tree.p, [-1, 0, 1, 2, 3, 2, 5])
-
-    assert tree_types == {1: 'soma', 2: 'axon', 3: 'basal', 4: 'apical'}
 
 
 def _assert_neurons_equal(neuron1, neuron2):

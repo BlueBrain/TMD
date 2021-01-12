@@ -4,7 +4,6 @@ from collections import namedtuple
 import numpy as np
 from tmd.Soma.Soma import Soma
 from tmd.Tree import Tree
-from tmd.utils import tree_type as TREE_TYPES
 
 
 SectionData = namedtuple('SectionData', ['points', 'diameters', 'section_type', 'parents'])
@@ -74,8 +73,8 @@ def convert_morphio_trees(morphio_neuron):
     y = np.empty(total_points, dtype=np.float32)
     z = np.empty(total_points, dtype=np.float32)
     d = np.empty(total_points, dtype=np.float32)
-    t = np.empty(total_points, dtype=np.int)
-    p = np.empty(total_points, dtype=np.int)
+    t = np.empty(total_points, dtype=np.int32)
+    p = np.empty(total_points, dtype=np.int64)
 
     section_final_nodes = np.empty(total_points, dtype=np.int)
 
@@ -114,14 +113,11 @@ def convert_morphio_trees(morphio_neuron):
             # point from the children sections
             section_final_nodes[section.id] = tree_length - 1
 
-        yield (
-            Tree.Tree(
-                x=x[tree_beg: tree_end],
-                y=y[tree_beg: tree_end],
-                z=z[tree_beg: tree_end],
-                d=d[tree_beg: tree_end],
-                t=t[tree_beg: tree_end],
-                p=p[tree_beg: tree_end]
-            ),
-            TREE_TYPES
+        yield Tree.Tree(
+            x=x[tree_beg: tree_end],
+            y=y[tree_beg: tree_end],
+            z=z[tree_beg: tree_end],
+            d=d[tree_beg: tree_end],
+            t=t[tree_beg: tree_end],
+            p=p[tree_beg: tree_end]
         )
