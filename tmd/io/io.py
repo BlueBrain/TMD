@@ -46,7 +46,7 @@ def make_tree(data):
 
 
 def load_neuron(input_file, line_delimiter='\n', soma_type=None,
-                tree_types=None, remove_duplicates=True):
+                tree_types=None, remove_duplicates=True, verbose=True):
     '''
     Io method to load an swc or h5 file into a Neuron object.
     TODO: Check if tree is connected to soma, otherwise do
@@ -78,6 +78,20 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
         soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
     except IndexError as exc:
         raise LoadNeuronError('Soma points not in the expected format') from exc
+
+    # Remove structural annotations other than defined in TYPE_DICT
+    # Presence of those annotations impede loading of data when generating
+    # csr_matrix.
+    in_type_dct = _np.zeros((len(data), len(TYPE_DCT))).astype(bool)
+    for ind, TYPE in enumerate(TYPE_DCT.values()):
+        in_type_dct[:, ind] = data[:, 1] == int(TYPE)
+    in_type_dct = _np.sum(in_type_dct, axis=1).astype(bool)
+    if verbose and len(data) > _np.sum(in_type_dct):
+        print('LoadNeuronWarning: Loaded neuron data contains structural '
+                              'annotations that are ignored in current TMD '
+                              ' package. Processed data only contains: %s'
+                              % str(TYPE_DCT))
+    data = data[in_type_dct, :]
 
     # Extract soma information from swc
     soma = Soma.Soma(x=_np.transpose(data)[SWC_DCT['x']][soma_ids],
