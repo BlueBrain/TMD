@@ -2,6 +2,7 @@
 tmd class : Neuron
 '''
 import copy
+from pathlib import Path
 import numpy as np
 from tmd.Soma import Soma
 from tmd.Tree import Tree
@@ -16,6 +17,34 @@ class Neuron(object):
     # pylint: disable=import-outside-toplevel
     from tmd.Neuron.methods import size
     from tmd.Neuron.methods import get_bounding_box
+
+    @classmethod
+    def from_morphio(cls, path_or_obj):
+        """Create Neuron object from morphio object or from path
+        loaded via morphio.
+
+        Args:
+            path_or_obj (Union[str, morphio.Morphology]):
+                Filepath or morphio object
+
+        Returns:
+            neuron (Neuron): tmd Neuron object
+        """
+        from morphio import Morphology
+        from tmd.Neuron.conversion import convert_morphio_soma
+        from tmd.Neuron.conversion import convert_morphio_trees
+
+        if isinstance(path_or_obj, (str, Path)):
+            obj = Morphology(path_or_obj)
+        else:
+            obj = path_or_obj
+
+        neuron = cls()
+        neuron.set_soma(convert_morphio_soma(obj.soma))
+        for tree in convert_morphio_trees(obj):
+            neuron.append_tree(tree, tree_type)
+
+        return neuron
 
     def __init__(self, name='Neuron'):
         '''Creates an empty Neuron object.

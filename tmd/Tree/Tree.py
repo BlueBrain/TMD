@@ -52,12 +52,12 @@ class Tree(object):
         tree : Tree
             tmd Tree object
         '''
-        self.x = np.array(x, dtype=float)
-        self.y = np.array(y, dtype=float)
-        self.z = np.array(z, dtype=float)
-        self.d = np.array(d, dtype=float)
-        self.t = np.array(t, dtype=int)
-        self.p = np.array(p, dtype=int)
+        self.x = np.array(x, dtype=np.float32)
+        self.y = np.array(y, dtype=np.float32)
+        self.z = np.array(z, dtype=np.float32)
+        self.d = np.array(d, dtype=np.float32)
+        self.t = np.array(t, dtype=np.int32)
+        self.p = np.array(p, dtype=np.int64)
         self.dA = sp.csr_matrix((np.ones(len(self.x) - 1),
                                  (range(1, len(self.x)), self.p[1:])),
                                 shape=(len(self.x), len(self.x)))
