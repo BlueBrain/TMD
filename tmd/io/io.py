@@ -5,6 +5,7 @@ about reading and writing files.
 from __future__ import print_function
 
 import os
+from pathlib import Path
 import numpy as _np
 from scipy import sparse as sp
 from scipy.sparse import csgraph as cs
@@ -12,11 +13,13 @@ from tmd.io.swc import SWC_DCT
 from tmd.io.swc import read_swc
 from tmd.io.swc import swc_to_data
 from tmd.io.h5 import read_h5
+from tmd.io.conversion import convert_morphio_soma
+from tmd.io.conversion import convert_morphio_trees
 from tmd.Neuron import Neuron
 from tmd.Tree import Tree
 from tmd.Soma import Soma
 from tmd.Population import Population
-from tmd.utils import tree_type as td
+from tmd.utils import tree_type
 
 # Definition of tree types
 TYPE_DCT = {'soma': 1,
@@ -54,7 +57,7 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     that there are disconnected components
     '''
 
-    tree_types_final = td.copy()
+    tree_types_final = tree_type.copy()
     if tree_types is not None:
         tree_types_final.update(tree_types)
 
@@ -103,7 +106,39 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     for i in range(comp[0]):
         tree_ids = _np.where(comp[1] == i)[0] + len(soma_ids)
         tree = make_tree(data[tree_ids])
-        neuron.append_tree(tree, td=tree_types_final)
+        neuron.append_tree(tree, treetype=tree_types_final)
+
+    return neuron
+
+
+def load_neuron_from_morphio(path_or_obj):
+    """
+    Create Neuron object from morphio object or from path
+        loaded via morphio.
+        Supported file formats: h5, swc, asc.
+
+        Args:
+            path_or_obj (Union[str, morphio.Morphology]):
+                Filepath or morphio object
+
+        Returns:
+            neuron (Neuron): tmd Neuron object
+    """
+    from morphio import Morphology  # pylint: disable=C0415
+
+    if isinstance(path_or_obj, (str, Path)):
+        obj = Morphology(path_or_obj)
+        filename = path_or_obj
+    else:
+        obj = path_or_obj
+        # MorphIO does not support naming of objects yet.
+        filename = ''
+
+    neuron = Neuron.Neuron()
+    neuron.name = filename
+    neuron.set_soma(convert_morphio_soma(obj.soma))
+    for tree in convert_morphio_trees(obj):
+        neuron.append_tree(tree, tree_type)
 
     return neuron
 
