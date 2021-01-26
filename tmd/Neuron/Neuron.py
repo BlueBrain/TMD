@@ -5,7 +5,7 @@ import copy
 import numpy as np
 from tmd.Soma import Soma
 from tmd.Tree import Tree
-from tmd.utils import tree_type
+from tmd.utils import TREE_TYPE_DICT
 
 
 class Neuron(object):
@@ -51,7 +51,7 @@ class Neuron(object):
         if isinstance(new_soma, Soma.Soma):
             self.soma = new_soma
 
-    def append_tree(self, new_tree, treetype):
+    def append_tree(self, new_tree, tree_types):
         """
         If type of object is tree
         this function finds the type of tree
@@ -60,8 +60,8 @@ class Neuron(object):
         """
         if isinstance(new_tree, Tree.Tree):
 
-            if int(np.median(new_tree.t)) in treetype.keys():
-                neurite_type = treetype[int(np.median(new_tree.t))]
+            if int(np.median(new_tree.t)) in tree_types.keys():
+                neurite_type = tree_types[int(np.median(new_tree.t))]
             else:
                 neurite_type = 'undefined'
             getattr(self, neurite_type).append(new_tree)
@@ -96,6 +96,6 @@ class Neuron(object):
 
         for tr in self.neurites:
             t = tr.extract_simplified()
-            neu.append_tree(t, tree_type)
+            neu.append_tree(t, TREE_TYPE_DICT)
 
         return neu

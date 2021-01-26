@@ -35,13 +35,6 @@ axon_test = Tree.Tree(x=np.array([3.]), y=np.array([4.]), z=np.array([5.]),
                       d=np.array([12.]), t=np.array([2]), p=np.array([-1]))
 
 
-def test_type_dict():
-    nt.ok_(io.TYPE_DCT == {'soma': 1,
-                           'basal': 3,
-                           'apical': 4,
-                           'axon': 2})
-
-
 def test_load_swc_neuron():
     neuron = io.load_neuron(basic_file)
     nt.ok_(neuron.soma.is_equal(soma_test))
@@ -105,7 +98,7 @@ def test_tree_type():
 
     neuron = io.load_neuron(os.path.join(DATA_PATH, 'basic_exotic_section_types.swc'),
                             soma_type=5,
-                            tree_types=tree_types)
+                            user_tree_types=tree_types)
 
     def point(section):
         return np.column_stack([section.x, section.y, section.z])
