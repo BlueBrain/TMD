@@ -8,7 +8,7 @@ def test_term_dict():
                                'z': 2})
 
 def test_tree_type():
-    nt.assert_dict_equal(utils.tree_type,
+    nt.assert_dict_equal(utils.TREE_TYPE_DICT,
                          {1: 'soma',
                           2: 'axon',
                           3: 'basal',

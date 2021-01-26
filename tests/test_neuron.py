@@ -4,7 +4,7 @@ import numpy as np
 from tmd.Neuron import Neuron
 from tmd.Soma import Soma
 from tmd.Tree import Tree
-from tmd.utils import tree_type as td
+from tmd.utils import TREE_TYPE_DICT as td
 
 soma_test = Soma.Soma([0.],[0.],[0.],[12.])
 soma_test1 = Soma.Soma([0.],[0.],[0.],[6.])

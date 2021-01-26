@@ -4,7 +4,8 @@
 import numpy as _np
 from matplotlib.collections import LineCollection as _LC
 from tmd.view import common as _cm
-from tmd import utils as _utils
+from tmd.utils import TREE_TYPE_DICT
+from tmd.utils import term_dict
 from tmd.view.common import blues_map
 
 
@@ -42,8 +43,8 @@ def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
 
         """2d coordinates required for the plotting of a segment"""
 
-        horz = _utils.term_dict[plane[0]]
-        vert = _utils.term_dict[plane[1]]
+        horz = term_dict[plane[0]]
+        vert = term_dict[plane[1]]
 
         horz1 = seg[0][horz] + x_add
         horz2 = seg[1][horz] + x_add
@@ -67,7 +68,7 @@ def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
         linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              _utils.tree_type[tr.get_type()])
+                              TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
     collection = _LC(segs, color=treecolor, linewidth=linewidth,
@@ -103,8 +104,8 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
         """2d coordinates required for the plotting of a segment"""
 
-        horz = _utils.term_dict[plane[0]]
-        vert = _utils.term_dict[plane[1]]
+        horz = term_dict[plane[0]]
+        vert = term_dict[plane[1]]
 
         horz1 = seg[0][horz] + x_add
         horz2 = seg[1][horz] + x_add
@@ -124,11 +125,11 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         scale = _get_default('diameter_scale', **kwargs)
         linewidth = [d * scale for d in tr.d]
 
-    if tr.get_type() not in _utils.tree_type:
+    if tr.get_type() not in TREE_TYPE_DICT:
         treecolor = 'black'
     else:
         treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                                  _utils.tree_type[tr.get_type()])
+                                  TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
     collection = _LC(segs, color=treecolor, linewidth=linewidth,
@@ -142,10 +143,10 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
     white_space = _get_default('white_space', **kwargs)
 
-    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][_utils.term_dict[plane[0]]] - white_space,
-                                         bounding_box[1][_utils.term_dict[plane[0]]] + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][_utils.term_dict[plane[1]]] - white_space,
-                                         bounding_box[1][_utils.term_dict[plane[1]]] + white_space])
+    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][term_dict[plane[0]]] - white_space,
+                                         bounding_box[1][term_dict[plane[0]]] + white_space])
+    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][term_dict[plane[1]]] - white_space,
+                                         bounding_box[1][term_dict[plane[1]]] + white_space])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -290,10 +291,10 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
         bounding_box = temp_tree.get_bounding_box()
 
-        h.append([bounding_box[0][_utils.term_dict[plane[0]]],
-                  bounding_box[1][_utils.term_dict[plane[0]]]])
-        v.append([bounding_box[0][_utils.term_dict[plane[1]]],
-                  bounding_box[1][_utils.term_dict[plane[1]]]])
+        h.append([bounding_box[0][term_dict[plane[0]]],
+                  bounding_box[1][term_dict[plane[0]]]])
+        v.append([bounding_box[0][term_dict[plane[1]]],
+                  bounding_box[1][term_dict[plane[1]]]])
 
         tree(temp_tree, hadd=hadd, vadd=vadd, **kwargs)
 
@@ -446,10 +447,10 @@ def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
                 bounding_box = temp_tree.get_bounding_box()
 
-                h.append([bounding_box[0][_utils.term_dict[plane[0]]] + hadd,
-                          bounding_box[1][_utils.term_dict[plane[1]]] + vadd])
-                v.append([bounding_box[0][_utils.term_dict[plane[0]]] + hadd,
-                          bounding_box[1][_utils.term_dict[plane[1]]] + vadd])
+                h.append([bounding_box[0][term_dict[plane[0]]] + hadd,
+                          bounding_box[1][term_dict[plane[1]]] + vadd])
+                v.append([bounding_box[0][term_dict[plane[0]]] + hadd,
+                          bounding_box[1][term_dict[plane[1]]] + vadd])
 
                 tree(temp_tree, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
@@ -484,9 +485,9 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
         """3d coordinates needed for the plotting of a segment"""
 
-        horz = _utils.term_dict['x']
-        vert = _utils.term_dict['y']
-        depth = _utils.term_dict['z']
+        horz = term_dict['x']
+        vert = term_dict['y']
+        depth = term_dict['z']
 
         horz1 = seg[0][horz]
         horz2 = seg[1][horz]
@@ -509,7 +510,7 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
         linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              _utils.tree_type[tr.get_type()])
+                              TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
     collection = Line3DCollection(segs, color=treecolor, linewidth=linewidth,
@@ -524,12 +525,12 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
     white_space = _get_default('white_space', **kwargs)
 
-    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][_utils.term_dict['x']] - white_space,
-                                         bounding_box[1][_utils.term_dict['x']] + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][_utils.term_dict['y']] - white_space,
-                                         bounding_box[1][_utils.term_dict['y']] + white_space])
-    kwargs['zlim'] = kwargs.get('zlim', [bounding_box[0][_utils.term_dict['z']] - white_space,
-                                         bounding_box[1][_utils.term_dict['z']] + white_space])
+    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][term_dict['x']] - white_space,
+                                         bounding_box[1][term_dict['x']] + white_space])
+    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][term_dict['y']] - white_space,
+                                         bounding_box[1][term_dict['y']] + white_space])
+    kwargs['zlim'] = kwargs.get('zlim', [bounding_box[0][term_dict['z']] - white_space,
+                                         bounding_box[1][term_dict['z']] + white_space])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -553,9 +554,9 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
 
         """3d coordinates needed for the plotting of a segment"""
 
-        horz = _utils.term_dict['x']
-        vert = _utils.term_dict['y']
-        depth = _utils.term_dict['z']
+        horz = term_dict['x']
+        vert = term_dict['y']
+        depth = term_dict['z']
 
         horz1 = seg[0][horz]
         horz2 = seg[1][horz]
@@ -581,7 +582,7 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
         linewidth = [d * scale for d in tr.d]
 
     treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              _utils.tree_type[tr.get_type()])
+                              TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
     collection = Line3DCollection(segs, color=treecolor, linewidth=linewidth,
@@ -668,12 +669,12 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='all'
 
         bounding_box = temp_tree.get_bounding_box()
 
-        h.append([bounding_box[0][_utils.term_dict['x']],
-                  bounding_box[1][_utils.term_dict['x']]])
-        v.append([bounding_box[0][_utils.term_dict['y']],
-                  bounding_box[1][_utils.term_dict['y']]])
-        d.append([bounding_box[0][_utils.term_dict['z']],
-                  bounding_box[1][_utils.term_dict['z']]])
+        h.append([bounding_box[0][term_dict['x']],
+                  bounding_box[1][term_dict['x']]])
+        v.append([bounding_box[0][term_dict['y']],
+                  bounding_box[1][term_dict['y']]])
+        d.append([bounding_box[0][term_dict['z']],
+                  bounding_box[1][term_dict['z']]])
 
         tree3d(temp_tree, **kwargs)
 
@@ -759,12 +760,12 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
         # soma3d(nrn.soma, **kwargs)
         for temp_tree in nrn.neurites:
             bounding_box = temp_tree.get_bounding_box()
-            h.append([bounding_box[0][_utils.term_dict['x']],
-                      bounding_box[1][_utils.term_dict['x']]])
-            v.append([bounding_box[0][_utils.term_dict['y']],
-                      bounding_box[1][_utils.term_dict['y']]])
-            d.append([bounding_box[0][_utils.term_dict['z']],
-                      bounding_box[1][_utils.term_dict['z']]])
+            h.append([bounding_box[0][term_dict['x']],
+                      bounding_box[1][term_dict['x']]])
+            v.append([bounding_box[0][term_dict['y']],
+                      bounding_box[1][term_dict['y']]])
+            d.append([bounding_box[0][term_dict['z']],
+                      bounding_box[1][term_dict['z']]])
             tree3d(temp_tree, **kwargs)
 
     kwargs['title'] = kwargs.get('title', '')
