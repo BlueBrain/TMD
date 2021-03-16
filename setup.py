@@ -12,7 +12,6 @@ config = {
     'author_email': 'lida.kanari@epfl.ch',
     'install_requires': [
         'h5py>=2.8.0',
-        'enum-compat>=0.0.1',
         'scipy>=0.13.3',
         'numpy>=1.8.0',
         'scikit-learn>=0.19.1',
