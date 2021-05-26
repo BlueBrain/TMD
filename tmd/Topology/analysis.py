@@ -83,9 +83,8 @@ def closest_ph(ph_list, target_extent, method='from_above'):
 def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
-    f = open(filename, 'r')
-    ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
-    f.close()
+    with open(filename, 'r') as f:
+        ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
     return ph
 
 
