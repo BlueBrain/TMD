@@ -148,7 +148,7 @@ def test_tree_to_property_barcode():
         infinite_component=lambda v: []
     )
 
-    ph = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 
     npt.assert_array_equal(ph, [
         [3., 1.],
@@ -156,12 +156,16 @@ def test_tree_to_property_barcode():
         [7., 0.],
     ])
 
+    npt.assert_array_equal(bars_to_points, [
+        [2], [3], [4, 1]
+    ])
+
     prop = lambda *args: mock.Mock(
         get=lambda v: [v],
         infinite_component=lambda v: [0]
     )
 
-    ph = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 
     npt.assert_array_equal(ph, [
         [3., 1., 1.],
@@ -169,17 +173,25 @@ def test_tree_to_property_barcode():
         [7., 0., 0.],
     ])
 
+    npt.assert_array_equal(bars_to_points, [
+        [2], [3], [4, 1]
+    ])
+
     prop = lambda *args: mock.Mock(
         get=lambda v: list(range(v, v + 5)),
         infinite_component=lambda v: [np.nan] * 5
     )
 
-    ph = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 
     npt.assert_array_equal(ph, [
         [3., 1., 1., 2., 3., 4., 5.],
         [5., 1., 1., 2., 3., 4., 5.],
         [7., 0., np.nan, np.nan, np.nan, np.nan, np.nan],
+    ])
+
+    npt.assert_array_equal(bars_to_points, [
+        [2], [3], [4, 1]
     ])
 
 

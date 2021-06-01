@@ -13,12 +13,9 @@ def write_ph(ph, output_file='test.txt'):
     '''Writes a persistence diagram in
        an output file.
     '''
-    wfile = open(output_file, 'w')
-
-    for p in ph:
-        wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
-
-    wfile.close()
+    with open(output_file, 'w') as wfile:
+        for p in ph:
+            wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
 
 
 def tree_to_property_barcode(tree, filtration_function, property_class=NoProperty):
@@ -42,6 +39,9 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
                 - property_value2
                 - ...
                 - property_valueN
+        bars_to_points: A list of point ids for each bar in the barcode. Each list
+            corresponds to the set of endpoints (i.e. the end point of each section)
+            that belong to the corresponding persistent component - or bar.
     """
     point_values = filtration_function(tree)
 
@@ -52,6 +52,8 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
 
     active = tree.get_bif_term() == 0
     alives = np.where(active)[0]
+    point_ids_track = {al: [al] for al in alives}
+    bars_to_points = []
 
     ph = []
     while len(alives) > 1:
@@ -75,15 +77,18 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
                     ph.append(
                         [point_values[ci], point_values[p]] + prop.get(component_id)
                     )
+                    bars_to_points.append(point_ids_track[ci])
 
                 point_values[p] = point_values[mx_id]
+                point_ids_track[p] = point_ids_track[mx_id] + [p]
         alives = np.where(active)[0]
 
     ph.append(
         [point_values[alives[0]], 0] + prop.infinite_component(beg[0])
     )  # Add the last alive component
+    bars_to_points.append(point_ids_track[alives[0]])
 
-    return ph
+    return ph, bars_to_points
 
 
 def _filtration_function(feature, **kwargs):
@@ -94,29 +99,32 @@ def _filtration_function(feature, **kwargs):
 
 def get_persistence_diagram(tree, feature='radial_distances', **kwargs):
     '''Method to extract ph from tree that contains mutlifurcations'''
-    return tree_to_property_barcode(
+    ph, _ = tree_to_property_barcode(
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
         property_class=NoProperty
     )
+    return ph
 
 
 def get_ph_angles(tree, feature='radial_distances', **kwargs):
     '''Method to extract ph from tree that contains mutlifurcations'''
-    return tree_to_property_barcode(
+    ph, _ = tree_to_property_barcode(
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
         property_class=PersistentAngles
     )
+    return ph
 
 
 def get_ph_radii(tree, feature='radial_distances', **kwargs):
     """Returns the ph diagram enhanced with the corresponding encoded radii"""
-    return tree_to_property_barcode(
+    ph, _ = tree_to_property_barcode(
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
         property_class=PersistentMeanRadius
     )
+    return ph
 
 
 def get_ph_neuron(neuron, feature='radial_distances', neurite_type='all', **kwargs):
