@@ -11,7 +11,7 @@ Author: Lida Kanari
 
 Contributors: Pawel Dlotko, Benoit Coste
 
-Publication: 
+Publication:
 
 
 A Topological Representation of Branching Neuronal Morphologies
@@ -19,7 +19,7 @@ A Topological Representation of Branching Neuronal Morphologies
 _Cite this article as:_
     Kanari, L., Dłotko, P., Scolamiero, M. et al. Neuroinform (2018) 16:3.
     DOI: <https://doi.org/10.1007/s12021-017-9341-1>
-    
+
 Related publications:
 
 
@@ -28,22 +28,22 @@ Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3
 _Cite this article as:_
    Deitcher Y., Eyal G., Kanari L., et al. Cerebral Cortex (2017) 27:11
    DOI: <https://doi.org/10.1093/cercor/bhx226>
-   
-Objective Classification of Neocortical Pyramidal Cells 
+
+Objective Classification of Neocortical Pyramidal Cells
     DOI: <http://dx.doi.org/10.1101/349977>
-    
+
 Developed in Blue Brain Project
 
 Funding
 ---------
-The Blue Brain Project receives Swiss government funding from ETH Board of the ETH Domain (ETH = Swiss Federal Institutes of Technology) and receives support as a research center by the École polytechnique fédérale de Lausanne (EPFL).
+This project/research was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology.
 
 Sotware description
 ---------------------
 
-This Python module includes: 
+This Python module includes:
 
-* Basic loading of neuronal morphologies in swc and h5 file format. 
+* Basic loading of neuronal morphologies in swc and h5 file format.
 * Extraction of the topological descriptors of tree morphologies.
 * Visualization of neuronal trees and neurons.
 * Ploting persistence diagrams, barcodes and images.
@@ -88,3 +88,4 @@ pip install ./TMD[viewer]
 ```
 
 
+Copyright (c) 2016-2021 Blue Brain Project/EPFL
