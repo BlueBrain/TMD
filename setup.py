@@ -24,7 +24,7 @@ config = {
                        'viewer': ['matplotlib>=3.2.0',],
                        },
     'packages': find_packages(),
-    'license': 'LGPL',
+    'license': 'LGPLv3',
     'scripts': [],
     'name': 'tmd',
     'include_package_data': True,
