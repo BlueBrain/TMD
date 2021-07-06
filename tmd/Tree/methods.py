@@ -189,8 +189,8 @@ def get_point_path_distances(self):
     path_lengths = np.append(0, copy.deepcopy(seg_len))
     children = get_children(self)
 
-    for i in children.keys():
-        path_lengths[children[i]] = path_lengths[children[i]] + path_lengths[i]
+    for i, child in children.items():
+        path_lengths[child] = path_lengths[child] + path_lengths[i]
 
     return path_lengths
 
