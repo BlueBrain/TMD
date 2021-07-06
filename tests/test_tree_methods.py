@@ -116,6 +116,14 @@ def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
     npt.assert_allclose(pds, np.array([0., 3.74165739, 5.47370819, 7.205759  , 8.93780981]))
 
+def test_get_point_trunk_length():
+    pds = tree.get_point_trunk_length()
+    nt.ok_(np.allclose(pds, np.repeat(3.7416575, 5)))
+
+def test_get_point_section_lengths():
+    pds = tree.get_point_section_lengths()
+    nt.ok_(np.allclose(pds, np.array([0., 3.7416575, 0., 3.46410161, 5.19615221])))
+
 def test_get_sections_2():
     secs = tree.get_sections_2()
     npt.assert_allclose(secs[0], np.array([0, 1, 1]))

@@ -61,11 +61,12 @@ def get_bounding_box(self):
 
 
 # Segment features
-def get_segments(self):
-    """
+def get_segments(self, seg_nums=None):
+    """Return segment coordinates
     Input
     ------
     tree: tmd tree
+    seg_nums: segment numbers to consider
 
     Returns
     ---------
@@ -73,8 +74,10 @@ def get_segments(self):
         (child[x,y,z], parent[x,y,z])
     """
     seg_list = []
+    if not seg_nums:
+        seg_nums = range(1, size(self))
 
-    for seg_id in range(1, size(self)):
+    for seg_id in seg_nums:
         par_id = self.p[seg_id]
         child_coords = np.array([self.x[seg_id],
                                  self.y[seg_id],
@@ -87,11 +90,19 @@ def get_segments(self):
     return seg_list
 
 
-def get_segment_lengths(tree):
+def get_segment_lengths(tree, seg_nums=None):
     '''Returns segment lengths
+    Input
+    ------
+    tree: tmd tree
+    seg_nums: segment numbers to consider
     '''
-    seg_len = np.zeros(size(tree) - 1)
-    segs = tree.get_segments()
+    if not seg_nums:
+        seg_nums = range(1, size(tree))
+
+    seg_len = np.zeros(len(seg_nums))
+
+    segs = tree.get_segments(seg_nums)
 
     for iseg, seg in enumerate(segs):
         seg_len[iseg] = _rd(seg[0], seg[1])
@@ -184,6 +195,21 @@ def get_point_path_distances(self):
     return path_lengths
 
 
+def get_point_trunk_length(self):
+    '''Tree method to get the trunk (first section length).
+    '''
+    ways, end = self.get_sections_only_points()
+    first_section_id = np.where(ways == 0)
+    first_section_start = ways[first_section_id]
+    first_section_end = end[first_section_id]
+    seg_nums = range(first_section_start[0] + 1, first_section_end[0] + 1)
+
+    seg_lengths = get_segment_lengths(self, seg_nums)
+    trunk_length = np.sum(seg_lengths)
+
+    return np.repeat(trunk_length, size(self))
+
+
 def get_point_section_lengths(self):
     '''Tree method to get section lengths.
     '''
@@ -191,8 +217,8 @@ def get_point_section_lengths(self):
     ways, end = self.get_sections_only_points()
     seg_len = get_segment_lengths(self)
 
-    for i, item in enumerate(end):
-        lengths[item] = np.sum(seg_len[ways[i]:item])
+    for start_id, end_id in zip(ways, end):
+        lengths[end_id] = np.sum(seg_len[max(0, start_id - 1):end_id])
 
     return lengths
 
