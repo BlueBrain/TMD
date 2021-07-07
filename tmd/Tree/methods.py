@@ -3,6 +3,8 @@ tmd Tree's methods
 '''
 import copy
 from collections import OrderedDict
+from itertools import starmap
+
 import numpy as np
 import scipy.sparse as sp
 from sklearn.decomposition import PCA
@@ -61,12 +63,12 @@ def get_bounding_box(self):
 
 
 # Segment features
-def get_segments(self, seg_nums=None):
+def get_segments(self, seg_ids=None):
     """Return segment coordinates
     Input
     ------
     tree: tmd tree
-    seg_nums: segment numbers to consider
+    seg_ids: segment numbers to consider
 
     Returns
     ---------
@@ -74,10 +76,10 @@ def get_segments(self, seg_nums=None):
         (child[x,y,z], parent[x,y,z])
     """
     seg_list = []
-    if not seg_nums:
-        seg_nums = range(1, size(self))
+    if not seg_ids:
+        seg_ids = range(1, size(self))
 
-    for seg_id in seg_nums:
+    for seg_id in seg_ids:
         par_id = self.p[seg_id]
         child_coords = np.array([self.x[seg_id],
                                  self.y[seg_id],
@@ -90,22 +92,19 @@ def get_segments(self, seg_nums=None):
     return seg_list
 
 
-def get_segment_lengths(tree, seg_nums=None):
+def get_segment_lengths(tree, seg_ids=None):
     '''Returns segment lengths
     Input
     ------
     tree: tmd tree
-    seg_nums: segment numbers to consider
+    seg_ids: segment numbers to consider
     '''
-    if not seg_nums:
-        seg_nums = range(1, size(tree))
+    if not seg_ids:
+        seg_ids = range(1, size(tree))
 
-    seg_len = np.zeros(len(seg_nums))
+    segs = tree.get_segments(seg_ids)
 
-    segs = tree.get_segments(seg_nums)
-
-    for iseg, seg in enumerate(segs):
-        seg_len[iseg] = _rd(seg[0], seg[1])
+    seg_len = np.fromiter(starmap(_rd, segs), dtype=float)
 
     return seg_len
 
@@ -195,19 +194,19 @@ def get_point_path_distances(self):
     return path_lengths
 
 
-def get_point_trunk_length(self):
+def get_trunk_length(self):
     '''Tree method to get the trunk (first section length).
     '''
     ways, end = self.get_sections_only_points()
     first_section_id = np.where(ways == 0)
     first_section_start = ways[first_section_id]
     first_section_end = end[first_section_id]
-    seg_nums = range(first_section_start[0] + 1, first_section_end[0] + 1)
+    seg_ids = range(first_section_start[0] + 1, first_section_end[0] + 1)
 
-    seg_lengths = get_segment_lengths(self, seg_nums)
+    seg_lengths = get_segment_lengths(self, seg_ids)
     trunk_length = np.sum(seg_lengths)
 
-    return np.repeat(trunk_length, size(self))
+    return trunk_length
 
 
 def get_point_section_lengths(self):
@@ -251,8 +250,8 @@ def get_point_projection(self, vect=(0, 1, 0), point=None):
 
 # Section features
 def get_sections_2(self):
-    '''Tree method to get the sections'
-    begining and ending indices.
+    '''Tree method to get the indices of the parents of the first sections' points
+    and the indices of the last points of the sections.
     '''
     end = np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
 
@@ -265,8 +264,7 @@ def get_sections_2(self):
 
 
 def get_sections_only_points(self):
-    '''Tree method to get the sections'
-    begining and ending indices.
+    '''Tree method to get the sections' begining and ending indices.
     '''
     end = np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
 

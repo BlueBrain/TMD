@@ -21,7 +21,6 @@ class Tree(object):
     from tmd.Tree.methods import get_point_radial_distances_time
     from tmd.Tree.methods import get_point_weighted_radial_distances
     from tmd.Tree.methods import get_point_path_distances
-    from tmd.Tree.methods import get_point_trunk_length
     from tmd.Tree.methods import get_point_projection
     from tmd.Tree.methods import get_point_section_lengths
     from tmd.Tree.methods import get_point_section_branch_orders
@@ -29,6 +28,7 @@ class Tree(object):
     from tmd.Tree.methods import get_bifurcations
     from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
+    from tmd.Tree.methods import get_trunk_length
 
     def __init__(self, x, y, z, d, t, p):
         '''Constructor of tmd Tree Object
