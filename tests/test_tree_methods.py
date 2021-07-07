@@ -62,6 +62,14 @@ t1 = np.array([2,   2,   2,   2,  2])
 p1 = np.array([-1,  0,   1,   2,  1])
 
 tree = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
+long_tree = Tree.Tree(
+    x=np.array([0.,  1.,  2.,  3., 4., 5., 6.]),
+    y=np.array([0.,  2.,  3.,  4., 5., 6., 7.]),
+    z=np.array([0.,  3.,  4.,  5., 6., 7., 8.]),
+    d=np.array([2.,  4.,  6.,  8., 10., 12., 14.]),
+    t=np.array([2,   2,   2,   2,  2, 2, 2]),
+    p=np.array([-1,  0,   1,   2,  2, 4, 5]),
+)
 
 def test_rd():
     assert methods._rd([0, 0], [0, 1]) == 1.
@@ -116,13 +124,19 @@ def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
     npt.assert_allclose(pds, np.array([0., 3.74165739, 5.47370819, 7.205759  , 8.93780981]))
 
-def test_get_point_trunk_length():
-    pds = tree.get_point_trunk_length()
-    nt.ok_(np.allclose(pds, np.repeat(3.7416575, 5)))
-
 def test_get_point_section_lengths():
     pds = tree.get_point_section_lengths()
     nt.ok_(np.allclose(pds, np.array([0., 3.7416575, 0., 3.46410161, 5.19615221])))
+
+    pds = long_tree.get_point_section_lengths()
+    nt.ok_(np.allclose(pds, np.array([0., 0., 5.47370827, 1.73205078, 0., 0., 6.92820311])))
+
+def test_get_trunk_length():
+    pds = tree.get_trunk_length()
+    nt.assert_almost_equal(pds, 3.7416575)
+
+    pds = long_tree.get_trunk_length()
+    nt.assert_almost_equal(pds, 5.4737083)
 
 def test_get_sections_2():
     secs = tree.get_sections_2()
