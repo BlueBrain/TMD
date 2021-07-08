@@ -77,13 +77,13 @@ def get_segments(self, seg_ids=None):
     """
     seg_list = []
     if not seg_ids:
-        seg_ids = range(1, size(self))
+        seg_ids = range(0, size(self) - 1)
 
     for seg_id in seg_ids:
-        par_id = self.p[seg_id]
-        child_coords = np.array([self.x[seg_id],
-                                 self.y[seg_id],
-                                 self.z[seg_id]])
+        par_id = self.p[seg_id + 1]
+        child_coords = np.array([self.x[seg_id + 1],
+                                 self.y[seg_id + 1],
+                                 self.z[seg_id + 1]])
         parent_coords = np.array([self.x[par_id],
                                   self.y[par_id],
                                   self.z[par_id]])
@@ -100,7 +100,7 @@ def get_segment_lengths(tree, seg_ids=None):
     seg_ids: segment numbers to consider
     '''
     if not seg_ids:
-        seg_ids = range(1, size(tree))
+        seg_ids = range(0, size(tree) - 1)
 
     segs = tree.get_segments(seg_ids)
 
@@ -201,12 +201,10 @@ def get_trunk_length(self):
     first_section_id = np.where(ways == 0)
     first_section_start = ways[first_section_id]
     first_section_end = end[first_section_id]
-    seg_ids = range(first_section_start[0] + 1, first_section_end[0] + 1)
+    seg_ids = range(first_section_start[0], first_section_end[0])
 
     seg_lengths = get_segment_lengths(self, seg_ids)
-    trunk_length = np.sum(seg_lengths)
-
-    return trunk_length
+    return seg_lengths.sum()
 
 
 def get_point_section_lengths(self):
