@@ -337,11 +337,13 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
     # Gaussian kernel to smooth distribution of bars
     kde = stats.gaussian_kde(data)
     minimas = []
+
+    # Compute first derivative
+    der1 = np.gradient(kde(bin_centers))
+    # Compute second derivative
+    der2 = np.gradient(der1)
+
     while len(minimas) == 0:
-        # Compute first derivative
-        der1 = np.gradient(kde(bin_centers))
-        # Compute second derivative
-        der2 = np.gradient(der1)
         # Compute minima of distribution
         minimas = np.where(abs(der1) < threshold * np.max(abs(der1)))[0]
         minimas = minimas[der2[minimas] > 0]
