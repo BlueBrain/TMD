@@ -179,6 +179,6 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
             error_msg = "{} is not a valid h5, swc or asc file. If asc set use_morphio to True."
             raise Warning(error_msg.format(filename)) from exc
         except LoadNeuronError:
-            print('File failed to load: {}'.format(filename))
+            print(f'File failed to load: {filename}')
 
     return pop

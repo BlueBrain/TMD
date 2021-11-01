@@ -23,7 +23,7 @@ def read_swc(input_file, line_delimiter='\n'):
        info extracting comments.
     '''
     # Read all data from file.
-    with open(input_file, 'r') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
 
         read_data = f.read()
 

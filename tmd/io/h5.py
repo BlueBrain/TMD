@@ -104,8 +104,8 @@ def _unpack_v2(h5file, stage):
         stage1 = 'raw'
     else:
         stage1 = stage
-    points = np.array(h5file['neuron1/%s/points' % stage])
-    groups = np.array(h5file['neuron1/structure/%s' % stage1])
+    points = np.array(h5file[f'neuron1/{stage}/points'])
+    groups = np.array(h5file[f'neuron1/structure/{stage1}'])
     stypes = np.array(h5file['neuron1/structure/sectiontype'])
     groups = np.hstack([groups, stypes])
     groups[:, [1, 2]] = groups[:, [2, 1]]

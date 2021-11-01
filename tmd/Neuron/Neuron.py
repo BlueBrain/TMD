@@ -21,10 +21,10 @@ class Neuron(object):
         '''Creates an empty Neuron object.
         '''
         self.soma = Soma.Soma()
-        self.axon = list()
-        self.apical = list()
-        self.basal = list()
-        self.undefined = list()
+        self.axon = []
+        self.apical = []
+        self.basal = []
+        self.undefined = []
         self.name = name
 
     @property

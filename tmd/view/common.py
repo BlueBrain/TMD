@@ -44,22 +44,22 @@ def figure_naming(pretitle=None, posttitle=None, prefile=None, postfile=None):
     if not pretitle:
         pretitle = ""
     else:
-        pretitle = "%s -- " % pretitle
+        pretitle = f"{pretitle} -- "
 
     if not posttitle:
         posttitle = ""
     else:
-        posttitle = " -- %s" % posttitle
+        posttitle = f" -- {posttitle}"
 
     if not prefile:
         prefile = ""
     else:
-        prefile = "%s_" % prefile
+        prefile = f"{prefile}_"
 
     if not postfile:
         postfile = ""
     else:
-        postfile = "_%s" % postfile
+        postfile = f"_{postfile}"
 
     return pretitle, posttitle, prefile, postfile
 
@@ -137,7 +137,7 @@ def get_figure(new_fig=True, new_axes=False, subplot=False, params=None,
         subplot = 111
 
     if params is None:
-        params = dict()
+        params = {}
 
     if new_axes:
         if isinstance(subplot, (tuple, list)):

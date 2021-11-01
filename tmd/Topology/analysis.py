@@ -75,7 +75,7 @@ def closest_ph(ph_list, target_extent, method='from_above'):
             min((pos, pos + 1), key=lambda i: abs(sorted_extents[i] - target_extent))
 
     else:
-        raise TypeError('Unknown method {} for closest_ph'.format(method))
+        raise TypeError(f'Unknown method {method} for closest_ph')
 
     return sorted_indices[closest_index]
 
@@ -83,7 +83,7 @@ def closest_ph(ph_list, target_extent, method='from_above'):
 def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
     return ph
 
