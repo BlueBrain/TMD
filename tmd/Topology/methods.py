@@ -13,7 +13,7 @@ def write_ph(ph, output_file='test.txt'):
     '''Writes a persistence diagram in
        an output file.
     '''
-    with open(output_file, 'w') as wfile:
+    with open(output_file, 'w', encoding='utf-8') as wfile:
         for p in ph:
             wfile.write(str(p[0]) + ' ' + str(p[1]) + '\n')
 

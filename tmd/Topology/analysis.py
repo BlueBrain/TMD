@@ -75,7 +75,7 @@ def closest_ph(ph_list, target_extent, method='from_above'):
             min((pos, pos + 1), key=lambda i: abs(sorted_extents[i] - target_extent))
 
     else:
-        raise TypeError('Unknown method {} for closest_ph'.format(method))
+        raise TypeError(f'Unknown method {method} for closest_ph')
 
     return sorted_indices[closest_index]
 
@@ -83,7 +83,7 @@ def closest_ph(ph_list, target_extent, method='from_above'):
 def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
-    with open(filename, 'r') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
     return ph
 
@@ -337,11 +337,13 @@ def find_apical_point_distance_smoothed(ph, threshold=0.1):
     # Gaussian kernel to smooth distribution of bars
     kde = stats.gaussian_kde(data)
     minimas = []
+
+    # Compute first derivative
+    der1 = np.gradient(kde(bin_centers))
+    # Compute second derivative
+    der2 = np.gradient(der1)
+
     while len(minimas) == 0:
-        # Compute first derivative
-        der1 = np.gradient(kde(bin_centers))
-        # Compute second derivative
-        der2 = np.gradient(der1)
         # Compute minima of distribution
         minimas = np.where(abs(der1) < threshold * np.max(abs(der1)))[0]
         minimas = minimas[der2[minimas] > 0]
