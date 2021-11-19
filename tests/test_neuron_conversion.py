@@ -13,9 +13,6 @@ _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, 'data')
 
 
-MockSection = namedtuple('MockSection', ['id', 'points', 'diameters', 'type', 'parent'])
-
-
 class MockSection:
 
     def __init__(self, id, points, diameters, type, parent=None):
@@ -71,6 +68,10 @@ class MockNeuron:
     def diameters(self):
         return np.hstack([s.diameters for root in self.root_sections for s in root.iter()])
 
+    @property
+    def points(self):
+        return np.vstack([s.points for root in self.root_sections for s in root.iter()])
+
 
 def test_convert_morphio_soma():
 
@@ -88,6 +89,16 @@ def test_convert_morphio_soma():
     npt.assert_allclose(soma.y, [1., 3.])
     npt.assert_allclose(soma.z, [2., 4.])
     npt.assert_allclose(soma.d, [2.1, 3.4])
+
+    # Case without diameters (e.g. SomaSimpleContour from NeuroM)
+    delattr(morphio_soma, 'diameters')
+
+    soma = tested.convert_morphio_soma(morphio_soma)
+
+    npt.assert_allclose(soma.x, [0., 2.])
+    npt.assert_allclose(soma.y, [1., 3.])
+    npt.assert_allclose(soma.z, [2., 4.])
+    npt.assert_allclose(soma.d, [0., 0.])
 
 
 def test_section_to_data():
@@ -120,6 +131,17 @@ def test_section_to_data():
     npt.assert_allclose(data.diameters, section.diameters[1:])
     npt.assert_equal(data.section_type, 3)
     npt.assert_array_equal(data.parents, [5, 2 + 0])
+
+    # Case without diameters (e.g. SomaSimpleContour from NeuroM)
+    delattr(section, 'diameters')
+
+    n, data = tested._section_to_data(section, tree_length=11, start=0, parent=-1)
+
+    npt.assert_equal(n, 3)
+    npt.assert_allclose(data.points, section.points)
+    npt.assert_allclose(np.zeros(3), data.diameters)
+    npt.assert_equal(data.section_type, 3)
+    npt.assert_array_equal(data.parents, [-1, 11 + 0, 11 + 1])
 
 
 def test_convert_morphio_trees():

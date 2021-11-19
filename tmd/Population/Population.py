@@ -9,11 +9,15 @@ class Population(object):
     A Population object is a container for Neurons.
     """
 
-    def __init__(self, name='Pop'):
+    def __init__(self, name='Pop', neurons=None):
         '''Creates an empty Population object.
         '''
         self.neurons = []
         self.name = name
+
+        if neurons:
+            for neuron in neurons:
+                self.append_neuron(neuron)
 
     @property
     def axon(self):
