@@ -9,6 +9,6 @@ def tmd_scale(barcode, thickness):
        the thickness parameter, because they correspond to
        spatial coordinates
     '''
-    scaling_factor = np.ones(len(barcode[0]), dtype=np.float)
+    scaling_factor = np.ones(len(barcode[0]), dtype=float)
     scaling_factor[:2] = thickness
     return np.multiply(barcode, scaling_factor).tolist()
