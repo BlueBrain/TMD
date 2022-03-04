@@ -1,5 +1,4 @@
 '''Test tmd.Neuron'''
-from nose import tools as nt
 import numpy as np
 from tmd.Neuron import Neuron
 from tmd.io import io

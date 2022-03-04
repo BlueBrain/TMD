@@ -1,6 +1,5 @@
 '''Test tmd.Tree'''
 import mock
-from nose import tools as nt
 import numpy as np
 from numpy import testing as npt
 from tmd.Tree import Tree
@@ -65,9 +64,9 @@ p1 = np.array([-1,  0,   1,   2,  1])
 tree = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
 
 def test_rd():
-    nt.ok_(methods._rd([0, 0], [0, 1]) == 1.)
-    nt.ok_(methods._rd([0, 0, 0], [0, 0, 1]) == 1.)
-    nt.ok_(methods._rd([1, 2, 0], [0, 2, 1]) == np.sqrt(2.))
+    assert methods._rd([0, 0], [0, 1]) == 1.
+    assert methods._rd([0, 0, 0], [0, 0, 1]) == 1.
+    assert methods._rd([1, 2, 0], [0, 2, 1]) == np.sqrt(2.)
 
 # def test_rd_w():
 #    nt.ok_(methods._rd_w([0,0], [0,1], w=[0., 1.]) == 1.)
@@ -77,79 +76,79 @@ def test_rd():
 
 
 def test_size():
-    nt.ok_(methods.size(tree0) == 31.)
-    nt.ok_(methods.size(tree1) == 21.)
+    assert methods.size(tree0) == 31.
+    assert methods.size(tree1) == 21.
 
 
 def test_get_type():
-    nt.ok_(tree0.get_type() == 2)
-    nt.ok_(tree1.get_type() == 3)
+    assert tree0.get_type() == 2
+    assert tree1.get_type() == 3
 
 
 def test_get_bounding_box():
-    nt.ok_(np.allclose(tree0.get_bounding_box(),
+    np.allclose(tree0.get_bounding_box(),
                        np.array([[-5.,  0., -5.],
-                                 [5., 10.,  5.]])))
-    nt.ok_(np.allclose(tree1.get_bounding_box(),
+                                 [5., 10.,  5.]]))
+    np.allclose(tree1.get_bounding_box(),
                        np.array([[-5.,  0., 0.],
-                                 [5., 10., 0.]])))
+                                 [5., 10., 0.]]))
 
 def test_get_segments():
     seg0 = tree0.get_segments()
     seg1 = tree1.get_segments()
     seg = tree.get_segments()
-    nt.ok_(len(seg0) == 30)
-    nt.ok_(len(seg1) == 20)
-    nt.ok_(np.allclose(seg, [np.array([[0.,  0.,  0.],
+    assert len(seg0) == 30
+    assert len(seg1) == 20
+    npt.assert_allclose(seg, [np.array([[0.,  0.,  0.],
                                        [1.,  2.,  3.]]),
                              np.array([[1.,  2.,  3.],
                                        [2.,  3.,  4.]]),
                              np.array([[2.,  3.,  4.],
                                        [3.,  4.,  5.]]),
                              np.array([[1.,  2.,  3.],
-                                       [4.,  5.,  6.]])]))
+                                       [4.,  5.,  6.]])])
 
 def test_get_point_radial_dist():
     prds = tree.get_point_radial_distances()
-    nt.ok_(np.allclose(prds, np.array([0., 3.74165739, 5.38516481, 7.07106781, 8.77496439])))
+    npt.assert_allclose(prds, np.array([0., 3.74165739, 5.38516481, 7.07106781, 8.77496439]))
 
 def test_get_point_path_dist():
     pds = tree.get_point_path_distances()
-    nt.ok_(np.allclose(pds, np.array([0., 3.74165739, 5.47370819, 7.205759  , 8.93780981])))
+    npt.assert_allclose(pds, np.array([0., 3.74165739, 5.47370819, 7.205759  , 8.93780981]))
 
 def test_get_sections_2():
     secs = tree.get_sections_2()
-    nt.ok_(np.allclose(secs[0], np.array([0, 1, 1])))
-    nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
+    npt.assert_allclose(secs[0], np.array([0, 1, 1]))
+    npt.assert_allclose(secs[1], np.array([1, 3, 4]))
     secs = tree_h5.get_sections_2()
-    nt.ok_(np.allclose(secs[0], secs_h5_beg))
-    nt.ok_(np.allclose(secs[1], secs_h5_end))
+    npt.assert_allclose(secs[0], secs_h5_beg)
+    npt.assert_allclose(secs[1], secs_h5_end)
     secs = tree_h5_ap.get_sections_2()
-    nt.ok_(np.allclose(secs[0], secs_h5_beg_ap))
-    nt.ok_(np.allclose(secs[1], secs_h5_end_ap))
+    npt.assert_allclose(secs[0], secs_h5_beg_ap)
+    npt.assert_allclose(secs[1], secs_h5_end_ap)
 
 def test_get_sections_only_points():
     secs = tree.get_sections_only_points()
-    nt.ok_(np.allclose(secs[0], np.array([0, 2, 4])))
-    nt.ok_(np.allclose(secs[1], np.array([1, 3, 4])))
+    npt.assert_allclose(secs[0], np.array([0, 2, 4]))
+    npt.assert_allclose(secs[1], np.array([1, 3, 4]))
     secs = tree_h5.get_sections_only_points()
-    nt.ok_(np.allclose(secs[0], secs_h5_beg_points))
-    nt.ok_(np.allclose(secs[1], secs_h5_end_points))
+    npt.assert_allclose(secs[0], secs_h5_beg_points)
+    npt.assert_allclose(secs[1], secs_h5_end_points)
     secs = tree_h5_ap.get_sections_only_points()
-    nt.ok_(np.allclose(secs[0], secs_h5_beg_points_ap))
-    nt.ok_(np.allclose(secs[1], secs_h5_end_points_ap))
+    npt.assert_allclose(secs[0], secs_h5_beg_points_ap)
+    npt.assert_allclose(secs[1], secs_h5_end_points_ap)
 
 def test_get_bif_term():
-    nt.ok_(np.allclose(tree.get_bif_term(), np.array([1.,  2.,  1.,  0.,  0.])))
+    npt.assert_allclose(tree.get_bif_term(), np.array([1.,  2.,  1.,  0.,  0.]))
 
 def test_get_bifurcations():
-    nt.ok_(np.allclose(tree.get_bifurcations(), np.array([1])))
+    npt.assert_allclose(tree.get_bifurcations(), np.array([1]))
 
 def test_get_terminations():
-    nt.ok_(np.allclose(tree.get_terminations(), np.array([3, 4])))
+    npt.assert_allclose(tree.get_terminations(), np.array([3, 4]))
 
 def test_get_way_to_root():
-    nt.ok_(np.allclose(methods.get_way_to_root(tree), np.array([-1])))
+    npt.assert_allclose(methods.get_way_to_root(tree), np.array([-1]))
 
 
 def test_parents_children():

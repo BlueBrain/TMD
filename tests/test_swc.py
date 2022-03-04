@@ -1,8 +1,8 @@
 '''Test tmd.io.swc'''
 import os
-from nose import tools as nt
 from tmd.io import swc
 import numpy as np
+from numpy import testing as npt
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, 'data')
@@ -28,28 +28,28 @@ bch1 = {0: [1, 2, 3], 1: [], 2: [], 3: [4], 4: []}
 
 
 def test_swc_dict():
-    nt.ok_(swc.SWC_DCT == {'index': 0,
+    assert swc.SWC_DCT == {'index': 0,
                            'parent': 6,
                            'radius': 5,
                            'type': 1,
                            'x': 2,
                            'y': 3,
-                           'z': 4})
+                           'z': 4}
 
 
 def test_read_swc():
     data1 = swc.read_swc(basic_file)
-    nt.ok_(np.alltrue(data1 == basic_data))
+    npt.assert_array_equal(data1, basic_data)
     data2 = swc.read_swc(options_file, line_delimiter=' ')
-    nt.ok_(np.alltrue(data2 == options_data))
+    npt.assert_array_equal(data2, options_data)
 
 
 def test_swc_data_to_lists():
     x1, y1, z1, d1, t1, p1, ch1 = swc.swc_data_to_lists(basic_data)
-    nt.ok_(np.allclose(x1, bx1))
-    nt.ok_(np.allclose(y1, by1))
-    nt.ok_(np.allclose(z1, bz1))
-    nt.ok_(np.allclose(d1, bd1))
-    nt.ok_(np.allclose(t1, bt1))
-    nt.ok_(np.allclose(p1, bp1))
-    nt.ok_(ch1 == bch1)
+    npt.assert_allclose(x1, bx1)
+    npt.assert_allclose(y1, by1)
+    npt.assert_allclose(z1, bz1)
+    npt.assert_allclose(d1, bd1)
+    npt.assert_allclose(t1, bt1)
+    npt.assert_allclose(p1, bp1)
+    assert ch1 == bch1
