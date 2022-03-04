@@ -45,7 +45,7 @@ def _section_to_data(section, tree_length, start, parent):
 
     # each node has the previous node as a parent, except for the first
     # one, which is given from the parent
-    parents = np.arange(tree_length - 1, tree_length + n - 1, dtype=np.int)
+    parents = np.arange(tree_length - 1, tree_length + n - 1, dtype=np.int64)
     parents[0] = parent
 
     return n, SectionData(
@@ -76,7 +76,7 @@ def convert_morphio_trees(morphio_neuron):
     t = np.empty(total_points, dtype=np.int32)
     p = np.empty(total_points, dtype=np.int64)
 
-    section_final_nodes = np.empty(total_points, dtype=np.int)
+    section_final_nodes = np.empty(total_points, dtype=np.int64)
 
     tree_end = 0
     for root in morphio_neuron.root_sections:

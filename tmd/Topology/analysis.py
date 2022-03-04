@@ -84,7 +84,7 @@ def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
     with open(filename, 'r', encoding='utf-8') as f:
-        ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
+        ph = np.array([np.array(line.split(delimiter), dtype=float) for line in f])
     return ph
 
 

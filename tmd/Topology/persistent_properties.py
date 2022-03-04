@@ -63,7 +63,7 @@ class PersistentMeanRadius(PersistentProperty):
         """Returns the mean radius per section"""
         return np.fromiter(
             (np.mean(tree_radii[b: e]) for b, e in zip(section_begs, section_ends)),
-            dtype=np.float
+            dtype=float
         )
 
 

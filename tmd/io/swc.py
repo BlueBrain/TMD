@@ -55,7 +55,7 @@ def swc_to_data(data_swc):
         if expected_data.match(dpoint.replace('\r', '')):
 
             segment_point = np.array(expected_data.match(dpoint.replace('\r', '')).groups(),
-                                     dtype=np.float)
+                                     dtype=float)
 
             # make the radius diameter
             segment_point[SWC_DCT['radius']] = 2. * segment_point[SWC_DCT['radius']]
