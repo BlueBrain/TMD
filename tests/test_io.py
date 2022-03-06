@@ -1,7 +1,6 @@
 '''Test tmd.io'''
 import os
-from nose import tools as nt
-from numpy.testing import assert_array_equal
+from numpy import testing as npt
 from tmd.io import io
 import numpy as np
 from tmd.Soma import Soma
@@ -37,57 +36,60 @@ axon_test = Tree.Tree(x=np.array([3.]), y=np.array([4.]), z=np.array([5.]),
 
 def test_load_swc_neuron():
     neuron = io.load_neuron(basic_file)
-    nt.ok_(neuron.soma.is_equal(soma_test))
-    nt.ok_(len(neuron.apical) == 1)
-    nt.ok_(len(neuron.basal) == 1)
-    nt.ok_(len(neuron.axon) == 1)
-    nt.ok_(neuron.apical[0].is_equal(apical_test))
-    nt.ok_(neuron.basal[0].is_equal(basal_test))
-    nt.ok_(neuron.axon[0].is_equal(axon_test))
+    assert neuron.soma.is_equal(soma_test)
+    assert len(neuron.apical) == 1
+    assert len(neuron.basal) == 1
+    assert len(neuron.axon) == 1
+    assert neuron.apical[0].is_equal(apical_test)
+    assert neuron.basal[0].is_equal(basal_test)
+    assert neuron.axon[0].is_equal(axon_test)
+
     neuron1 = io.load_neuron(sample_file)
-    nt.ok_(neuron1.soma.is_equal(soma_test1))
-    nt.ok_(len(neuron1.apical) == 0)
-    nt.ok_(len(neuron1.basal) == 1)
-    nt.ok_(len(neuron1.axon) == 1)
+    assert neuron1.soma.is_equal(soma_test1)
+    assert len(neuron1.apical) == 0
+    assert len(neuron1.basal) == 1
+    assert len(neuron1.axon) == 1
+
     tree_1 = neuron1.axon[0]
-    nt.ok_(np.allclose(tree_1.get_bifurcations(), np.array([10, 20])))
-    nt.ok_(np.allclose(tree_1.get_terminations(), np.array([15, 25, 30])))
+    npt.assert_allclose(tree_1.get_bifurcations(), np.array([10, 20]))
+    npt.assert_allclose(tree_1.get_terminations(), np.array([15, 25, 30]))
     try:
         neuron = io.load_neuron(nosecids_file)
-        nt.ok_(False)
+        assert False
     except:
-        nt.ok_(True)
+        assert True
 
 
 def test_load_h5_neuron():
-    nt.ok_(neuron_v1.soma.is_equal(neuron_v2.soma))
-    nt.ok_(neuron_v1.basal[0].is_equal(neuron_v2.basal[0]))
-    nt.ok_(neuron_v1.axon[0].is_equal(neuron_v2.axon[0]))
+    assert neuron_v1.soma.is_equal(neuron_v2.soma)
+    assert neuron_v1.basal[0].is_equal(neuron_v2.basal[0])
+    assert neuron_v1.axon[0].is_equal(neuron_v2.axon[0])
     try:
         neuron = io.load_neuron(sample_h5_v0_file)
-        nt.ok_(False)
+        assert False
     except:
-        nt.ok_(True)
+        assert True
 
 
 def test_io_load():
     #neuron_v1 = io.load_neuron(sample_h5_v1_file)
     #neuron_v2 = io.load_neuron(sample_h5_v2_file)
-    nt.ok_(neuron1.is_equal(neuron_v1))
-    nt.ok_(neuron1.is_equal(neuron_v2))
+    assert neuron1.is_equal(neuron_v1)
+    assert neuron1.is_equal(neuron_v2)
 
 
 def test_load_population():
     population = io.load_population(POP_PATH)
-    nt.ok_(len(population.neurons) == 5)
+    assert len(population.neurons) == 5
     names = np.array([os.path.basename(n.name) for n in population.neurons])
 
     L = glob.glob(POP_PATH + '/*')
     population1 = io.load_population(L)
-    nt.ok_(len(population.neurons) == 5)
+    assert len(population.neurons) == 5
+
     names1 = np.array([os.path.basename(n.name) for n in population1.neurons])
-    assert_array_equal(names, names1)
-    nt.ok_(population.neurons[0].is_equal(population1.neurons[0]))
+    npt.assert_array_equal(names, names1)
+    assert population.neurons[0].is_equal(population1.neurons[0])
 
 
 def test_tree_type():
@@ -102,6 +104,7 @@ def test_tree_type():
 
     def point(section):
         return np.column_stack([section.x, section.y, section.z])
-    assert_array_equal(point(neuron.apical[0]), [[3, 4, 5]])
-    assert_array_equal(point(neuron.basal[0]), [[4, 5, 6]])
-    assert_array_equal(point(neuron.axon[0]), [[5, 6, 7], [5, 6, 7]])
+
+    npt.assert_array_equal(point(neuron.apical[0]), [[3, 4, 5]])
+    npt.assert_array_equal(point(neuron.basal[0]), [[4, 5, 6]])
+    npt.assert_array_equal(point(neuron.axon[0]), [[5, 6, 7], [5, 6, 7]])

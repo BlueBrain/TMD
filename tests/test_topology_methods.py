@@ -156,9 +156,9 @@ def test_tree_to_property_barcode():
         [7., 0.],
     ])
 
-    npt.assert_array_equal(bars_to_points, [
+    assert bars_to_points == [
         [2], [3], [4, 1]
-    ])
+    ]
 
     prop = lambda *args: mock.Mock(
         get=lambda v: [v],
@@ -173,9 +173,9 @@ def test_tree_to_property_barcode():
         [7., 0., 0.],
     ])
 
-    npt.assert_array_equal(bars_to_points, [
+    assert bars_to_points == [
         [2], [3], [4, 1]
-    ])
+    ]
 
     prop = lambda *args: mock.Mock(
         get=lambda v: list(range(v, v + 5)),
@@ -190,9 +190,9 @@ def test_tree_to_property_barcode():
         [7., 0., np.nan, np.nan, np.nan, np.nan, np.nan],
     ])
 
-    npt.assert_array_equal(bars_to_points, [
+    assert bars_to_points == [
         [2], [3], [4, 1]
-    ])
+    ]
 
 
 def _integration_tree():

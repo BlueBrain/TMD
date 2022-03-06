@@ -84,7 +84,7 @@ def load_file(filename, delimiter=' '):
     """Load PH file in a np.array
     """
     with open(filename, 'r', encoding='utf-8') as f:
-        ph = np.array([np.array(line.split(delimiter), dtype=np.float) for line in f])
+        ph = np.array([np.array(line.split(delimiter), dtype=float) for line in f])
     return ph
 
 
@@ -268,7 +268,7 @@ def get_average_persistence_image(ph_list, xlims=None, ylims=None,
     k = 1
     if weighted:
         weights = [len(p) for p in ph_list]
-        weights = np.array(weights, dtype=np.float) / np.max(weights)
+        weights = np.array(weights, dtype=float) / np.max(weights)
     else:
         weights = [1 for _ in ph_list]
 
