@@ -17,15 +17,11 @@ def convert_morphio_soma(morphio_soma):
         tmd_soma (Soma)
     """
     points = morphio_soma.points
-    try:
-        d = morphio_soma.diameters
-    except AttributeError:
-        d = np.zeros(points.shape[0], dtype=points.dtype)
     return Soma(
         x=points[:, 0],
         y=points[:, 1],
         z=points[:, 2],
-        d=d
+        d=morphio_soma.diameters
     )
 
 
@@ -52,14 +48,9 @@ def _section_to_data(section, tree_length, start, parent):
     parents = np.arange(tree_length - 1, tree_length + n - 1, dtype=np.int64)
     parents[0] = parent
 
-    try:
-        diameters = section.diameters[start:]
-    except AttributeError:
-        diameters = np.zeros(n, dtype=points.dtype)
-
     return n, SectionData(
         points[start:],
-        diameters,
+        section.diameters[start:],
         int(section.type),
         parents)
 
