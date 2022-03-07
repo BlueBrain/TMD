@@ -1,19 +1,14 @@
 import os
-from collections import namedtuple
 import mock
 import numpy as np
 from numpy import testing as npt
 import morphio
-from tmd.Neuron.Neuron import Neuron
 from tmd.io import conversion as tested
 from tmd.io.io import load_neuron
 from tmd.io.io import load_neuron_from_morphio
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, 'data')
-
-
-MockSection = namedtuple('MockSection', ['id', 'points', 'diameters', 'type', 'parent'])
 
 
 class MockSection:
@@ -71,6 +66,14 @@ class MockNeuron:
     def diameters(self):
         return np.hstack([s.diameters for root in self.root_sections for s in root.iter()])
 
+    @property
+    def points(self):
+        return np.vstack([s.points for root in self.root_sections for s in root.iter()])
+
+    @property
+    def n_points(self):
+        return len(self.points)
+
 
 def test_convert_morphio_soma():
 
@@ -79,7 +82,7 @@ def test_convert_morphio_soma():
             [0., 1., 2.],
             [2., 3., 4.]
         ]),
-        diameters=np.array([2.1, 3.4])
+        diameters=np.array([2.1, 3.4]),
     )
 
     soma = tested.convert_morphio_soma(morphio_soma)
@@ -91,7 +94,6 @@ def test_convert_morphio_soma():
 
 
 def test_section_to_data():
-
 
     section = MockSection(
         id=0,

@@ -67,7 +67,7 @@ def convert_morphio_trees(morphio_neuron):
             - tree (Tree): The constructed tmd Tree
             - tree_types (dict): The neuron tree types
     """
-    total_points = len(morphio_neuron.diameters)
+    total_points = morphio_neuron.n_points
 
     x = np.empty(total_points, dtype=np.float32)
     y = np.empty(total_points, dtype=np.float32)
