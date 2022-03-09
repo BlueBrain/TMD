@@ -28,6 +28,7 @@ class Tree(object):
     from tmd.Tree.methods import get_bifurcations
     from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
+    from tmd.Tree.methods import get_trunk_length
 
     def __init__(self, x, y, z, d, t, p):
         '''Constructor of tmd Tree Object
