@@ -88,4 +88,4 @@ pip install ./TMD[viewer]
 ```
 
 
-Copyright (c) 2016-2021 Blue Brain Project/EPFL
+Copyright (c) 2016-2022 Blue Brain Project/EPFL
