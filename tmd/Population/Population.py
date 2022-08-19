@@ -30,9 +30,17 @@ class Population(object):
         return [a for n in self.neurons for a in n.apical]
 
     @property
+    def apical_dendrite(self):
+        return self.apical
+
+    @property
     def basal(self):
         '''Get basal'''
         return [a for n in self.neurons for a in n.basal]
+
+    @property
+    def basal_dendrite(self):
+        return self.basal
 
     @property
     def undefined(self):
