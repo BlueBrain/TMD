@@ -31,6 +31,7 @@ class Population(object):
 
     @property
     def apical_dendrite(self):
+        '''Get apical'''
         return self.apical
 
     @property
@@ -40,6 +41,7 @@ class Population(object):
 
     @property
     def basal_dendrite(self):
+        '''Get basal'''
         return self.basal
 
     @property
