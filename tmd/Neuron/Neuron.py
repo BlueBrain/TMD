@@ -37,6 +37,16 @@ class Neuron(object):
         '''Get dendrites'''
         return self.apical + self.basal
 
+    @property
+    def apical_dendrite(self):
+        '''Get apical dendrites'''
+        return self.apical
+
+    @property
+    def nasal_dendrite(self):
+        '''Get basal dendrites'''
+        return self.basal
+
     def rename(self, new_name):
         """
         Modifies the name of the Neuron to new_name.
