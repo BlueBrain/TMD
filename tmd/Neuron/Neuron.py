@@ -43,7 +43,7 @@ class Neuron(object):
         return self.apical
 
     @property
-    def nasal_dendrite(self):
+    def basal_dendrite(self):
         '''Get basal dendrites'''
         return self.basal
 
