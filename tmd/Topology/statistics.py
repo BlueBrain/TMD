@@ -32,7 +32,7 @@ def get_total_length(ph):
        be equivalent to the total length of the tree
        if the barcode represents path distances.
     """
-    return sum([np.abs(p[1] - p[0]) for p in ph])
+    return sum(np.abs(p[1] - p[0]) for p in ph)
 
 
 def transform_ph_to_length(ph, keep_side='end'):

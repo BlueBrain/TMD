@@ -223,7 +223,7 @@ def get_point_section_lengths(self):
 def get_branch_order(tree, seg_id):
     '''Returns branch order of segment'''
     B = tree.get_multifurcations()
-    return sum([1 if i in B else 0 for i in get_way_to_root(tree, seg_id)])
+    return sum(1 if i in B else 0 for i in get_way_to_root(tree, seg_id))
 
 
 def get_point_section_branch_orders(self):
