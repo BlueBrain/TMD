@@ -1,6 +1,7 @@
 '''
 tmd class : Neuron
 '''
+import warnings
 import copy
 import numpy as np
 from tmd.Soma import Soma
@@ -11,7 +12,7 @@ from tmd.utils import TREE_TYPE_DICT
 class Neuron(object):
     """
     A Neuron object is a container for Trees
-    (basal, apical and axon) and a Soma.
+    (basal_dendrite, apical_dendrite and axon) and a Soma.
     """
     # pylint: disable=import-outside-toplevel
     from tmd.Neuron.methods import size
@@ -22,20 +23,38 @@ class Neuron(object):
         '''
         self.soma = Soma.Soma()
         self.axon = []
-        self.apical = []
-        self.basal = []
+        self.apical_dendrite = []
+        self.basal_dendrite = []
         self.undefined = []
         self.name = name
 
     @property
     def neurites(self):
         '''Get neurites'''
-        return self.apical + self.axon + self.basal + self.undefined
+        return self.apical_dendrite + self.axon + self.basal_dendrite + self.undefined
 
     @property
     def dendrites(self):
         '''Get dendrites'''
-        return self.apical + self.basal
+        return self.apical_dendrite + self.basal_dendrite
+
+    @property
+    def apical(self):
+        '''Get apical dendrites'''
+        warnings.warn(
+            "The 'apical' property is deprecated, please use 'apical_dendrite' instead",
+            DeprecationWarning
+        )
+        return self.apical_dendrite
+
+    @property
+    def basal(self):
+        '''Get basal dendrites'''
+        warnings.warn(
+            "The 'basal' property is deprecated, please use 'basal_dendrite' instead",
+            DeprecationWarning
+        )
+        return self.basal_dendrite
 
     def rename(self, new_name):
         """

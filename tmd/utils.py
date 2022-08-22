@@ -9,7 +9,7 @@ term_dict = {'x': 0,
 
 TREE_TYPE_DICT = {1: 'soma',
                   2: 'axon',
-                  3: 'basal',
-                  4: 'apical'}
+                  3: 'basal_dendrite',
+                  4: 'apical_dendrite'}
 
 SOMA_TYPE = 1
