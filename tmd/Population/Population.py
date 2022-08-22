@@ -1,6 +1,7 @@
 '''
 tmd class : Population
 '''
+import warnings
 from tmd.Neuron import Neuron
 
 
@@ -27,22 +28,30 @@ class Population(object):
     @property
     def apical(self):
         '''Get apical'''
-        return [a for n in self.neurons for a in n.apical]
+        warnings.warn(
+            "The 'apical' property is deprecated, please use 'apical_dendrite' instead",
+            DeprecationWarning
+        )
+        return self.apical_dendrite
 
     @property
     def apical_dendrite(self):
         '''Get apical'''
-        return self.apical
+        return [a for n in self.neurons for a in n.apical_dendrite]
 
     @property
     def basal(self):
         '''Get basal'''
-        return [a for n in self.neurons for a in n.basal]
+        warnings.warn(
+            "The 'basal' property is deprecated, please use 'basal_dendrite' instead",
+            DeprecationWarning
+        )
+        return self.basal_dendrite
 
     @property
     def basal_dendrite(self):
         '''Get basal'''
-        return self.basal
+        return [a for n in self.neurons for a in n.basal_dendrite]
 
     @property
     def undefined(self):
@@ -52,12 +61,12 @@ class Population(object):
     @property
     def neurites(self):
         '''Get neurites'''
-        return self.apical + self.axon + self.basal + self.undefined
+        return self.apical_dendrite + self.axon + self.basal_dendrite + self.undefined
 
     @property
     def dendrites(self):
         '''Get dendrites'''
-        return self.apical + self.basal
+        return self.apical_dendrite + self.basal_dendrite
 
     def append_neuron(self, new_neuron):
         """
