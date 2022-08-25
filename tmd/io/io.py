@@ -162,6 +162,11 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
     elif os.path.isdir(neurons):  # Assumes given input is a directory
         files = [os.path.join(neurons, neuron_dir) for neuron_dir in os.listdir(neurons)]
         name = name if name is not None else os.path.basename(neurons)
+    elif os.path.isfile(neurons):  # Assumes given input is a file
+        files = [neurons]
+        name = name if name is not None else os.path.basename(neurons)
+    else:
+        raise TypeError("The type of the given neurons is not supported or the path does not exist")
 
     pop = Population.Population(name=name)
 

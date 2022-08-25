@@ -3,6 +3,7 @@ import os
 from numpy import testing as npt
 from tmd.io import io
 import numpy as np
+import pytest
 from tmd.Soma import Soma
 from tmd.Tree import Tree
 import glob
@@ -90,6 +91,19 @@ def test_load_population():
     names1 = np.array([os.path.basename(n.name) for n in population1.neurons])
     npt.assert_array_equal(names, names1)
     assert population.neurons[0].is_equal(population1.neurons[0])
+
+    population2 = io.load_population(os.path.join(POP_PATH, 'sample.swc'))
+    assert len(population2.neurons) == 1
+
+    names2 = np.array([os.path.basename(n.name) for n in population2.neurons])
+    npt.assert_array_equal(['sample'], names2)
+    assert population.neurons[0].is_equal(population2.neurons[0])
+
+    with pytest.raises(
+        TypeError,
+        match='The type of the given neurons is not supported'
+    ) as excinfo:
+        io.load_population(os.path.join(POP_PATH, 'UNKONW'))
 
 
 def test_tree_type():
