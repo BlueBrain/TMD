@@ -77,11 +77,11 @@ def load_neuron(input_file, line_delimiter='\n', soma_type=None,
     if os.path.splitext(input_file)[-1] == '.swc':
         data = swc_to_data(read_swc(input_file=input_file,
                                     line_delimiter=line_delimiter))
-        neuron = Neuron.Neuron(name=input_file.replace('.swc', ''))
+        neuron = Neuron.Neuron(name=str(input_file).replace('.swc', ''))
 
     elif os.path.splitext(input_file)[-1] == '.h5':
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
-        neuron = Neuron.Neuron(name=input_file.replace('.h5', ''))
+        neuron = Neuron.Neuron(name=str(input_file).replace('.h5', ''))
 
     try:
         soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
@@ -175,11 +175,12 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
 
     for filename in files:
         try:
+            ext = os.path.splitext(filename)[-1][1:]
             if not use_morphio:
-                assert filename.endswith(('.h5', '.swc'))
+                assert ext in ('h5', 'swc')
                 pop.append_neuron(load_neuron(filename, user_tree_types=user_tree_types))
             else:
-                assert filename.endswith(('.h5', '.swc', '.asc'))
+                assert ext in ('h5', 'swc', 'asc')
                 pop.append_neuron(load_neuron_from_morphio(filename,
                                                            user_tree_types=user_tree_types))
 

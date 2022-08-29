@@ -100,6 +100,13 @@ def test_load_population():
     npt.assert_array_equal(['sample'], names2)
     assert population.neurons[0].is_equal(population2.neurons[0])
 
+    population3 = io.load_population(Path(os.path.join(POP_PATH, 'sample.swc')))
+    assert len(population3.neurons) == 1
+
+    names3 = np.array([os.path.basename(n.name) for n in population3.neurons])
+    npt.assert_array_equal(['sample'], names3)
+    assert population.neurons[0].is_equal(population3.neurons[0])
+
     with pytest.raises(
         TypeError,
         match=(
