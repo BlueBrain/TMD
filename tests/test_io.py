@@ -81,10 +81,12 @@ def test_io_load():
 
 
 def test_load_population():
+    # Testing with a directory
     population = io.load_population(POP_PATH)
     assert len(population.neurons) == 5
     names = np.array([os.path.basename(n.name) for n in population.neurons])
 
+    # Testing with a glob
     L = glob.glob(POP_PATH + '/*')
     population1 = io.load_population(L)
     assert len(population.neurons) == 5
@@ -93,6 +95,7 @@ def test_load_population():
     npt.assert_array_equal(names, names1)
     assert population.neurons[0].is_equal(population1.neurons[0])
 
+    # Testing with a posix path
     population2 = io.load_population(os.path.join(POP_PATH, 'sample.swc'))
     assert len(population2.neurons) == 1
 
@@ -100,30 +103,62 @@ def test_load_population():
     npt.assert_array_equal(['sample'], names2)
     assert population.neurons[0].is_equal(population2.neurons[0])
 
-    population3 = io.load_population(Path(os.path.join(POP_PATH, 'sample.swc')))
+    # Testing with a list of posix paths
+    population3 = io.load_population([os.path.join(POP_PATH, 'sample.swc')])
     assert len(population3.neurons) == 1
 
     names3 = np.array([os.path.basename(n.name) for n in population3.neurons])
     npt.assert_array_equal(['sample'], names3)
     assert population.neurons[0].is_equal(population3.neurons[0])
 
-    with pytest.raises(
-        TypeError,
-        match=(
-            r"The type of the given neurons \(<class 'str'>\) is not supported or the path does not"
-            " exist"
-        )
-    ) as excinfo:
-        io.load_population(os.path.join(POP_PATH, 'UNKOWN'))
+    # Testing with a posix pathlib.Path object
+    population4 = io.load_population(Path(os.path.join(POP_PATH, 'sample.swc')))
+    assert len(population4.neurons) == 1
 
+    names4 = np.array([os.path.basename(n.name) for n in population4.neurons])
+    npt.assert_array_equal(['sample'], names4)
+    assert population.neurons[0].is_equal(population4.neurons[0])
+
+    # Testing with a list of posix pathlib.Path objects
+    population4 = io.load_population([Path(os.path.join(POP_PATH, 'sample.swc'))])
+    assert len(population4.neurons) == 1
+
+    names5 = np.array([os.path.basename(n.name) for n in population4.neurons])
+    npt.assert_array_equal(['sample'], names5)
+    assert population.neurons[0].is_equal(population4.neurons[0])
+
+    # A posix path pointing to a file that does not exist should raise an exception
     with pytest.raises(
         TypeError,
         match=(
-            r"The type of the given neurons \(<class 'pathlib.PosixPath'>\) is not supported or the"
-            " path does not exist"
+            'The format of the given neurons is not supported. '
+            'Expected an iterable of files, or a directory, or a single morphology file. '
+            f'Got: {os.path.join(POP_PATH, "UNKNOWN")}'
         )
     ) as excinfo:
-        io.load_population(Path(os.path.join(POP_PATH, 'UNKOWN')))
+        io.load_population(os.path.join(POP_PATH, 'UNKNOWN'))
+
+    # A pathlib.Path object pointing to a file that does not exist should raise an exception
+    with pytest.raises(
+        TypeError,
+        match=(
+            'The format of the given neurons is not supported. '
+            'Expected an iterable of files, or a directory, or a single morphology file. '
+            f'Got: {Path(os.path.join(POP_PATH, "UNKNOWN"))}'
+        )
+    ) as excinfo:
+        io.load_population(Path(os.path.join(POP_PATH, 'UNKNOWN')))
+
+    # A wrong type should raise an exception
+    with pytest.raises(
+        TypeError,
+        match=(
+            'The format of the given neurons is not supported. '
+            'Expected an iterable of files, or a directory, or a single morphology file. '
+            f'Got: {0}'
+        )
+    ) as excinfo:
+        io.load_population(0)
 
 
 def test_tree_type():
