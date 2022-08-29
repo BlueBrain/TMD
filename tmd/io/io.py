@@ -166,7 +166,10 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
         files = [neurons]
         name = name if name is not None else os.path.basename(neurons)
     else:
-        raise TypeError("The type of the given neurons is not supported or the path does not exist")
+        raise TypeError(
+            f'The type of the given neurons ({type(neurons)}) is not supported or the path does '
+            'not exist',
+        )
 
     pop = Population.Population(name=name)
 

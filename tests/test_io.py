@@ -1,5 +1,6 @@
 '''Test tmd.io'''
 import os
+from pathlib import Path
 from numpy import testing as npt
 from tmd.io import io
 import numpy as np
@@ -101,9 +102,21 @@ def test_load_population():
 
     with pytest.raises(
         TypeError,
-        match='The type of the given neurons is not supported'
+        match=(
+            r"The type of the given neurons \(<class 'str'>\) is not supported or the path does not"
+            " exist"
+        )
     ) as excinfo:
-        io.load_population(os.path.join(POP_PATH, 'UNKONW'))
+        io.load_population(os.path.join(POP_PATH, 'UNKOWN'))
+
+    with pytest.raises(
+        TypeError,
+        match=(
+            r"The type of the given neurons \(<class 'pathlib.PosixPath'>\) is not supported or the"
+            " path does not exist"
+        )
+    ) as excinfo:
+        io.load_population(Path(os.path.join(POP_PATH, 'UNKOWN')))
 
 
 def test_tree_type():
