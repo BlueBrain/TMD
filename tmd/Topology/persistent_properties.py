@@ -1,6 +1,8 @@
 """Persistent properties classes
 """
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
+
 import numpy as np
 
 
@@ -19,8 +21,8 @@ class PersistentProperty(ABC):
 
 
 class NoProperty(PersistentProperty):
-    """Function class for extracting a barcode without properties
-    """
+    """Function class for extracting a barcode without properties"""
+
     def __init__(self, _):
         pass
 
@@ -38,6 +40,7 @@ class PersistentMeanRadius(PersistentProperty):
     Args:
         tree (Tree): A tree object
     """
+
     def __init__(self, tree):
 
         section_begs, section_ends = tree.sections
@@ -62,8 +65,7 @@ class PersistentMeanRadius(PersistentProperty):
     def _section_mean_radii(tree_radii, section_begs, section_ends):
         """Returns the mean radius per section"""
         return np.fromiter(
-            (np.mean(tree_radii[b: e]) for b, e in zip(section_begs, section_ends)),
-            dtype=float
+            (np.mean(tree_radii[b:e]) for b, e in zip(section_begs, section_ends)), dtype=float
         )
 
 
@@ -72,13 +74,13 @@ class PersistentAngles(PersistentProperty):
     Args:
         tree (Tree): A tree object
     """
+
     def __init__(self, tree):
 
         section_begs, _ = tree.sections
         section_parents, section_children = tree.parents_children
 
-        self._angles = self._get_angles(
-            tree, section_begs, section_parents, section_children)
+        self._angles = self._get_angles(tree, section_begs, section_parents, section_children)
 
     def get(self, component_start):
         """
@@ -126,7 +128,7 @@ class PersistentAngles(PersistentProperty):
 
     @staticmethod
     def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
-        '''Computes the x-y and x-z angles between parent
+        """Computes the x-y and x-z angles between parent
            and children within the given tree.
 
         Args:
@@ -146,7 +148,7 @@ class PersistentAngles(PersistentProperty):
                     on the x-y plane
                 delta_theta (float): Difference of theta_angles th_v - th_u
                     on the x-z plane
-        '''
+        """
 
         parent_direction = tree.get_direction_between(start_id=parID, end_id=parEND)
         child1_direction = tree.get_direction_between(start_id=parEND, end_id=ch1ID)
@@ -170,12 +172,15 @@ class PersistentAngles(PersistentProperty):
     def _get_angles(tree, beg, parents, children):
         """Returns the angles between all the triplets (parent, child1, child2)
         of the tree"""
-        angles = [[0, 0, 0, 0], ]  # Null angle for non bif point
+        angles = [
+            [0, 0, 0, 0],
+        ]  # Null angle for non bif point
 
         for b in beg[1:]:
 
             angleBetween = PersistentAngles._angles_tree(
-                tree, parID=parents[b], parEND=b, ch1ID=children[b][0], ch2ID=children[b][1])
+                tree, parID=parents[b], parEND=b, ch1ID=children[b][0], ch2ID=children[b][1]
+            )
 
             angles.append(angleBetween)
 

@@ -1,15 +1,15 @@
-'''
+"""
 tmd Neuron's methods
-'''
+"""
 import numpy as np
 
 
-def size(self, neurite_type='all'):
+def size(self, neurite_type="all"):
     """
     Neuron method to get size.
     """
-    if neurite_type == 'all':
-        neurite_list = ['basal', 'axon', 'apical']
+    if neurite_type == "all":
+        neurite_list = ["basal_dendrite", "axon", "apical_dendrite"]
 
     s = np.sum([len(getattr(self, neu)) for neu in neurite_list])
 

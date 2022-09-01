@@ -1,37 +1,39 @@
-'''
+"""
 tmd class : Tree
-'''
+"""
 import copy
-from cached_property import cached_property
+
 import numpy as np
 import scipy.sparse as sp
+from cached_property import cached_property
 
 
 class Tree(object):
-    '''Tree class'''
+    """Tree class"""
+
     # pylint: disable=import-outside-toplevel
+    from tmd.Tree.methods import get_bif_term
+    from tmd.Tree.methods import get_bifurcations
+    from tmd.Tree.methods import get_bounding_box
+    from tmd.Tree.methods import get_direction_between
+    from tmd.Tree.methods import get_multifurcations
+    from tmd.Tree.methods import get_pca
+    from tmd.Tree.methods import get_point_path_distances
+    from tmd.Tree.methods import get_point_projection
+    from tmd.Tree.methods import get_point_radial_distances
+    from tmd.Tree.methods import get_point_radial_distances_time
+    from tmd.Tree.methods import get_point_section_branch_orders
+    from tmd.Tree.methods import get_point_section_lengths
+    from tmd.Tree.methods import get_point_weighted_radial_distances
     from tmd.Tree.methods import get_sections_2
     from tmd.Tree.methods import get_sections_only_points
     from tmd.Tree.methods import get_segments
-    from tmd.Tree.methods import get_bounding_box
-    from tmd.Tree.methods import get_pca
-    from tmd.Tree.methods import get_type
-    from tmd.Tree.methods import get_direction_between
-    from tmd.Tree.methods import get_point_radial_distances
-    from tmd.Tree.methods import get_point_radial_distances_time
-    from tmd.Tree.methods import get_point_weighted_radial_distances
-    from tmd.Tree.methods import get_point_path_distances
-    from tmd.Tree.methods import get_point_projection
-    from tmd.Tree.methods import get_point_section_lengths
-    from tmd.Tree.methods import get_point_section_branch_orders
-    from tmd.Tree.methods import get_bif_term
-    from tmd.Tree.methods import get_bifurcations
-    from tmd.Tree.methods import get_multifurcations
     from tmd.Tree.methods import get_terminations
     from tmd.Tree.methods import get_trunk_length
+    from tmd.Tree.methods import get_type
 
     def __init__(self, x, y, z, d, t, p):
-        '''Constructor of tmd Tree Object
+        """Constructor of tmd Tree Object
 
         Parameters
         ----------
@@ -44,7 +46,7 @@ class Tree(object):
         d : numpy array
             The diameters of neuron's tree segments.
         t : numpy array
-            The types (basal, apical, axon) of neuron's tree segments.
+            The types (basal_dendrite, apical_dendrite, axon) of neuron's tree segments.
         p : numpy array
             The index of the parent of neuron's tree segments.
 
@@ -52,16 +54,17 @@ class Tree(object):
         -------
         tree : Tree
             tmd Tree object
-        '''
+        """
         self.x = np.array(x, dtype=np.float32)
         self.y = np.array(y, dtype=np.float32)
         self.z = np.array(z, dtype=np.float32)
         self.d = np.array(d, dtype=np.float32)
         self.t = np.array(t, dtype=np.int32)
         self.p = np.array(p, dtype=np.int64)
-        self.dA = sp.csr_matrix((np.ones(len(self.x) - 1),
-                                 (range(1, len(self.x)), self.p[1:])),
-                                shape=(len(self.x), len(self.x)))
+        self.dA = sp.csr_matrix(
+            (np.ones(len(self.x) - 1), (range(1, len(self.x)), self.p[1:])),
+            shape=(len(self.x), len(self.x)),
+        )
 
     def copy_tree(self):
         """
@@ -70,13 +73,17 @@ class Tree(object):
         return copy.deepcopy(self)
 
     def is_equal(self, tree):
-        '''Tests if all tree lists are the same'''
-        eq = np.alltrue([np.allclose(self.x, tree.x, atol=1e-4),
-                         np.allclose(self.y, tree.y, atol=1e-4),
-                         np.allclose(self.z, tree.z, atol=1e-4),
-                         np.allclose(self.d, tree.d, atol=1e-4),
-                         np.allclose(self.t, tree.t, atol=1e-4),
-                         np.allclose(self.p, tree.p, atol=1e-4)])
+        """Tests if all tree lists are the same"""
+        eq = np.alltrue(
+            [
+                np.allclose(self.x, tree.x, atol=1e-4),
+                np.allclose(self.y, tree.y, atol=1e-4),
+                np.allclose(self.z, tree.z, atol=1e-4),
+                np.allclose(self.d, tree.d, atol=1e-4),
+                np.allclose(self.t, tree.t, atol=1e-4),
+                np.allclose(self.p, tree.p, atol=1e-4),
+            ]
+        )
         return eq
 
     def rotate_xy(self, angle):
@@ -99,7 +106,7 @@ class Tree(object):
 
     def extract_simplified(self):
         """Returns a simplified tree that corresponds
-           to the start - end of the sections points
+        to the start - end of the sections points
         """
         beg0, end0 = self.get_sections_2()
         sections = np.transpose([beg0, end0])
@@ -116,7 +123,7 @@ class Tree(object):
         z[0] = self.z[sections[0][0]]
         d[0] = self.d[sections[0][0]]
         t[0] = self.t[sections[0][0]]
-        p[0] = - 1
+        p[0] = -1
 
         for i, s in enumerate(sections):
             x[i + 1] = self.x[s[1]]

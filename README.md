@@ -1,18 +1,18 @@
-TMD: Topological Morphology Descriptor
-========================================
+# TMD
 
-The TMD performs the topological analysis of neuronal morphologies and extracts the persistence barcodes of trees.
+A python package for the topological analysis of neurons.
 
-©Blue Brain Project/EPFL 2005 – 2019. All rights reserved
+The TMD performs the topological analysis of neuronal morphologies and extracts the persistence
+barcodes of trees.
 
-Details
----------
-Author: Lida Kanari
+This Python module includes:
 
-Contributors: Pawel Dlotko, Benoit Coste
+* Basic loading of neuronal morphologies in swc and h5 file format.
+* Extraction of the topological descriptors of tree morphologies.
+* Visualization of neuronal trees and neurons.
+* Plotting persistence diagrams, barcodes and images.
 
 Publication:
-
 
 A Topological Representation of Branching Neuronal Morphologies
 
@@ -22,8 +22,8 @@ _Cite this article as:_
 
 Related publications:
 
-
-Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3 Pyramidal Neurons in Human Temporal Cortex.
+Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3 Pyramidal Neurons
+in Human Temporal Cortex.
 
 _Cite this article as:_
    Deitcher Y., Eyal G., Kanari L., et al. Cerebral Cortex (2017) 27:11
@@ -34,58 +34,42 @@ Objective Classification of Neocortical Pyramidal Cells
 
 Developed in Blue Brain Project
 
-Funding
----------
-This project/research was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology.
 
-Sotware description
----------------------
+## Installation
 
-This Python module includes:
-
-* Basic loading of neuronal morphologies in swc and h5 file format.
-* Extraction of the topological descriptors of tree morphologies.
-* Visualization of neuronal trees and neurons.
-* Ploting persistence diagrams, barcodes and images.
-
-Supported OS
---------------
-
-Ubuntu : 12.0, 14.04, 16.04
-
-macOS: Sierra 10.13.3
-
-Required Dependencies
----------------------
-
-Python : 2.7+
-
-numpy : 1.8.1+,
-scipy : 0.13.3+,
-enum34 : 1.0.4+,
-scikit-learn : 0.19.1+,
-munkres: 1.0.12+
-
-Optional Dependencies
-----------------------
-h5py : 2.8.0+ (optional),
-matplotlib : 1.3.1+ (required for viewer mode)
-
-Instalation instructions
---------------------------------
+This package should be installed using pip:
 
 ```bash
-virtualenv test_tmd
-source ./test_tmd/bin/activate
-git clone https://github.com/BlueBrain/TMD
-pip install ./TMD
+pip install TMD
 ```
 
-For installation of viewers (only works in Python2)
+For installation of optional viewers:
 
 ```bash
-pip install ./TMD[viewer]
+pip install TMD[viewer]
 ```
 
 
-Copyright (c) 2016-2022 Blue Brain Project/EPFL
+## Usage
+
+```python
+# Import the TMD toolkit in IPython
+import tmd
+
+# Load a neuron
+neuron = tmd.io.load_neuron('input_path_to_file/input_file.swc')
+
+# Extract the tmd of a neurite, i.e., neuronal tree
+pd = tmd.methods.get_persistence_diagram(neuron.neurites[0])
+```
+
+
+## Funding & Acknowledgment
+
+The development of this software was supported by funding to the Blue Brain Project, a research
+center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH
+Board of the Swiss Federal Institutes of Technology.
+
+For license and authors, see `LICENSE.txt` and `AUTHORS.md` respectively.
+
+Copyright © 2021-2022 Blue Brain Project/EPFL

@@ -1,0 +1,26 @@
+# Changes here will be overwritten by Copier
+
+_commit: 0.1.18
+_src_path: git@bbpgitlab.epfl.ch:neuromath/python-template.git
+author_email: ''
+author_name: Blue Brain Project, EPFL
+copyright_license: GNU Lesser General Public License v3.0
+copyright_year: '2022'
+distribution_name: TMD
+download_url: https://github.com/BlueBrain/TMD
+init_git: false
+maintainer: Lida Kanari (@lidakanari)
+package_name: tmd
+project_description: A python package for the topological analysis of neurons.
+project_name: TMD
+project_url: https://TMD.readthedocs.io
+repository_name: TMD
+repository_namespace: BlueBrain
+repository_provider: github
+ssh_url: git@github.com:BlueBrain/tmd.git
+support_py37: true
+team_name: neuromath
+tracker_url: https://github.com/BlueBrain/TMD/issues
+version: 0.1.0.dev0
+
+# End of Copier answers

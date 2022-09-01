@@ -1,37 +1,39 @@
-'''Module for viewing neuronal morphologies
-'''
+"""Module for viewing neuronal morphologies
+"""
 
 import numpy as _np
 from matplotlib.collections import LineCollection as _LC
-from tmd.view import common as _cm
+
 from tmd.utils import TREE_TYPE_DICT
 from tmd.utils import term_dict
+from tmd.view import common as _cm
 from tmd.view.common import blues_map
 
 
 def _get_default(variable, **kwargs):
-    '''Returns default variable or kwargs variable if it exists.
-    '''
-    default = {'linewidth': 1.2,
-               'alpha': 0.8,
-               'treecolor': None,
-               'diameter': True,
-               'diameter_scale': 1.0,
-               'white_space': 30.}
+    """Returns default variable or kwargs variable if it exists."""
+    default = {
+        "linewidth": 1.2,
+        "alpha": 0.8,
+        "treecolor": None,
+        "diameter": True,
+        "diameter_scale": 1.0,
+        "white_space": 30.0,
+    }
 
     return kwargs.get(variable, default[variable])
 
 
-def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10, **kwargs):
-    '''Generates a 2d figure of the trunk = first N segments of the tree.
+def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10, **kwargs):
+    """Generates a 2d figure of the trunk = first N segments of the tree.
 
     Parameters
     ----------
     tr: Tree
         neurom.Tree object
-    '''
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    """
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -58,41 +60,41 @@ def trunk(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
 
     segs = [_seg_2d(seg, hadd, vadd) for seg in tr.get_segments()[:N]]
 
-    linewidth = _get_default('linewidth', **kwargs)
+    linewidth = _get_default("linewidth", **kwargs)
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    if _get_default('diameter', **kwargs):
+    if _get_default("diameter", **kwargs):
 
-        scale = _get_default('diameter_scale', **kwargs)
+        scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
-    treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              TREE_TYPE_DICT[tr.get_type()])
+    treecolor = _cm.get_color(_get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
-    collection = _LC(segs, color=treecolor, linewidth=linewidth,
-                     alpha=_get_default('alpha', **kwargs))
+    collection = _LC(
+        segs, color=treecolor, linewidth=linewidth, alpha=_get_default("alpha", **kwargs)
+    )
 
     ax.add_collection(collection)
 
-    kwargs['title'] = kwargs.get('title', 'Tree view')
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
+    kwargs["title"] = kwargs.get("title", "Tree view")
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
-    '''Generates a 2d figure of the tree.
+def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
+    """Generates a 2d figure of the tree.
 
     Parameters
     ----------
     tr: Tree
         neurom.Tree object
-    '''
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    """
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -116,66 +118,81 @@ def tree(tr, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
     segs = [_seg_2d(seg, hadd, vadd) for seg in tr.get_segments()]
 
-    linewidth = _get_default('linewidth', **kwargs)
+    linewidth = _get_default("linewidth", **kwargs)
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    if _get_default('diameter', **kwargs):
+    if _get_default("diameter", **kwargs):
 
-        scale = _get_default('diameter_scale', **kwargs)
+        scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
     if tr.get_type() not in TREE_TYPE_DICT:
-        treecolor = 'black'
+        treecolor = "black"
     else:
-        treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                                  TREE_TYPE_DICT[tr.get_type()])
+        treecolor = _cm.get_color(
+            _get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()]
+        )
 
     # Plot the collection of lines.
-    collection = _LC(segs, color=treecolor, linewidth=linewidth,
-                     alpha=_get_default('alpha', **kwargs))
+    collection = _LC(
+        segs, color=treecolor, linewidth=linewidth, alpha=_get_default("alpha", **kwargs)
+    )
 
     ax.add_collection(collection)
 
-    kwargs['title'] = kwargs.get('title', 'Tree view')
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
+    kwargs["title"] = kwargs.get("title", "Tree view")
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
 
-    white_space = _get_default('white_space', **kwargs)
+    white_space = _get_default("white_space", **kwargs)
 
-    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][term_dict[plane[0]]] - white_space,
-                                         bounding_box[1][term_dict[plane[0]]] + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][term_dict[plane[1]]] - white_space,
-                                         bounding_box[1][term_dict[plane[1]]] + white_space])
+    kwargs["xlim"] = kwargs.get(
+        "xlim",
+        [
+            bounding_box[0][term_dict[plane[0]]] - white_space,
+            bounding_box[1][term_dict[plane[0]]] + white_space,
+        ],
+    )
+    kwargs["ylim"] = kwargs.get(
+        "ylim",
+        [
+            bounding_box[0][term_dict[plane[1]]] - white_space,
+            bounding_box[1][term_dict[plane[1]]] + white_space,
+        ],
+    )
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
-    '''Generates a 2d figure of the soma.
+def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
+    """Generates a 2d figure of the soma.
 
     Parameters
     ----------
     soma: Soma
         neurom.Soma object
-    '''
-    treecolor = kwargs.get('treecolor', None)
-    outline = kwargs.get('outline', True)
+    """
+    treecolor = kwargs.get("treecolor", None)
+    outline = kwargs.get("outline", True)
 
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
     # Definition of the tree color depending on the tree type.
-    treecolor = _cm.get_color(treecolor, tree_type='soma')
+    treecolor = _cm.get_color(treecolor, tree_type="soma")
 
     # Plot the outline of the soma as a circle, is outline is selected.
     if not outline:
-        soma_circle = _cm.plt.Circle(sm.get_center() + [hadd, vadd, 0.0],
-                                     sm.get_diameter() / 2., color=treecolor,
-                                     alpha=_get_default('alpha', **kwargs))
+        soma_circle = _cm.plt.Circle(
+            sm.get_center() + [hadd, vadd, 0.0],
+            sm.get_diameter() / 2.0,
+            color=treecolor,
+            alpha=_get_default("alpha", **kwargs),
+        )
         ax.add_artist(soma_circle)
     else:
         horz = getattr(sm, plane[0]) + hadd
@@ -183,20 +200,35 @@ def soma(sm, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
         horz = _np.append(horz, horz[0])  # To close the loop for a soma
         vert = _np.append(vert, vert[0])  # To close the loop for a soma
-        _cm.plt.plot(horz, vert, color=treecolor,
-                     alpha=_get_default('alpha', **kwargs),
-                     linewidth=_get_default('linewidth', **kwargs))
+        _cm.plt.plot(
+            horz,
+            vert,
+            color=treecolor,
+            alpha=_get_default("alpha", **kwargs),
+            linewidth=_get_default("linewidth", **kwargs),
+        )
 
-    kwargs['title'] = kwargs.get('title', 'Soma view')
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
+    kwargs["title"] = kwargs.get("title", "Soma view")
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
-           neurite_type='all', rotation=None, nosoma=False, new_axes=True, **kwargs):
-    '''Generates a 2d figure of the neuron,
+def neuron(
+    nrn,
+    plane="xy",
+    new_fig=True,
+    subplot=False,
+    hadd=0.0,
+    vadd=0.0,
+    neurite_type="all",
+    rotation=None,
+    nosoma=False,
+    new_axes=True,
+    **kwargs,
+):
+    """Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
     Parameters
@@ -257,15 +289,15 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
     Returns
     --------
     A 3D matplotlib figure with a tree view, at the selected plane.
-    '''
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    """
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot, new_axes=new_axes)
 
-    kwargs['new_fig'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["subplot"] = subplot
 
     if not nosoma:
         soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
@@ -275,11 +307,13 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
     to_plot = []
 
-    if rotation == 'apical':
-        angle = _np.arctan2(nrn.apical[0].get_pca()[0], nrn.apical[0].get_pca()[1])
+    if rotation == "apical_dendrite":
+        angle = _np.arctan2(
+            nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1]
+        )
         angle = _np.arctan2(rotation[1], rotation[0])
 
-    if neurite_type == 'all':
+    if neurite_type == "all":
         to_plot = nrn.neurites
     else:
         for neu_type in neurite_type:
@@ -291,50 +325,59 @@ def neuron(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
         bounding_box = temp_tree.get_bounding_box()
 
-        h.append([bounding_box[0][term_dict[plane[0]]],
-                  bounding_box[1][term_dict[plane[0]]]])
-        v.append([bounding_box[0][term_dict[plane[1]]],
-                  bounding_box[1][term_dict[plane[1]]]])
+        h.append([bounding_box[0][term_dict[plane[0]]], bounding_box[1][term_dict[plane[0]]]])
+        v.append([bounding_box[0][term_dict[plane[1]]], bounding_box[1][term_dict[plane[1]]]])
 
         tree(temp_tree, hadd=hadd, vadd=vadd, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', nrn.name)
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
+    kwargs["title"] = kwargs.get("title", nrn.name)
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
 
-    white_space = _get_default('white_space', **kwargs)
-    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space + hadd,
-                                         _np.max(h) + white_space + hadd])
-    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v) - white_space + vadd,
-                                         _np.max(v) + white_space + vadd])
+    white_space = _get_default("white_space", **kwargs)
+    kwargs["xlim"] = kwargs.get(
+        "xlim", [_np.min(h) - white_space + hadd, _np.max(h) + white_space + hadd]
+    )
+    kwargs["ylim"] = kwargs.get(
+        "ylim", [_np.min(v) - white_space + vadd, _np.max(v) + white_space + vadd]
+    )
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def all_trunks(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
-               neurite_type='all', N=10, **kwargs):
-    '''Generates a 2d figure of the neuron,
+def all_trunks(
+    nrn,
+    plane="xy",
+    new_fig=True,
+    subplot=False,
+    hadd=0.0,
+    vadd=0.0,
+    neurite_type="all",
+    N=10,
+    **kwargs,
+):
+    """Generates a 2d figure of the neuron,
     that contains a soma and a list of trees.
 
     Parameters
     ----------
     neuron: Neuron
         neurom.Neuron object
-    '''
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    """
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    kwargs['new_fig'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["subplot"] = subplot
 
     soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
     to_plot = []
 
-    if neurite_type == 'all':
+    if neurite_type == "all":
         to_plot = nrn.neurites
     else:
         for neu_type in neurite_type:
@@ -344,22 +387,25 @@ def all_trunks(nrn, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
         trunk(temp_tree, N=N, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', nrn.name)
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
+    kwargs["title"] = kwargs.get("title", nrn.name)
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
 
-    kwargs['xlim'] = kwargs.get('xlim', [nrn.soma.get_center()[0] - 2. * N,
-                                         nrn.soma.get_center()[0] + 2. * N])
+    kwargs["xlim"] = kwargs.get(
+        "xlim", [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N]
+    )
 
-    kwargs['ylim'] = kwargs.get('ylim', [nrn.soma.get_center()[1] - 2. * N,
-                                         nrn.soma.get_center()[1] + 2. * N])
+    kwargs["ylim"] = kwargs.get(
+        "ylim", [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N]
+    )
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
-               neurite_type='all', **kwargs):
-    '''Generates a 2d figure of the population,
+def population(
+    pop, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type="all", **kwargs
+):
+    """Generates a 2d figure of the population,
     that contains a soma and a list of trees.
 
     Parameters
@@ -420,15 +466,15 @@ def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
     Returns
     --------
     A 3D matplotlib figure with a tree view, at the selected plane.
-    '''
-    if plane not in ('xy', 'yx', 'xz', 'zx', 'yz', 'zy'):
-        return None, 'No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.'
+    """
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
 
-    kwargs['new_fig'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["subplot"] = subplot
 
     h = []
     v = []
@@ -437,8 +483,8 @@ def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
         soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
-        if neurite_type == 'all':
-            neurite_list = ['basal', 'apical', 'axon']
+        if neurite_type == "all":
+            neurite_list = ["basal_dendrite", "apical_dendrite", "axon"]
         else:
             neurite_list = [neurite_type]
 
@@ -447,36 +493,45 @@ def population(pop, plane='xy', new_fig=True, subplot=False, hadd=0.0, vadd=0.0,
 
                 bounding_box = temp_tree.get_bounding_box()
 
-                h.append([bounding_box[0][term_dict[plane[0]]] + hadd,
-                          bounding_box[1][term_dict[plane[1]]] + vadd])
-                v.append([bounding_box[0][term_dict[plane[0]]] + hadd,
-                          bounding_box[1][term_dict[plane[1]]] + vadd])
+                h.append(
+                    [
+                        bounding_box[0][term_dict[plane[0]]] + hadd,
+                        bounding_box[1][term_dict[plane[1]]] + vadd,
+                    ]
+                )
+                v.append(
+                    [
+                        bounding_box[0][term_dict[plane[0]]] + hadd,
+                        bounding_box[1][term_dict[plane[1]]] + vadd,
+                    ]
+                )
 
                 tree(temp_tree, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', 'Neuron view')
-    kwargs['xlabel'] = kwargs.get('xlabel', plane[0])
-    kwargs['ylabel'] = kwargs.get('ylabel', plane[1])
-    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h), _np.max(h)])
-    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v), _np.max(v)])
+    kwargs["title"] = kwargs.get("title", "Neuron view")
+    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
+    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
+    kwargs["xlim"] = kwargs.get("xlim", [_np.min(h), _np.max(h)])
+    kwargs["ylim"] = kwargs.get("ylim", [_np.min(v), _np.max(v)])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    '''Generates a figure of the tree in 3d.
+    """Generates a figure of the tree in 3d.
 
     Parameters
     ----------
     tr: Tree
         neurom.Tree object
-    '''
+    """
     # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
     # Data needed for the viewer: x,y,z,r
     bounding_box = tr.get_bounding_box()
@@ -485,9 +540,9 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
         """3d coordinates needed for the plotting of a segment"""
 
-        horz = term_dict['x']
-        vert = term_dict['y']
-        depth = term_dict['z']
+        horz = term_dict["x"]
+        vert = term_dict["y"]
+        depth = term_dict["z"]
 
         horz1 = seg[0][horz]
         horz2 = seg[1][horz]
@@ -500,63 +555,79 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
     segs = [_seg_3d(seg) for seg in tr.get_segments()]
 
-    linewidth = _get_default('linewidth', **kwargs)
+    linewidth = _get_default("linewidth", **kwargs)
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    if _get_default('diameter', **kwargs):
+    if _get_default("diameter", **kwargs):
 
-        scale = _get_default('diameter_scale', **kwargs)
+        scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
-    treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              TREE_TYPE_DICT[tr.get_type()])
+    treecolor = _cm.get_color(_get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
-    collection = Line3DCollection(segs, color=treecolor, linewidth=linewidth,
-                                  alpha=_get_default('alpha', **kwargs))
+    collection = Line3DCollection(
+        segs, color=treecolor, linewidth=linewidth, alpha=_get_default("alpha", **kwargs)
+    )
 
     ax.add_collection3d(collection)
 
-    kwargs['title'] = kwargs.get('title', 'Tree 3d-view')
-    kwargs['xlabel'] = kwargs.get('xlabel', 'X')
-    kwargs['ylabel'] = kwargs.get('ylabel', 'Y')
-    kwargs['zlabel'] = kwargs.get('zlabel', 'Z')
+    kwargs["title"] = kwargs.get("title", "Tree 3d-view")
+    kwargs["xlabel"] = kwargs.get("xlabel", "X")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
+    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
 
-    white_space = _get_default('white_space', **kwargs)
+    white_space = _get_default("white_space", **kwargs)
 
-    kwargs['xlim'] = kwargs.get('xlim', [bounding_box[0][term_dict['x']] - white_space,
-                                         bounding_box[1][term_dict['x']] + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [bounding_box[0][term_dict['y']] - white_space,
-                                         bounding_box[1][term_dict['y']] + white_space])
-    kwargs['zlim'] = kwargs.get('zlim', [bounding_box[0][term_dict['z']] - white_space,
-                                         bounding_box[1][term_dict['z']] + white_space])
+    kwargs["xlim"] = kwargs.get(
+        "xlim",
+        [
+            bounding_box[0][term_dict["x"]] - white_space,
+            bounding_box[1][term_dict["x"]] + white_space,
+        ],
+    )
+    kwargs["ylim"] = kwargs.get(
+        "ylim",
+        [
+            bounding_box[0][term_dict["y"]] - white_space,
+            bounding_box[1][term_dict["y"]] + white_space,
+        ],
+    )
+    kwargs["zlim"] = kwargs.get(
+        "zlim",
+        [
+            bounding_box[0][term_dict["z"]] - white_space,
+            bounding_box[1][term_dict["z"]] + white_space,
+        ],
+    )
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
-    '''Generates a figure of the trunk in 3d.
+    """Generates a figure of the trunk in 3d.
 
     Parameters
     ----------
     tr: Tree
         neurom.Tree object
-    '''
+    """
     # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
     def _seg_3d(seg):
 
         """3d coordinates needed for the plotting of a segment"""
 
-        horz = term_dict['x']
-        vert = term_dict['y']
-        depth = term_dict['z']
+        horz = term_dict["x"]
+        vert = term_dict["y"]
+        depth = term_dict["z"]
 
         horz1 = seg[0][horz]
         horz2 = seg[1][horz]
@@ -572,48 +643,49 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
 
     segs = [_seg_3d(seg) for seg in tr.get_segments()[:N]]
 
-    linewidth = _get_default('linewidth', **kwargs)
+    linewidth = _get_default("linewidth", **kwargs)
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    if _get_default('diameter', **kwargs):
+    if _get_default("diameter", **kwargs):
 
-        scale = _get_default('diameter_scale', **kwargs)
+        scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
-    treecolor = _cm.get_color(_get_default('treecolor', **kwargs),
-                              TREE_TYPE_DICT[tr.get_type()])
+    treecolor = _cm.get_color(_get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
-    collection = Line3DCollection(segs, color=treecolor, linewidth=linewidth,
-                                  alpha=_get_default('alpha', **kwargs))
+    collection = Line3DCollection(
+        segs, color=treecolor, linewidth=linewidth, alpha=_get_default("alpha", **kwargs)
+    )
 
     ax.add_collection3d(collection)
 
-    kwargs['title'] = kwargs.get('title', 'Tree 3d-view')
-    kwargs['xlabel'] = kwargs.get('xlabel', 'X')
-    kwargs['ylabel'] = kwargs.get('ylabel', 'Y')
-    kwargs['zlabel'] = kwargs.get('zlabel', 'Z')
+    kwargs["title"] = kwargs.get("title", "Tree 3d-view")
+    kwargs["xlabel"] = kwargs.get("xlabel", "X")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
+    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    '''Generates a 3d figure of the soma.
+    """Generates a 3d figure of the soma.
 
     Parameters
     ----------
     soma: Soma
         neurom.Soma object
-    '''
-    treecolor = kwargs.get('treecolor', None)
+    """
+    treecolor = kwargs.get("treecolor", None)
 
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
     # Definition of the tree color depending on the tree type.
-    treecolor = _cm.get_color(treecolor, tree_type='soma')
+    treecolor = _cm.get_color(treecolor, tree_type="soma")
 
     center = sm.get_center()
 
@@ -622,34 +694,40 @@ def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
     zs = center[2]
 
     # Plot the soma as a circle.
-    fig, ax = _cm.plot_sphere(fig, ax, center=[xs, ys, zs],
-                              radius=sm.get_diameter(), color=treecolor,
-                              alpha=_get_default('alpha', **kwargs))
+    fig, ax = _cm.plot_sphere(
+        fig,
+        ax,
+        center=[xs, ys, zs],
+        radius=sm.get_diameter(),
+        color=treecolor,
+        alpha=_get_default("alpha", **kwargs),
+    )
 
-    kwargs['title'] = kwargs.get('title', 'Soma view')
-    kwargs['xlabel'] = kwargs.get('xlabel', 'X')
-    kwargs['ylabel'] = kwargs.get('ylabel', 'Y')
-    kwargs['zlabel'] = kwargs.get('zlabel', 'Z')
+    kwargs["title"] = kwargs.get("title", "Soma view")
+    kwargs["xlabel"] = kwargs.get("xlabel", "X")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
+    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='all', **kwargs):
-    '''Generates a figure of the neuron,
+def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all", **kwargs):
+    """Generates a figure of the neuron,
     that contains a soma and a list of trees.
 
     Parameters
     ----------
     neuron: Neuron
         neurom.Neuron object
-    '''
+    """
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
-    kwargs['new_fig'] = False
-    kwargs['new_axes'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["new_axes"] = False
+    kwargs["subplot"] = subplot
 
     soma3d(nrn.soma, **kwargs)
 
@@ -659,7 +737,7 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='all'
 
     to_plot = []
 
-    if neurite_type == 'all':
+    if neurite_type == "all":
         to_plot = nrn.neurites
     else:
         for neu_type in neurite_type:
@@ -669,50 +747,46 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='all'
 
         bounding_box = temp_tree.get_bounding_box()
 
-        h.append([bounding_box[0][term_dict['x']],
-                  bounding_box[1][term_dict['x']]])
-        v.append([bounding_box[0][term_dict['y']],
-                  bounding_box[1][term_dict['y']]])
-        d.append([bounding_box[0][term_dict['z']],
-                  bounding_box[1][term_dict['z']]])
+        h.append([bounding_box[0][term_dict["x"]], bounding_box[1][term_dict["x"]]])
+        v.append([bounding_box[0][term_dict["y"]], bounding_box[1][term_dict["y"]]])
+        d.append([bounding_box[0][term_dict["z"]], bounding_box[1][term_dict["z"]]])
 
         tree3d(temp_tree, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', nrn.name)
-    white_space = _get_default('white_space', **kwargs)
-    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space,
-                                         _np.max(h) + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v) - white_space,
-                                         _np.max(v) + white_space])
-    kwargs['zlim'] = kwargs.get('zlim', [_np.min(d) - white_space,
-                                         _np.max(d) + white_space])
+    kwargs["title"] = kwargs.get("title", nrn.name)
+    white_space = _get_default("white_space", **kwargs)
+    kwargs["xlim"] = kwargs.get("xlim", [_np.min(h) - white_space, _np.max(h) + white_space])
+    kwargs["ylim"] = kwargs.get("ylim", [_np.min(v) - white_space, _np.max(v) + white_space])
+    kwargs["zlim"] = kwargs.get("zlim", [_np.min(d) - white_space, _np.max(d) + white_space])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def all_trunks3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='all',
-                 N=10, **kwargs):
-    '''Generates a figure of the neuron,
+def all_trunks3d(
+    nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all", N=10, **kwargs
+):
+    """Generates a figure of the neuron,
     that contains a soma and a list of trees.
 
     Parameters
     ----------
     neuron: Neuron
         neurom.Neuron object
-    '''
+    """
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
-    kwargs['new_fig'] = False
-    kwargs['new_axes'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["new_axes"] = False
+    kwargs["subplot"] = subplot
 
     soma3d(nrn.soma, **kwargs)
 
     to_plot = []
 
-    if neurite_type == 'all':
+    if neurite_type == "all":
         to_plot = nrn.neurites
     else:
         for neu_type in neurite_type:
@@ -722,35 +796,39 @@ def all_trunks3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type='
 
         trunk3d(temp_tree, N=N, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', nrn.name)
-    kwargs['xlim'] = kwargs.get('xlim', [nrn.soma.get_center()[0] - 2. * N,
-                                         nrn.soma.get_center()[0] + 2. * N])
+    kwargs["title"] = kwargs.get("title", nrn.name)
+    kwargs["xlim"] = kwargs.get(
+        "xlim", [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N]
+    )
 
-    kwargs['ylim'] = kwargs.get('ylim', [nrn.soma.get_center()[1] - 2. * N,
-                                         nrn.soma.get_center()[1] + 2. * N])
+    kwargs["ylim"] = kwargs.get(
+        "ylim", [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N]
+    )
 
-    kwargs['zlim'] = kwargs.get('zlim', [nrn.soma.get_center()[2] - 2. * N,
-                                         nrn.soma.get_center()[2] + 2. * N])
+    kwargs["zlim"] = kwargs.get(
+        "zlim", [nrn.soma.get_center()[2] - 2.0 * N, nrn.soma.get_center()[2] + 2.0 * N]
+    )
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    '''Generates a figure of the population,
+    """Generates a figure of the population,
     that contains the pop somata and a set of list of trees.
 
     Parameters
     ----------
     pop: Population
         neurom.Population object
-    '''
+    """
     # Initialization of matplotlib figure and axes.
-    fig, ax = _cm.get_figure(new_fig=new_fig, new_axes=new_axes,
-                             subplot=subplot, params={'projection': '3d'})
+    fig, ax = _cm.get_figure(
+        new_fig=new_fig, new_axes=new_axes, subplot=subplot, params={"projection": "3d"}
+    )
 
-    kwargs['new_fig'] = False
-    kwargs['new_axes'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["new_axes"] = False
+    kwargs["subplot"] = subplot
 
     h = []
     v = []
@@ -760,38 +838,44 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
         # soma3d(nrn.soma, **kwargs)
         for temp_tree in nrn.neurites:
             bounding_box = temp_tree.get_bounding_box()
-            h.append([bounding_box[0][term_dict['x']],
-                      bounding_box[1][term_dict['x']]])
-            v.append([bounding_box[0][term_dict['y']],
-                      bounding_box[1][term_dict['y']]])
-            d.append([bounding_box[0][term_dict['z']],
-                      bounding_box[1][term_dict['z']]])
+            h.append([bounding_box[0][term_dict["x"]], bounding_box[1][term_dict["x"]]])
+            v.append([bounding_box[0][term_dict["y"]], bounding_box[1][term_dict["y"]]])
+            d.append([bounding_box[0][term_dict["z"]], bounding_box[1][term_dict["z"]]])
             tree3d(temp_tree, **kwargs)
 
-    kwargs['title'] = kwargs.get('title', '')
-    white_space = _get_default('white_space', **kwargs)
-    kwargs['xlim'] = kwargs.get('xlim', [_np.min(h) - white_space,
-                                         _np.max(h) + white_space])
-    kwargs['ylim'] = kwargs.get('ylim', [_np.min(v) - white_space,
-                                         _np.max(v) + white_space])
-    kwargs['zlim'] = kwargs.get('zlim', [_np.min(d) - white_space,
-                                         _np.max(d) + white_space])
+    kwargs["title"] = kwargs.get("title", "")
+    white_space = _get_default("white_space", **kwargs)
+    kwargs["xlim"] = kwargs.get("xlim", [_np.min(h) - white_space, _np.max(h) + white_space])
+    kwargs["ylim"] = kwargs.get("ylim", [_np.min(v) - white_space, _np.max(v) + white_space])
+    kwargs["zlim"] = kwargs.get("zlim", [_np.min(d) - white_space, _np.max(d) + white_space])
 
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
 # pylint: disable=too-many-locals
-def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='all',
-                  bins=100, plane='xy', color_map=blues_map, alpha=0.8,
-                  centered=True, colorbar=True, plot_neuron=False, **kwargs):
+def density_cloud(
+    obj,
+    new_fig=True,
+    subplot=111,
+    new_axes=True,
+    neurite_type="all",
+    bins=100,
+    plane="xy",
+    color_map=blues_map,
+    alpha=0.8,
+    centered=True,
+    colorbar=True,
+    plot_neuron=False,
+    **kwargs,
+):
     """
     View the neuron morphologies of a population as a density cloud.
     """
     x1 = []
     y1 = []
 
-    if neurite_type == 'all':
-        ntypes = 'neurites'
+    if neurite_type == "all":
+        ntypes = "neurites"
     else:
         ntypes = neurite_type
 
@@ -811,22 +895,25 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='a
     H1, xedges1, yedges1 = _np.histogram2d(x1, y1, bins=(bins, bins))
     mask = H1 < 0.05
     H2 = _np.ma.masked_array(H1, mask)
-    color_map.set_bad(color='white', alpha=None)
+    color_map.set_bad(color="white", alpha=None)
 
-    plots = ax.contourf((xedges1[:-1] + xedges1[1:]) / 2,
-                        (yedges1[:-1] + yedges1[1:]) / 2,
-                        _np.transpose(H2), cmap=color_map,
-                        alhpa=alpha)
+    plots = ax.contourf(
+        (xedges1[:-1] + xedges1[1:]) / 2,
+        (yedges1[:-1] + yedges1[1:]) / 2,
+        _np.transpose(H2),
+        cmap=color_map,
+        alhpa=alpha,
+    )
 
-    kwargs['new_fig'] = False
-    kwargs['subplot'] = subplot
+    kwargs["new_fig"] = False
+    kwargs["subplot"] = subplot
 
     if plot_neuron:
         nrn = obj.neurons[0]
         h, v, _ = nrn.soma.get_center()
-        soma(nrn.soma, plane='xy', hadd=-h, vadd=-v, **kwargs)
+        soma(nrn.soma, plane="xy", hadd=-h, vadd=-v, **kwargs)
         for temp_tree in getattr(nrn, ntypes):
-            tree(temp_tree, plane='xy', hadd=-h, vadd=-v, treecolor='r', **kwargs)
+            tree(temp_tree, plane="xy", hadd=-h, vadd=-v, treecolor="r", **kwargs)
 
     if colorbar:
         _cm.plt.colorbar(plots)
@@ -834,18 +921,19 @@ def density_cloud(obj, new_fig=True, subplot=111, new_axes=True, neurite_type='a
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def _get_polar_data(pop, neurite_type='neurites', bins=20):
-    '''Extracts the data to plot the polar length distribution
+def _get_polar_data(pop, neurite_type="neurites", bins=20):
+    """Extracts the data to plot the polar length distribution
     of a neuron or a population of neurons.
-    '''
+    """
+
     def seg_angle(seg):
-        '''angle between mean x, y coordinates of a seg'''
+        """angle between mean x, y coordinates of a seg"""
         mean_x = _np.mean([seg[0][0], seg[1][0]])
         mean_y = _np.mean([seg[0][1], seg[1][1]])
         return _np.arctan2(mean_y, mean_x)
 
     def seg_length(seg):
-        '''compute the length of a seg'''
+        """compute the length of a seg"""
         return _np.linalg.norm(_np.subtract(seg[1], seg[0]))
 
     segs = []
@@ -854,18 +942,18 @@ def _get_polar_data(pop, neurite_type='neurites', bins=20):
 
     angles = _np.array([seg_angle(s) for s in segs])
     lens = _np.array([seg_length(s) for s in segs])
-    ranges = [[i * 2 * _np.pi / bins - _np.pi, (i + 1) * 2 * _np.pi / bins - _np.pi]
-              for i in range(bins)]
-    results = [r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])]
-               for r in ranges]
+    ranges = [
+        [i * 2 * _np.pi / bins - _np.pi, (i + 1) * 2 * _np.pi / bins - _np.pi] for i in range(bins)
+    ]
+    results = [r + [_np.sum(lens[_np.where((angles > r[0]) & (angles < r[1]))[0]])] for r in ranges]
 
     return results
 
 
-def polar_plot(pop, neurite_type='neurites', bins=20):
-    '''
+def polar_plot(pop, neurite_type="neurites", bins=20):
+    """
     Generates a polar plot of a neuron or population
-    '''
+    """
     input_data = _get_polar_data(pop, neurite_type=neurite_type, bins=bins)
 
     fig = _cm.plt.figure()

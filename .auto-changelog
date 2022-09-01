@@ -1,0 +1,13 @@
+{
+    "output": "CHANGELOG.md",
+    "template": ".auto-changelog-template.hbs",
+    "tagPrefix": "v",
+    "commitLimit": false,
+    "backfillLimit": false,
+    "ignoreCommitPattern": "Release [0-9]+\\.[0-9]+\\.[0-9]+|Update CHANGELOG.*|.*\\[skip-changelog\\].*|\\[pre-commit.ci\\]",
+    "commitUrl": "https://github.com/BlueBrain/TMD/commit/{id}",
+    "issueUrl": "https://github.com/BlueBrain/TMD/issues/{id}",
+    "mergeUrl": "https://github.com/BlueBrain/TMD/pull/{id}",
+    "compareUrl": "https://github.com/BlueBrain/TMD/compare/{from}..{to}",
+    "startingVersion": "2.2.0"
+}

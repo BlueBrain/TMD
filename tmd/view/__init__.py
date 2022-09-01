@@ -7,7 +7,9 @@ Matplotlib required.
 try:
     import matplotlib
 except ImportError as exc:
-    raise ImportError('tmd[viewer] is not installed. ' +
-                      'Please install it by doing: pip install tmd[viewer]') from exc
+    raise ImportError(
+        "tmd[viewer] is not installed. " + "Please install it by doing: pip install tmd[viewer]"
+    ) from exc
 
-from tmd.view import plot, view
+from tmd.view import plot
+from tmd.view import view

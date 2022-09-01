@@ -1,35 +1,67 @@
-""" Distribution configuration for TMD
-"""
+"""Setup for the TMD package."""
+from pathlib import Path
+
+from setuptools import find_namespace_packages
 from setuptools import setup
-from setuptools import find_packages
-import imp
 
+reqs = [
+    "h5py>=2.8.0",
+    "scipy>=0.13.3",
+    "numpy>=1.8.0",
+    "scikit-learn>=0.19.1",
+    "munkres>=1.0.12",
+    "cached-property>=1.5.1",
+    "morphio>=3.3.3",
+]
 
-config = {
-    'description': 'TMD: a python package for the topological analysis of neurons',
-    'author': 'Lida Kanari',
-    'url': 'https://github.com/BlueBrain/TMD',
-    'author_email': 'lida.kanari@epfl.ch',
-    'install_requires': [
-        'h5py>=2.8.0',
-        'scipy>=0.13.3',
-        'numpy>=1.8.0',
-        'scikit-learn>=0.19.1',
-        'munkres>=1.0.12',
-        'cached-property>=1.5.1',
-        'morphio>=3.3.3'
+doc_reqs = [
+    "m2r2",
+    "sphinx",
+    "sphinx-bluebrain-theme",
+    "sphinx-click",
+]
+
+test_reqs = [
+    "mock",
+    "pytest",
+    "pytest-cov",
+    "pytest-html",
+]
+
+setup(
+    name="TMD",
+    author="Blue Brain Project, EPFL",
+    description="A python package for the topological analysis of neurons.",
+    long_description=Path("README.md").read_text(encoding="utf-8"),
+    long_description_content_type="text/markdown",
+    url="https://TMD.readthedocs.io",
+    project_urls={
+        "Tracker": "https://github.com/BlueBrain/TMD/issues",
+        "Source": "https://github.com/BlueBrain/TMD",
+    },
+    license="GNU Lesser General Public License v3.0",
+    packages=find_namespace_packages(include=["tmd*"]),
+    python_requires=">=3.7",
+    use_scm_version=True,
+    setup_requires=[
+        "setuptools_scm",
     ],
-    'setup_requires':['setuptools_scm'],
-    'extras_require': {
-                       'viewer': ['matplotlib>=3.2.0',],
-                       },
-    'packages': find_packages(),
-    'license': 'LGPLv3',
-    'scripts': [],
-    'name': 'tmd',
-    'include_package_data': True,
-    'use_scm_version': True,
-    'python_requires': '>=3.7',
-}
-
-setup(**config)
+    install_requires=reqs,
+    extras_require={
+        "docs": doc_reqs,
+        "test": test_reqs,
+        "viewer": ["matplotlib>=3.2.0"],
+    },
+    include_package_data=True,
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Education",
+        "Intended Audience :: Science/Research",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+    ],
+)

@@ -1,18 +1,19 @@
 import os
+
 import mock
+import morphio
 import numpy as np
 from numpy import testing as npt
-import morphio
+
 from tmd.io import conversion as tested
 from tmd.io.io import load_neuron
 from tmd.io.io import load_neuron_from_morphio
 
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, 'data')
+DATA_PATH = os.path.join(_path, "data")
 
 
 class MockSection:
-
     def __init__(self, id, points, diameters, type, parent=None):
 
         self.id = id
@@ -31,31 +32,30 @@ class MockSection:
 
 
 class MockNeuron:
-
     def __init__(self):
 
         root = MockSection(
-                id=0,
-                points = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
-                diameters = np.array([0.1, 0.2, 0.3]),
-                type=2,
-                parent=None
+            id=0,
+            points=np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
+            diameters=np.array([0.1, 0.2, 0.3]),
+            type=2,
+            parent=None,
         )
 
         child1 = MockSection(
-                id=1,
-                points = np.array([[0.7, 0.8, 0.9], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
-                diameters = np.array([0.3, 0.4, 0.5]),
-                type=2,
-                parent=root
+            id=1,
+            points=np.array([[0.7, 0.8, 0.9], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
+            diameters=np.array([0.3, 0.4, 0.5]),
+            type=2,
+            parent=root,
         )
 
         child2 = MockSection(
-                id=2,
-                points = np.array([[0.7, 0.8, 0.9], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
-                diameters = np.array([0.3, 0.6, 0.7]),
-                type=2,
-                parent=root
+            id=2,
+            points=np.array([[0.7, 0.8, 0.9], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
+            diameters=np.array([0.3, 0.6, 0.7]),
+            type=2,
+            parent=root,
         )
 
         root.traversal = [root, child1, child2]
@@ -78,18 +78,15 @@ class MockNeuron:
 def test_convert_morphio_soma():
 
     morphio_soma = mock.Mock(
-        points = np.array([
-            [0., 1., 2.],
-            [2., 3., 4.]
-        ]),
+        points=np.array([[0.0, 1.0, 2.0], [2.0, 3.0, 4.0]]),
         diameters=np.array([2.1, 3.4]),
     )
 
     soma = tested.convert_morphio_soma(morphio_soma)
 
-    npt.assert_allclose(soma.x, [0., 2.])
-    npt.assert_allclose(soma.y, [1., 3.])
-    npt.assert_allclose(soma.z, [2., 4.])
+    npt.assert_allclose(soma.x, [0.0, 2.0])
+    npt.assert_allclose(soma.y, [1.0, 3.0])
+    npt.assert_allclose(soma.z, [2.0, 4.0])
     npt.assert_allclose(soma.d, [2.1, 3.4])
 
 
@@ -97,14 +94,10 @@ def test_section_to_data():
 
     section = MockSection(
         id=0,
-        points=np.array([
-            [0.1, 0.2, 0.3],
-            [0.4, 0.5, 0.6],
-            [0.7, 0.8, 0.9]
-        ]),
+        points=np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
         diameters=np.array([1.2, 1.3, 1.4]),
         type=3,
-        parent=None
+        parent=None,
     )
 
     n, data = tested._section_to_data(section, tree_length=11, start=0, parent=-1)
@@ -161,7 +154,7 @@ def _assert_neurons_equal(neuron1, neuron2):
 
 def test_neuron_building_consistency__h5():
 
-    path = f'{DATA_PATH}/valid/C010398B-P2.h5'
+    path = f"{DATA_PATH}/valid/C010398B-P2.h5"
 
     neuron1 = load_neuron(path)
     neuron2 = load_neuron_from_morphio(path)
@@ -175,7 +168,7 @@ def test_neuron_building_consistency__h5():
 
 def test_neuron_building_consistency__swc():
 
-    path = f'{DATA_PATH}/valid/C010398B-P2.CNG.swc'
+    path = f"{DATA_PATH}/valid/C010398B-P2.CNG.swc"
 
     neuron1 = load_neuron(path)
     neuron2 = load_neuron_from_morphio(path)
@@ -185,5 +178,3 @@ def test_neuron_building_consistency__swc():
     neuron2 = load_neuron_from_morphio(morphio.Morphology(path))
 
     _assert_neurons_equal(neuron1, neuron2)
-
-

@@ -1,29 +1,23 @@
-'''
+"""
 Python module that contains the functions
 about reading swc files.
-'''
+"""
 import re
+
 import numpy as np
 
-
 # Definition of swc data container
-SWC_DCT = {'index': 0,
-           'type': 1,
-           'x': 2,
-           'y': 3,
-           'z': 4,
-           'radius': 5,
-           'parent': 6}
+SWC_DCT = {"index": 0, "type": 1, "x": 2, "y": 3, "z": 4, "radius": 5, "parent": 6}
 
 
-def read_swc(input_file, line_delimiter='\n'):
-    '''Function to properly load a swc file
-       that contains a list of sections,
-       into a 'Data' format that contains all
-       info extracting comments.
-    '''
+def read_swc(input_file, line_delimiter="\n"):
+    """Function to properly load a swc file
+    that contains a list of sections,
+    into a 'Data' format that contains all
+    info extracting comments.
+    """
     # Read all data from file.
-    with open(input_file, 'r', encoding='utf-8') as f:
+    with open(input_file, "r", encoding="utf-8") as f:
 
         read_data = f.read()
 
@@ -31,34 +25,36 @@ def read_swc(input_file, line_delimiter='\n'):
     split_data = read_data.split(line_delimiter)
 
     # Clean data from comments and empty lines
-    split_data = [a for a in split_data if '#' not in a]
-    split_data = [a for a in split_data if a != '']
+    split_data = [a for a in split_data if "#" not in a]
+    split_data = [a for a in split_data if a != ""]
 
     return np.array(split_data)
 
 
 def swc_to_data(data_swc):
-    '''Transform swc to data to be used in make_tree.
-    '''
-    expected_data = re.compile(r'^\s*([-+]?\d*\.\d+|[-+]?\d+)'
-                               r'\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
-                               r'*([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*$')
+    """Transform swc to data to be used in make_tree."""
+    expected_data = re.compile(
+        r"^\s*([-+]?\d*\.\d+|[-+]?\d+)"
+        r"\s*([-+]?\d*\.\d+|[-+]?\d+)\s"
+        r"*([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*$"
+    )
 
     data = []
 
     for dpoint in data_swc:
 
-        if expected_data.match(dpoint.replace('\r', '')):
+        if expected_data.match(dpoint.replace("\r", "")):
 
-            segment_point = np.array(expected_data.match(dpoint.replace('\r', '')).groups(),
-                                     dtype=float)
+            segment_point = np.array(
+                expected_data.match(dpoint.replace("\r", "")).groups(), dtype=float
+            )
 
             # make the radius diameter
-            segment_point[SWC_DCT['radius']] = 2. * segment_point[SWC_DCT['radius']]
+            segment_point[SWC_DCT["radius"]] = 2.0 * segment_point[SWC_DCT["radius"]]
 
             data.append(segment_point)
 
@@ -97,13 +93,15 @@ def swc_data_to_lists(data):
     # If this structure is not followed, the data will fail
     # to load and the method will be terminated, with an error message.
 
-    expected_data = re.compile(r'^\s*([-+]?\d*\.\d+|[-+]?\d+)'
-                               r'\s*([-+]?\d*\.\d+|[-+]?\d+)\s'
-                               r'*([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*'
-                               r'([-+]?\d*\.\d+|[-+]?\d+)\s*$')
+    expected_data = re.compile(
+        r"^\s*([-+]?\d*\.\d+|[-+]?\d+)"
+        r"\s*([-+]?\d*\.\d+|[-+]?\d+)\s"
+        r"*([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*$"
+    )
 
     # Definition of swc data from SWC_DCT function
 
@@ -115,28 +113,30 @@ def swc_data_to_lists(data):
     p = np.zeros(length, dtype=int)
     ch = {}
 
-    first_line_data = expected_data.match(data[0].replace('\r', ''))
+    first_line_data = expected_data.match(data[0].replace("\r", ""))
 
     total_offset = int(first_line_data.groups()[0])
 
     for enline in range(length):
 
-        segment_point = expected_data.match(data[enline].replace('\r', '')).groups()
+        segment_point = expected_data.match(data[enline].replace("\r", "")).groups()
 
-        x[enline] = float(segment_point[SWC_DCT['x']])
-        y[enline] = float(segment_point[SWC_DCT['y']])
-        z[enline] = float(segment_point[SWC_DCT['z']])
+        x[enline] = float(segment_point[SWC_DCT["x"]])
+        y[enline] = float(segment_point[SWC_DCT["y"]])
+        z[enline] = float(segment_point[SWC_DCT["z"]])
         # swc contains radii, and here it is transformed into diameter.
-        d[enline] = 2 * float(segment_point[SWC_DCT['radius']])
-        t[enline] = int(segment_point[SWC_DCT['type']])
+        d[enline] = 2 * float(segment_point[SWC_DCT["radius"]])
+        t[enline] = int(segment_point[SWC_DCT["type"]])
         if enline != 0:
-            p[enline] = int(segment_point[SWC_DCT['parent']]) - total_offset
+            p[enline] = int(segment_point[SWC_DCT["parent"]]) - total_offset
         else:
-            p[enline] = int(segment_point[SWC_DCT['parent']])
+            p[enline] = int(segment_point[SWC_DCT["parent"]])
 
-        if int(segment_point[SWC_DCT['index']]) - enline != total_offset:
-            raise Exception("Aborting process, with non-sequential ids error.\
-                             Fix to proceed.")
+        if int(segment_point[SWC_DCT["index"]]) - enline != total_offset:
+            raise Exception(
+                "Aborting process, with non-sequential ids error.\
+                             Fix to proceed."
+            )
 
     for enline in range(length):
 

@@ -1,6 +1,6 @@
-'''
+"""
 tmd statistical analysis on PH diagrams algorithms implementation
-'''
+"""
 import numpy as np
 from scipy import stats
 
@@ -28,20 +28,20 @@ def get_lengths(ph):
 
 def get_total_length(ph):
     """Calculates the total length of a barcode
-       by summing the length of each bar. This should
-       be equivalent to the total length of the tree
-       if the barcode represents path distances.
+    by summing the length of each bar. This should
+    be equivalent to the total length of the tree
+    if the barcode represents path distances.
     """
     return sum(np.abs(p[1] - p[0]) for p in ph)
 
 
-def transform_ph_to_length(ph, keep_side='end'):
-    '''Transforms a persistence diagram into a
+def transform_ph_to_length(ph, keep_side="end"):
+    """Transforms a persistence diagram into a
     (start_point, length) equivalent diagram or a
     (end, length) diagram depending on keep_side option.
     Note: the direction of the diagram will be lost!
-    '''
-    if keep_side == 'start':
+    """
+    if keep_side == "start":
         # keeps the start point and the length of the bar
         return [[min(i), np.abs(i[1] - i[0])] for i in ph]
     else:
@@ -49,13 +49,13 @@ def transform_ph_to_length(ph, keep_side='end'):
         return [[max(i), np.abs(i[1] - i[0])] for i in ph]
 
 
-def transform_ph_from_length(ph, keep_side='end'):
-    '''Transforms a persistence diagram into a
+def transform_ph_from_length(ph, keep_side="end"):
+    """Transforms a persistence diagram into a
     (start_point, length) equivalent diagram or a
     (end, length) diagram depending on keep_side option.
     Note: the direction of the diagram will be lost!
-    '''
-    if keep_side == 'start':
+    """
+    if keep_side == "start":
         # keeps the start point and the length of the bar
         return [[i[0], i[1] - i[0]] for i in ph]
     else:
@@ -64,7 +64,7 @@ def transform_ph_from_length(ph, keep_side='end'):
 
 
 def nosify(var, noise=0.1):
-    '''Adds noise to an instance of data
+    """Adds noise to an instance of data
     Can be used with a ph as follows:
     noisy_pd = [add_noise(d, 1.0) if d[0] != 0.0
                 else [d[0],add_noise([d[1]],1.0)[0]] for d in pd]
@@ -75,7 +75,7 @@ def nosify(var, noise=0.1):
         towrite = '%f, %f\n'%(d[0],d[1])
         F.write(towrite)
     F.close()
-    '''
+    """
     var_new = np.zeros(len(var))
     for i, v in enumerate(var):
         var_new[i] = stats.norm.rvs(v, noise)

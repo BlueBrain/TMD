@@ -1,0 +1,1 @@
+global-exclude *.py[co] .DS_Store

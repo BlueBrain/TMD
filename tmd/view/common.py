@@ -3,8 +3,9 @@ Module containing the common functionality
 to be used by view-plot modules.
 """
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D  # pylint: disable=unused-import
 
 jet_map = plt.cm.get_cmap("jet")
@@ -75,13 +76,13 @@ def get_color(treecolor, tree_type):
     Otherwise returns the treecolor.
     """
     if treecolor is None:
-        if tree_type == 'basal':
+        if tree_type == "basal_dendrite":
             treecolor = "red"
-        elif tree_type == 'apical':
+        elif tree_type == "apical_dendrite":
             treecolor = "purple"
-        elif tree_type == 'axon':
+        elif tree_type == "axon":
             treecolor = "blue"
-        elif tree_type == 'soma':
+        elif tree_type == "soma":
             treecolor = "black"
         else:
             treecolor = "green"
@@ -89,8 +90,7 @@ def get_color(treecolor, tree_type):
     return treecolor
 
 
-def get_figure(new_fig=True, new_axes=False, subplot=False, params=None,
-               no_axes=False):
+def get_figure(new_fig=True, new_axes=False, subplot=False, params=None, no_axes=False):
     """
     Function to be used for viewing - plotting,
     to initialize the matplotlib figure - axes.
@@ -196,19 +196,18 @@ def save_plot(fig, **kwargs):
 
     """
 
-    prefile = kwargs.get('prefile', '')
-    postfile = kwargs.get('postfile', '')
-    output_path = kwargs.get('output_path', './')
-    output_name = kwargs.get('output_name', 'Figure')
-    output_format = kwargs.get('output_format', 'png')
-    dpi = kwargs.get('dpi', 300)
-    transparent = kwargs.get('transparent', False)
+    prefile = kwargs.get("prefile", "")
+    postfile = kwargs.get("postfile", "")
+    output_path = kwargs.get("output_path", "./")
+    output_name = kwargs.get("output_name", "Figure")
+    output_format = kwargs.get("output_format", "png")
+    dpi = kwargs.get("dpi", 300)
+    transparent = kwargs.get("transparent", False)
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)  # Make output directory if non-exsiting
 
-    output = os.path.join(output_path, prefile +
-                          output_name + postfile + "." + output_format)
+    output = os.path.join(output_path, prefile + output_name + postfile + "." + output_format)
 
     plt.savefig(output, dpi=dpi, transparent=transparent)
 
@@ -249,7 +248,7 @@ def plot_style(fig, ax, **kwargs):
         Default value is 14.
 
     title_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as title arguments.
         Default value is None.
 
@@ -281,12 +280,12 @@ def plot_style(fig, ax, **kwargs):
         Default value is 14.
 
     xlabel_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as xlabel arguments.
         Default value is None.
 
     ylabel_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as ylabel arguments.
         Default value is None.
 
@@ -318,12 +317,12 @@ def plot_style(fig, ax, **kwargs):
         Default value is 12.
 
     xticks_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as xticks arguments.
         Default value is None.
 
     yticks_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as yticks arguments.
         Default value is None.
 
@@ -353,7 +352,7 @@ def plot_style(fig, ax, **kwargs):
         Default value is True.
 
     legend_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as legend arguments.
         Default value is None.
 
@@ -403,24 +402,21 @@ def plot_style(fig, ax, **kwargs):
 
     """
     # Definition of title/file naming variables
-    prefile = kwargs.get('prefile', '')
-    postfile = kwargs.get('postfile', '')
-    pretitle = kwargs.get('pretitle', '')
-    posttitle = kwargs.get('posttitle', '')
+    prefile = kwargs.get("prefile", "")
+    postfile = kwargs.get("postfile", "")
+    pretitle = kwargs.get("pretitle", "")
+    posttitle = kwargs.get("posttitle", "")
 
     # Definition of global options
-    no_axes = kwargs.get('no_axes', False)
-    show_plot = kwargs.get('show_plot', True)
-    tight = kwargs.get('tight', False)
-    aspect = kwargs.get('aspect', 'auto')
+    no_axes = kwargs.get("no_axes", False)
+    show_plot = kwargs.get("show_plot", True)
+    tight = kwargs.get("tight", False)
+    aspect = kwargs.get("aspect", "auto")
 
     # Definition of save options
-    output_path = kwargs.get('output_path', None)
+    output_path = kwargs.get("output_path", None)
 
-    pretitle, posttitle, prefile, postfile = figure_naming(pretitle,
-                                                           posttitle,
-                                                           prefile,
-                                                           postfile)
+    pretitle, posttitle, prefile, postfile = figure_naming(pretitle, posttitle, prefile, postfile)
 
     fig, ax = plot_title(fig, ax, **kwargs)
 
@@ -484,7 +480,7 @@ def plot_title(fig, ax, **kwargs):
         Default value is 14.
 
     title_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as title arguments.
         Default value is None.
 
@@ -495,17 +491,16 @@ def plot_title(fig, ax, **kwargs):
     """
 
     # Definition of title options
-    pretitle = kwargs.get('pretitle', '')
-    posttitle = kwargs.get('posttitle', '')
-    title = kwargs.get('title', 'Figure')
-    title_fontsize = kwargs.get('titlefontsize', 14)
-    title_arg = kwargs.get('titlearg', None)
+    pretitle = kwargs.get("pretitle", "")
+    posttitle = kwargs.get("posttitle", "")
+    title = kwargs.get("title", "Figure")
+    title_fontsize = kwargs.get("titlefontsize", 14)
+    title_arg = kwargs.get("titlearg", None)
 
     if title_arg is None:
         title_arg = {}
 
-    ax.set_title(pretitle + title + posttitle,
-                 fontsize=title_fontsize, **title_arg)
+    ax.set_title(pretitle + title + posttitle, fontsize=title_fontsize, **title_arg)
 
     return fig, ax
 
@@ -544,17 +539,17 @@ def plot_labels(fig, ax, **kwargs):
         Default value is 14.
 
     xlabel_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as xlabel arguments.
         Default value is None.
 
     ylabel_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as ylabel arguments.
         Default value is None.
 
     zlabel_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as zlabel arguments.
         Default value is None.
 
@@ -565,13 +560,13 @@ def plot_labels(fig, ax, **kwargs):
     """
 
     # Definition of label options
-    xlabel = kwargs.get('xlabel', 'X')
-    ylabel = kwargs.get('ylabel', 'Y')
-    zlabel = kwargs.get('zlabel', 'Z')
-    label_fontsize = kwargs.get('labelfontsize', 14)
-    xlabel_arg = kwargs.get('xlabel_arg', None)
-    ylabel_arg = kwargs.get('ylabel_arg', None)
-    zlabel_arg = kwargs.get('zlabel_arg', None)
+    xlabel = kwargs.get("xlabel", "X")
+    ylabel = kwargs.get("ylabel", "Y")
+    zlabel = kwargs.get("zlabel", "Z")
+    label_fontsize = kwargs.get("labelfontsize", 14)
+    xlabel_arg = kwargs.get("xlabel_arg", None)
+    ylabel_arg = kwargs.get("ylabel_arg", None)
+    zlabel_arg = kwargs.get("zlabel_arg", None)
 
     if xlabel_arg is None:
         xlabel_arg = {}
@@ -585,7 +580,7 @@ def plot_labels(fig, ax, **kwargs):
     ax.set_xlabel(xlabel, fontsize=label_fontsize, **xlabel_arg)
     ax.set_ylabel(ylabel, fontsize=label_fontsize, **ylabel_arg)
 
-    if hasattr(ax, 'zaxis'):
+    if hasattr(ax, "zaxis"):
         ax.set_zlabel(zlabel, fontsize=label_fontsize, **zlabel_arg)
 
     return fig, ax
@@ -628,17 +623,17 @@ def plot_ticks(fig, ax, **kwargs):
         Default value is 12.
 
     xticks_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as xticks arguments.
         Default value is None.
 
     yticks_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as yticks arguments.
         Default value is None.
 
     zticks_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as zticks arguments.
         Default value is None.
 
@@ -649,13 +644,13 @@ def plot_ticks(fig, ax, **kwargs):
     """
 
     # Definition of tick options
-    xticks = kwargs.get('xticks', None)
-    yticks = kwargs.get('yticks', None)
-    zticks = kwargs.get('zticks', None)
-    tick_fontsize = kwargs.get('tickfontsize', 12)
-    xticks_arg = kwargs.get('xticksarg', None)
-    yticks_arg = kwargs.get('yticksarg', None)
-    zticks_arg = kwargs.get('zticksarg', None)
+    xticks = kwargs.get("xticks", None)
+    yticks = kwargs.get("yticks", None)
+    zticks = kwargs.get("zticks", None)
+    tick_fontsize = kwargs.get("tickfontsize", 12)
+    xticks_arg = kwargs.get("xticksarg", None)
+    yticks_arg = kwargs.get("yticksarg", None)
+    zticks_arg = kwargs.get("zticksarg", None)
 
     if xticks_arg is None:
         xticks_arg = {}
@@ -721,18 +716,18 @@ def plot_limits(fig, ax, **kwargs):
 
     """
     # Definition of limit options
-    no_xlim = kwargs.get('no_xlim', False)
-    no_ylim = kwargs.get('no_ylim', False)
-    no_zlim = kwargs.get('no_zlim', False)
-    xlim = kwargs.get('xlim', None)
-    ylim = kwargs.get('ylim', None)
-    zlim = kwargs.get('zlim', None)
+    no_xlim = kwargs.get("no_xlim", False)
+    no_ylim = kwargs.get("no_ylim", False)
+    no_zlim = kwargs.get("no_zlim", False)
+    xlim = kwargs.get("xlim", None)
+    ylim = kwargs.get("ylim", None)
+    zlim = kwargs.get("zlim", None)
 
     if not no_xlim:
         ax.set_xlim(xlim)
     if not no_ylim:
         ax.set_ylim(ylim)
-    if hasattr(ax, 'zaxis') and not no_zlim:
+    if hasattr(ax, "zaxis") and not no_zlim:
         ax.set_zlim(zlim)
 
     return fig, ax
@@ -758,7 +753,7 @@ def plot_legend(fig, ax, **kwargs):
         Default value is True.
 
     legend_arg : dict
-        Defines the arguments that will be passsed
+        Defines the arguments that will be passed
         into matplotlib as legend arguments.
         Default value is None.
 
@@ -768,8 +763,8 @@ def plot_legend(fig, ax, **kwargs):
 
     """
     # Definition of legend options
-    no_legend = kwargs.get('no_legend', True)
-    legend_arg = kwargs.get('legendarg', None)
+    no_legend = kwargs.get("no_legend", True)
+    legend_arg = kwargs.get("legendarg", None)
 
     if legend_arg is None:
         legend_arg = {}
@@ -780,7 +775,7 @@ def plot_legend(fig, ax, **kwargs):
     return fig, ax
 
 
-def plot_sphere(fig, ax, center, radius, color='black', alpha=1.):
+def plot_sphere(fig, ax, center, radius, color="black", alpha=1.0):
     """
     Plots a 3d sphere, given the center and the radius.
     """
@@ -797,10 +792,22 @@ def plot_sphere(fig, ax, center, radius, color='black', alpha=1.):
     return fig, ax
 
 
-def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=None, colorbar=False,
-                   cmap=jet_map, vmin=None, vmax=None, masked=False, threshold=0.01, **kwargs):
-    '''Plots the gaussian kernel of the input image.
-    '''
+def plot_img_basic(
+    img,
+    new_fig=True,
+    subplot=111,
+    title="",
+    xlims=None,
+    ylims=None,
+    colorbar=False,
+    cmap=jet_map,
+    vmin=None,
+    vmax=None,
+    masked=False,
+    threshold=0.01,
+    **kwargs,
+):
+    """Plots the gaussian kernel of the input image."""
     if xlims is None:
         xlims = (0, 100)
     if ylims is None:
@@ -816,15 +823,21 @@ def plot_img_basic(img, new_fig=True, subplot=111, title='', xlims=None, ylims=N
     if masked:
         img = np.ma.masked_where((threshold > np.abs(img)), img)
 
-    cax = ax.imshow(np.rot90(img), vmin=vmin, vmax=vmax, cmap=cmap,
-                    interpolation='bilinear', extent=xlims + ylims)
+    cax = ax.imshow(
+        np.rot90(img),
+        vmin=vmin,
+        vmax=vmax,
+        cmap=cmap,
+        interpolation="bilinear",
+        extent=xlims + ylims,
+    )
 
-    kwargs['xlim'] = xlims
-    kwargs['ylim'] = ylims
-    kwargs['title'] = title
+    kwargs["xlim"] = xlims
+    kwargs["ylim"] = ylims
+    kwargs["title"] = title
 
     if colorbar:
         plt.colorbar(cax)
-    ax.set_aspect('equal')
+    ax.set_aspect("equal")
 
-    return plot_style(fig=fig, ax=ax, aspect='equal', **kwargs)
+    return plot_style(fig=fig, ax=ax, aspect="equal", **kwargs)

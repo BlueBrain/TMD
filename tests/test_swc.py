@@ -1,46 +1,43 @@
-'''Test tmd.io.swc'''
+"""Test tmd.io.swc"""
 import os
-from tmd.io import swc
+
 import numpy as np
 from numpy import testing as npt
 
+from tmd.io import swc
+
 _path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, 'data')
+DATA_PATH = os.path.join(_path, "data")
 
 # Filenames for testing
-basic_file = os.path.join(DATA_PATH, 'basic.swc')
-nocom_file = os.path.join(DATA_PATH, 'basic_no_comments.swc')
-nosecids_file = os.path.join(DATA_PATH, 'basic_no_sec_ids.swc')
-options_file = os.path.join(DATA_PATH, 'basic_options.swc')
-sample_file = os.path.join(DATA_PATH, 'sample.swc')
+basic_file = os.path.join(DATA_PATH, "basic.swc")
+nocom_file = os.path.join(DATA_PATH, "basic_no_comments.swc")
+nosecids_file = os.path.join(DATA_PATH, "basic_no_sec_ids.swc")
+options_file = os.path.join(DATA_PATH, "basic_options.swc")
+sample_file = os.path.join(DATA_PATH, "sample.swc")
 
-basic_data = np.array(['1 1 0 0 0 6 -1', '2 2 3 4 5 6 1',
-                       '3 3 4 5 6 7 1', '4 4 5 6 7 8 1', '5 4 5 6 7 8 4'])
-options_data = np.array(['2', '3', '4', '5', '6', '7', '8', '9\n'])
+basic_data = np.array(
+    ["1 1 0 0 0 6 -1", "2 2 3 4 5 6 1", "3 3 4 5 6 7 1", "4 4 5 6 7 8 1", "5 4 5 6 7 8 4"]
+)
+options_data = np.array(["2", "3", "4", "5", "6", "7", "8", "9\n"])
 
-bx1 = np.array([0.,  3.,  4.,  5.,  5.])
-by1 = np.array([0.,  4.,  5.,  6.,  6.])
-bz1 = np.array([0.,  5.,  6.,  7.,  7.])
-bd1 = np.array([12.,  12.,  14.,  16.,  16.])
+bx1 = np.array([0.0, 3.0, 4.0, 5.0, 5.0])
+by1 = np.array([0.0, 4.0, 5.0, 6.0, 6.0])
+bz1 = np.array([0.0, 5.0, 6.0, 7.0, 7.0])
+bd1 = np.array([12.0, 12.0, 14.0, 16.0, 16.0])
 bt1 = np.array([1, 2, 3, 4, 4])
-bp1 = np.array([-1,  0,  0,  0,  3])
+bp1 = np.array([-1, 0, 0, 0, 3])
 bch1 = {0: [1, 2, 3], 1: [], 2: [], 3: [4], 4: []}
 
 
 def test_swc_dict():
-    assert swc.SWC_DCT == {'index': 0,
-                           'parent': 6,
-                           'radius': 5,
-                           'type': 1,
-                           'x': 2,
-                           'y': 3,
-                           'z': 4}
+    assert swc.SWC_DCT == {"index": 0, "parent": 6, "radius": 5, "type": 1, "x": 2, "y": 3, "z": 4}
 
 
 def test_read_swc():
     data1 = swc.read_swc(basic_file)
     npt.assert_array_equal(data1, basic_data)
-    data2 = swc.read_swc(options_file, line_delimiter=' ')
+    data2 = swc.read_swc(options_file, line_delimiter=" ")
     npt.assert_array_equal(data2, options_data)
 
 

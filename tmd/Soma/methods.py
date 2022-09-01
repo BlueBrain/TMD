@@ -1,6 +1,6 @@
-'''
+"""
 tmd Soma's methods
-'''
+"""
 import numpy as np
 
 
@@ -23,7 +23,11 @@ def get_diameter(self):
         diameter = self.d[0]
     else:
         center = self.get_center()
-        diameter = np.mean(np.sqrt(np.power(self.x - center[0], 2) +
-                                   np.power(self.y - center[1], 2) +
-                                   np.power(self.z - center[2], 2)))
+        diameter = np.mean(
+            np.sqrt(
+                np.power(self.x - center[0], 2)
+                + np.power(self.y - center[1], 2)
+                + np.power(self.z - center[2], 2)
+            )
+        )
     return diameter
