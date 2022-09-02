@@ -1,6 +1,5 @@
-"""Module for viewing neuronal morphologies
-"""
-
+"""Module for viewing neuronal morphologies."""
+# pylint: disable=too-many-lines
 import numpy as _np
 from matplotlib.collections import LineCollection as _LC
 
@@ -25,12 +24,16 @@ def _get_default(variable, **kwargs):
 
 
 def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10, **kwargs):
-    """Generates a 2d figure of the trunk = first N segments of the tree.
+    """Generate a 2d figure of the trunk = first N segments of the tree.
 
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
+    Args:
+        tr (Tree): A Tree object.
+        plane (str): The plane to consider.
+        new_fig (bool): Create a new figure if set to `True`.
+        subplot (bool): Create a subplot if set to `True`.
+        hadd (float): X shift.
+        vadd (float): Y shift.
+        N (int): Number of segments.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -42,9 +45,7 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
     # bounding_box = tr.get_bounding_box()
 
     def _seg_2d(seg, x_add=0.0, y_add=0.0):
-
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = term_dict[plane[0]]
         vert = term_dict[plane[1]]
 
@@ -86,12 +87,15 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
 
 
 def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
-    """Generates a 2d figure of the tree.
+    """Generate a 2d figure of the tree.
 
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
+    Args:
+        tr (Tree): A Tree object.
+        plane (str): The plane to consider.
+        new_fig (bool): Create a new figure if set to `True`.
+        subplot (bool): Create a subplot if set to `True`.
+        hadd (float): X shift.
+        vadd (float): Y shift.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -103,9 +107,7 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     bounding_box = tr.get_bounding_box()
 
     def _seg_2d(seg, x_add=0.0, y_add=0.0):
-
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = term_dict[plane[0]]
         vert = term_dict[plane[1]]
 
@@ -166,12 +168,15 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
 
 def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
-    """Generates a 2d figure of the soma.
+    """Generate a 2d figure of the soma.
 
-    Parameters
-    ----------
-    soma: Soma
-        neurom.Soma object
+    Args:
+        sm (Soma): A Soma object.
+        plane (str): The plane to consider.
+        new_fig (bool): Create a new figure if set to `True`.
+        subplot (bool): Create a subplot if set to `True`.
+        hadd (float): X shift.
+        vadd (float): Y shift.
     """
     treecolor = kwargs.get("treecolor", None)
     outline = kwargs.get("outline", True)
@@ -228,67 +233,63 @@ def neuron(
     new_axes=True,
     **kwargs,
 ):
-    """Generates a 2d figure of the neuron,
-    that contains a soma and a list of trees.
+    """Generate a 2d figure of the neuron that contains a soma and a list of trees.
 
-    Parameters
-    ----------
-    neuron: Neuron
-        neurom.Neuron object
+    Args:
+        neuron (Neuron): A neuron object.
 
-    Options
-    -------
-    plane: str
-        Accepted values: Any pair of of xyz
-        Default value is 'xy'
+        plane (str):
+            Accepted values: Any sorted pair of of xyz.
+            Default value is 'xy'.
 
-    linewidth: float
-        Defines the linewidth of the tree and soma
-        of the neuron, if diameter is set to False.
-        Default value is 1.2.
+        linewidth (float):
+            Defines the linewidth of the tree and soma
+            of the neuron, if diameter is set to False.
+            Default value is 1.2.
 
-    alpha: float
-        Defines the transparency of the neuron.
-        0.0 transparent through 1.0 opaque.
-        Default value is 0.8.
+        alpha (float):
+            Defines the transparency of the neuron.
+            0.0 transparent through 1.0 opaque.
+            Default value is 0.8.
 
-    treecolor: str or None
-        Defines the color of the trees.
-        If None the default values will be used,
-        depending on the type of tree:
-        Soma: "black"
-        Basal dendrite: "red"
-        Axon : "blue"
-        Apical dendrite: "purple"
-        Undefined tree: "black"
-        Default value is None.
+        treecolor (str or None):
+            Defines the color of the trees.
+            If None the default values will be used,
+            depending on the type of tree:
 
-    new_fig: boolean
-        Defines if the neuron will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
+            * Soma: "black"
+            * Basal dendrite: "red"
+            * Axon : "blue"
+            * Apical dendrite: "purple"
+            * Undefined tree: "black"
 
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
+            Default value is None.
 
-    diameter: boolean
-        If True the diameter, scaled with diameter_scale factor,
-        will define the width of the tree lines.
-        If False use linewidth to select the width of the tree lines.
-        Default value is True.
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+            Default value is True.
 
-    diameter_scale: float
-        Defines the scale factor that will be multiplied
-        with the diameter to define the width of the tree line.
-        Default value is 1.
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
 
-    Returns
-    --------
-    A 3D matplotlib figure with a tree view, at the selected plane.
+        diameter (bool):
+            If True the diameter, scaled with diameter_scale factor,
+            will define the width of the tree lines.
+            If False use linewidth to select the width of the tree lines.
+            Default value is True.
+
+        diameter_scale (float):
+            Defines the scale factor that will be multiplied
+            with the diameter to define the width of the tree line.
+            Default value is 1.
+
+    Returns:
+        A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -356,13 +357,45 @@ def all_trunks(
     N=10,
     **kwargs,
 ):
-    """Generates a 2d figure of the neuron,
-    that contains a soma and a list of trees.
+    """Generate a 2d figure of the neuron, that contains a soma and a list of trees.
 
-    Parameters
-    ----------
-    neuron: Neuron
-        neurom.Neuron object
+    Args:
+        nrn (Neuron): A Neuron object.
+
+        plane (str):
+            Accepted values: Any sorted pair of of xyz.
+            Default value is 'xy'.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+            Default value is True.
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+        hadd (float):
+            X shift.
+
+        vadd (float):
+            Y shift.
+
+        neurite_type (str):
+            The types of neurites that should be plotted.
+
+        N (float):
+            Half of the window size used if xlim and ylim are not given.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -405,67 +438,46 @@ def all_trunks(
 def population(
     pop, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, neurite_type="all", **kwargs
 ):
-    """Generates a 2d figure of the population,
-    that contains a soma and a list of trees.
+    """Generate a 2d figure of the population, that contains a soma and a list of trees.
 
-    Parameters
-    ----------
-    pop: Population
-        neurom.Population object
+    Args:
+        pop (Population):
+            A Population object.
 
-    Options
-    -------
-    plane: str
-        Accepted values: Any pair of of xyz
-        Default value is 'xy'
+        plane (str):
+            Accepted values: Any sorted pair of of xyz.
+            Default value is 'xy'.
 
-    linewidth: float
-        Defines the linewidth of the tree and soma
-        of the neuron, if diameter is set to False.
-        Default value is 1.2.
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
 
-    alpha: float
-        Defines the transparency of the neuron.
-        0.0 transparent through 1.0 opaque.
-        Default value is 0.8.
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
 
-    treecolor: str or None
-        Defines the color of the trees.
-        If None the default values will be used,
-        depending on the type of tree:
-        Soma: "black"
-        Basal dendrite: "red"
-        Axon : "blue"
-        Apical dendrite: "purple"
-        Undefined tree: "black"
-        Default value is None.
+        hadd (float):
+            X shift.
 
-    new_fig: boolean
-        Defines if the neuron will be plotted
-        in the current figure (False)
-        or in a new figure (True)
-        Default value is True.
+        vadd (float):
+            Y shift.
 
-    subplot: matplotlib subplot value or False
-        If False the default subplot 111 will be used.
-        For any other value a matplotlib subplot
-        will be generated.
-        Default value is False.
+        neurite_type (str):
+            The types of neurites that should be plotted.
 
-    diameter: boolean
-        If True the diameter, scaled with diameter_scale factor,
-        will define the width of the tree lines.
-        If False use linewidth to select the width of the tree lines.
-        Default value is True.
+        N (float):
+            Half of the window size used if xlim and ylim are not given.
 
-    diameter_scale: float
-        Defines the scale factor that will be multiplied
-        with the diameter to define the width of the tree line.
-        Default value is 1.
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`soma`, :func:`tree` and
+            :func:`tmd.view.common.plot_style`.
 
-    Returns
-    --------
-    A 3D matplotlib figure with a tree view, at the selected plane.
+    Returns:
+        A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -518,12 +530,34 @@ def population(
 
 
 def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    """Generates a figure of the tree in 3d.
+    """Generate a figure of the tree in 3d.
 
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
+    Args:
+        tr (Tree):
+            A Tree object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+    Keyword Args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
@@ -537,9 +571,7 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
     bounding_box = tr.get_bounding_box()
 
     def _seg_3d(seg):
-
-        """3d coordinates needed for the plotting of a segment"""
-
+        """3d coordinates needed for the plotting of a segment."""
         horz = term_dict["x"]
         vert = term_dict["y"]
         depth = term_dict["z"]
@@ -606,12 +638,37 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
 
 def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
-    """Generates a figure of the trunk in 3d.
+    """Generate a figure of the trunk in 3d.
 
-    Parameters
-    ----------
-    tr: Tree
-        neurom.Tree object
+    Args:
+        tr (Tree):
+            A Tree object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+        N (int):
+            The number of segments to plot.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     # pylint: disable=import-outside-toplevel
     from mpl_toolkits.mplot3d.art3d import Line3DCollection
@@ -622,9 +679,7 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
     )
 
     def _seg_3d(seg):
-
-        """3d coordinates needed for the plotting of a segment"""
-
+        """3d coordinates needed for the plotting of a segment."""
         horz = term_dict["x"]
         vert = term_dict["y"]
         depth = term_dict["z"]
@@ -670,12 +725,34 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
 
 
 def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    """Generates a 3d figure of the soma.
+    """Generate a 3d figure of the soma.
 
-    Parameters
-    ----------
-    soma: Soma
-        neurom.Soma object
+    Args:
+        soma (Soma):
+            A Soma object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     treecolor = kwargs.get("treecolor", None)
 
@@ -712,13 +789,37 @@ def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
 
 def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all", **kwargs):
-    """Generates a figure of the neuron,
-    that contains a soma and a list of trees.
+    """Generate a figure of the neuron, that contains a soma and a list of trees.
 
-    Parameters
-    ----------
-    neuron: Neuron
-        neurom.Neuron object
+    Args:
+        neuron (Neuron):
+            A Neuron object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+        neurite_type (str):
+            The types of neurites that should be plotted.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(
@@ -765,13 +866,40 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all"
 def all_trunks3d(
     nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all", N=10, **kwargs
 ):
-    """Generates a figure of the neuron,
-    that contains a soma and a list of trees.
+    """Generate a figure of the neuron, that contains a soma and a list of trees.
 
-    Parameters
-    ----------
-    neuron: Neuron
-        neurom.Neuron object
+    Args:
+        neuron (Neuron):
+            A Neuron object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+        neurite_type (str):
+            The types of neurites that should be plotted.
+
+        N (float):
+            Half of the window size used if xlim and ylim are not given.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(
@@ -813,13 +941,34 @@ def all_trunks3d(
 
 
 def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
-    """Generates a figure of the population,
-    that contains the pop somata and a set of list of trees.
+    """Generate a figure of the population, that contains the pop somata and a set of list of trees.
 
-    Parameters
-    ----------
-    pop: Population
-        neurom.Population object
+    Args:
+        pop (Population):
+            A Population object.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 3D matplotlib figure with a tree view.
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = _cm.get_figure(
@@ -868,9 +1017,7 @@ def density_cloud(
     plot_neuron=False,
     **kwargs,
 ):
-    """
-    View the neuron morphologies of a population as a density cloud.
-    """
+    """View the neuron morphologies of a population as a density cloud."""
     x1 = []
     y1 = []
 
@@ -922,18 +1069,16 @@ def density_cloud(
 
 
 def _get_polar_data(pop, neurite_type="neurites", bins=20):
-    """Extracts the data to plot the polar length distribution
-    of a neuron or a population of neurons.
-    """
+    """Extract the data to plot the polar length distribution of a population of neurons."""
 
     def seg_angle(seg):
-        """angle between mean x, y coordinates of a seg"""
+        """Angle between mean x, y coordinates of a seg."""
         mean_x = _np.mean([seg[0][0], seg[1][0]])
         mean_y = _np.mean([seg[0][1], seg[1][1]])
         return _np.arctan2(mean_y, mean_x)
 
     def seg_length(seg):
-        """compute the length of a seg"""
+        """Compute the length of a seg."""
         return _np.linalg.norm(_np.subtract(seg[1], seg[0]))
 
     segs = []
@@ -951,9 +1096,7 @@ def _get_polar_data(pop, neurite_type="neurites", bins=20):
 
 
 def polar_plot(pop, neurite_type="neurites", bins=20):
-    """
-    Generates a polar plot of a neuron or population
-    """
+    """Generate a polar plot of a neuron or population."""
     input_data = _get_polar_data(pop, neurite_type=neurite_type, bins=bins)
 
     fig = _cm.plt.figure()

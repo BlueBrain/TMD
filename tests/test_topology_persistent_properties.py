@@ -1,3 +1,5 @@
+"""Test tmd.Topology.persistent_properties."""
+# pylint: disable=protected-access
 import numpy as np
 from numpy import testing as npt
 
@@ -5,30 +7,35 @@ from tmd.Topology import persistent_properties as tested
 
 
 class MockTree:
-    def __init__(self, points, parents=None, children=None, begs=None, ends=None):
+    """A Mock for the Tree class."""
 
+    def __init__(self, points, parents=None, children=None, begs=None, ends=None):
         self._points = points
         self._parents = parents
         self._children = children
         self._begs = begs
         self._ends = ends
+        self.d = None
 
     def get_direction_between(self, start_id, end_id):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         vec = self._points[end_id] - self._points[start_id]
         vec /= np.linalg.norm(vec)
         return vec
 
     @property
     def sections(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return self._begs, self._ends
 
     @property
     def parents_children(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return self._parents, self._children
 
 
 def test_no_property():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     prop = tested.NoProperty(None)
 
     res_get = prop.get(None)
@@ -42,7 +49,7 @@ def test_no_property():
 
 
 def test_persistent_angles():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree = MockTree(
         np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]),
         parents={1: 0},
@@ -63,7 +70,7 @@ def test_persistent_angles():
 
 
 def test_section_mean_radii():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     radii = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
 
     section_begs = np.array([0, 2, 5])
@@ -78,7 +85,7 @@ def test_section_mean_radii():
 
 
 def test_persistent_mean_radius():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree = MockTree(
         np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]),
         begs=np.array([0, 1, 2, 3]),
@@ -99,7 +106,8 @@ def test_persistent_mean_radius():
 
 
 def test_phi_theta():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
+    # pylint: disable=arguments-out-of-order
     func = tested.PersistentAngles._phi_theta
 
     u = np.array([1.0, 0.0, 0.0])
@@ -132,7 +140,7 @@ def test_phi_theta():
 
 
 def test_angles_tree():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     func = tested.PersistentAngles._angles_tree
 
     tree = MockTree(np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]))
@@ -152,7 +160,7 @@ def test_angles_tree():
 
 
 def test_get_angles():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree = MockTree(np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]))
 
     begs = [-1, 1]

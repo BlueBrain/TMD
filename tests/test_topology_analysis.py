@@ -1,4 +1,4 @@
-"""Test tmd.topology.analysis"""
+"""Test tmd.topology.analysis."""
 import os
 
 import numpy as np
@@ -20,6 +20,7 @@ sample_data_1 = np.array([[10, 7], [9, 8], [9, 8]])
 
 
 def test_load_file():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     f0 = analysis.load_file(sample_ph_0_file)
     f1 = analysis.load_file(sample_ph_1_file)
     npt.assert_allclose(
@@ -29,6 +30,7 @@ def test_load_file():
 
 
 def test_histogram_horizontal():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     bins, data = analysis.histogram_horizontal(
         sample_data_0, num_bins=11, min_bin=8.0, max_bin=10.0
     )
@@ -62,6 +64,7 @@ def test_histogram_horizontal():
 
 
 def test_histogram_stepped():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     bins, data = analysis.histogram_stepped(sample_data_0)
     npt.assert_allclose(bins, np.array([8, 9, 10]))
     npt.assert_allclose(data, np.array([3.0, 1.0]))
@@ -71,6 +74,7 @@ def test_histogram_stepped():
 
 
 def test_distance_stepped():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     f0 = analysis.load_file(sample_ph_0_file)
     f1 = analysis.load_file(sample_ph_1_file)
     assert analysis.distance_stepped(f0, f0) == 0.0
@@ -82,11 +86,13 @@ def test_distance_stepped():
 
 
 def test_distance_horizontal():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert analysis.distance_horizontal(sample_data_0, sample_data_0) == 0.0
     assert analysis.distance_horizontal(sample_data_0, sample_data_1, bins=4) == 2.0
 
 
 def test_distance_horizontal_unnormed():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert analysis.distance_horizontal_unnormed(sample_data_0, sample_data_0) == 0.0
     assert analysis.distance_horizontal_unnormed(sample_data_0, sample_data_1, bins=4) == 1.0
 
@@ -133,7 +139,7 @@ def _ph_list():
 
 
 def test_closest_ph__reasonable_target_extent():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     ph_list = _ph_list()
 
     target_extent = 6.0
@@ -149,7 +155,7 @@ def test_closest_ph__reasonable_target_extent():
 
 
 def test_closest_ph__very_big_target_extent():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     ph_list = _ph_list()
 
     target_extent = 100.0
@@ -165,7 +171,7 @@ def test_closest_ph__very_big_target_extent():
 
 
 def test_closest_ph__very_small_target_extent():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     ph_list = _ph_list()
 
     target_extent = 2.0
@@ -181,7 +187,7 @@ def test_closest_ph__very_small_target_extent():
 
 
 def test_closest_ph__exact_match_target_extent():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     ph_list = _ph_list()
 
     target_extent = 24.0
@@ -197,6 +203,7 @@ def test_closest_ph__exact_match_target_extent():
 
 
 def test_apical_point():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     p1 = analysis.load_file(neuron_ph_1_file)
     p2 = analysis.load_file(neuron_ph_2_file)
     ap1 = analysis.find_apical_point_distance(p1)
@@ -206,6 +213,7 @@ def test_apical_point():
 
 
 def test_apical_point_smoothed():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     p1 = analysis.load_file(neuron_ph_1_file)
     p2 = analysis.load_file(neuron_ph_2_file)
     ap1 = analysis.find_apical_point_distance_smoothed(p1, threshold=0.1)

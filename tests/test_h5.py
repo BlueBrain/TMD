@@ -1,4 +1,5 @@
-"""Test tmd.io.h5"""
+"""Test tmd.io.h5."""
+# pylint: disable=protected-access
 import os
 
 import h5py
@@ -89,10 +90,12 @@ bch1 = {0: [1], 1: [2], 2: [3], 3: [4], 4: [5], 5: [6], 6: [7], 7: [8], 8: [9], 
 
 
 def test_h5_dict():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert h5.h5_dct == {"PX": 0, "PY": 1, "PZ": 2, "PD": 3, "GPFIRST": 0, "GTYPE": 1, "GPID": 2}
 
 
 def test_find_group():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     g0 = h5._find_group(0, groups_1)
     npt.assert_allclose(g0, [0, 1, -1])
 
@@ -103,6 +106,7 @@ def test_find_group():
 
 
 def test_find_parent_id():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     pid0 = h5._find_parent_id(0, groups_1)
     assert pid0 == -1
 
@@ -114,6 +118,7 @@ def test_find_parent_id():
 
 
 def test_find_last_point():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     lp0 = h5._find_last_point(0, groups_1, points_1)
     assert lp0 == 0
 
@@ -128,6 +133,7 @@ def test_find_last_point():
 
 
 def test_remove_duplicate_points():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     points, groups = h5._unpack_v1(h5file_v1)
     p1, g1 = h5.remove_duplicate_points(points, groups)
     assert len(p1) == 53
@@ -139,6 +145,7 @@ def test_remove_duplicate_points():
 
 
 def test_get_h5_version():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     version_0 = h5._get_h5_version(h5file_v0)
     version_1 = h5._get_h5_version(h5file_v1)
     version_2 = h5._get_h5_version(h5file_v2)
@@ -148,21 +155,25 @@ def test_get_h5_version():
 
 
 def test_unpack_v1():
-    points, groups = h5._unpack_v1(h5file_v1)
+    # noqa: D103 ; pylint: disable=missing-function-docstring
+    _, groups = h5._unpack_v1(h5file_v1)
     npt.assert_allclose(groups[:10], groups_1)
 
 
 def test_unpack_v2():
-    points, groups = h5._unpack_v2(h5file_v2, "2")
+    # noqa: D103 ; pylint: disable=missing-function-docstring
+    _, groups = h5._unpack_v2(h5file_v2, "2")
     npt.assert_allclose(groups[:10], groups_1)
 
 
 def test_unpack_data():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     data = h5._unpack_data(points_1, groups_1)
     npt.assert_allclose(data, data_1)
 
 
 def test_read_h5():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     data_v1 = h5.read_h5(sample_h5_v1_file)
     data_v2 = h5.read_h5(sample_h5_v2_file)
     npt.assert_allclose(data_v1[:10], data_1)
@@ -170,6 +181,7 @@ def test_read_h5():
 
 
 def test_h5_data_to_lists():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     x1, y1, z1, d1, t1, p1, ch1 = h5.h5_data_to_lists(data_1)
     npt.assert_allclose(x1, bx1)
     npt.assert_allclose(y1, by1)

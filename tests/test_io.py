@@ -1,4 +1,4 @@
-"""Test tmd.io"""
+"""Test tmd.io."""
 import glob
 import os
 from pathlib import Path
@@ -20,6 +20,7 @@ def test_load_swc_neuron(
     sample_file,
     basic_nosecids_file,
 ):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neuron = io.load_neuron(basic_file)
     assert neuron.soma.is_equal(soma_test)
     assert len(neuron.apical_dendrite) == 1
@@ -44,6 +45,7 @@ def test_load_swc_neuron(
 
 
 def test_load_h5_neuron(neuron_v1, neuron_v2, sample_h5_v0_file):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert neuron_v1.soma.is_equal(neuron_v2.soma)
     assert neuron_v1.basal_dendrite[0].is_equal(neuron_v2.basal_dendrite[0])
     assert neuron_v1.axon[0].is_equal(neuron_v2.axon[0])
@@ -52,19 +54,21 @@ def test_load_h5_neuron(neuron_v1, neuron_v2, sample_h5_v0_file):
         io.load_neuron(sample_h5_v0_file)
 
 
-def test_io_load(neuron1, neuron_v1, neuron_v2, POP_PATH):
+def test_io_load(neuron1, neuron_v1, neuron_v2):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert neuron1.is_equal(neuron_v1)
     assert neuron1.is_equal(neuron_v2)
 
 
 def test_load_population(POP_PATH):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     # Testing with a directory
     population = io.load_population(POP_PATH)
     assert len(population.neurons) == 5
     names = np.array([os.path.basename(n.name) for n in population.neurons])
 
     # Testing with a glob
-    L = glob.glob(POP_PATH + '/*')
+    L = glob.glob(POP_PATH + "/*")
     population1 = io.load_population(L)
     assert len(population.neurons) == 5
 
@@ -73,72 +77,73 @@ def test_load_population(POP_PATH):
     assert population.neurons[0].is_equal(population1.neurons[0])
 
     # Testing with a posix path
-    population2 = io.load_population(os.path.join(POP_PATH, 'sample.swc'))
+    population2 = io.load_population(os.path.join(POP_PATH, "sample.swc"))
     assert len(population2.neurons) == 1
 
     names2 = np.array([os.path.basename(n.name) for n in population2.neurons])
-    npt.assert_array_equal(['sample'], names2)
+    npt.assert_array_equal(["sample"], names2)
     assert population.neurons[0].is_equal(population2.neurons[0])
 
     # Testing with a list of posix paths
-    population3 = io.load_population([os.path.join(POP_PATH, 'sample.swc')])
+    population3 = io.load_population([os.path.join(POP_PATH, "sample.swc")])
     assert len(population3.neurons) == 1
 
     names3 = np.array([os.path.basename(n.name) for n in population3.neurons])
-    npt.assert_array_equal(['sample'], names3)
+    npt.assert_array_equal(["sample"], names3)
     assert population.neurons[0].is_equal(population3.neurons[0])
 
     # Testing with a posix pathlib.Path object
-    population4 = io.load_population(Path(os.path.join(POP_PATH, 'sample.swc')))
+    population4 = io.load_population(Path(os.path.join(POP_PATH, "sample.swc")))
     assert len(population4.neurons) == 1
 
     names4 = np.array([os.path.basename(n.name) for n in population4.neurons])
-    npt.assert_array_equal(['sample'], names4)
+    npt.assert_array_equal(["sample"], names4)
     assert population.neurons[0].is_equal(population4.neurons[0])
 
     # Testing with a list of posix pathlib.Path objects
-    population4 = io.load_population([Path(os.path.join(POP_PATH, 'sample.swc'))])
+    population4 = io.load_population([Path(os.path.join(POP_PATH, "sample.swc"))])
     assert len(population4.neurons) == 1
 
     names5 = np.array([os.path.basename(n.name) for n in population4.neurons])
-    npt.assert_array_equal(['sample'], names5)
+    npt.assert_array_equal(["sample"], names5)
     assert population.neurons[0].is_equal(population4.neurons[0])
 
     # A posix path pointing to a file that does not exist should raise an exception
     with pytest.raises(
         TypeError,
         match=(
-            'The format of the given neurons is not supported. '
-            'Expected an iterable of files, or a directory, or a single morphology file. '
+            "The format of the given neurons is not supported. "
+            "Expected an iterable of files, or a directory, or a single morphology file. "
             f'Got: {os.path.join(POP_PATH, "UNKNOWN")}'
-        )
-    ) as excinfo:
-        io.load_population(os.path.join(POP_PATH, 'UNKNOWN'))
+        ),
+    ):
+        io.load_population(os.path.join(POP_PATH, "UNKNOWN"))
 
     # A pathlib.Path object pointing to a file that does not exist should raise an exception
     with pytest.raises(
         TypeError,
         match=(
-            'The format of the given neurons is not supported. '
-            'Expected an iterable of files, or a directory, or a single morphology file. '
+            "The format of the given neurons is not supported. "
+            "Expected an iterable of files, or a directory, or a single morphology file. "
             f'Got: {Path(os.path.join(POP_PATH, "UNKNOWN"))}'
-        )
-    ) as excinfo:
-        io.load_population(Path(os.path.join(POP_PATH, 'UNKNOWN')))
+        ),
+    ):
+        io.load_population(Path(os.path.join(POP_PATH, "UNKNOWN")))
 
     # A wrong type should raise an exception
     with pytest.raises(
         TypeError,
         match=(
-            'The format of the given neurons is not supported. '
-            'Expected an iterable of files, or a directory, or a single morphology file. '
-            f'Got: {0}'
-        )
-    ) as excinfo:
+            "The format of the given neurons is not supported. "
+            "Expected an iterable of files, or a directory, or a single morphology file. "
+            f"Got: {0}"
+        ),
+    ):
         io.load_population(0)
 
 
 def test_tree_type(DATA_PATH):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree_types = {5: "soma", 6: "axon", 7: "basal_dendrite", 8: "apical_dendrite"}
 
     neuron = io.load_neuron(

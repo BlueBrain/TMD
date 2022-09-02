@@ -1,4 +1,4 @@
-"""Test tmd.Tree"""
+"""Test tmd.Tree."""
 import numpy as np
 from numpy import testing as npt
 
@@ -15,6 +15,7 @@ x2 = np.array([0.0, 3.0, 4.0, 5.0, 4.0])
 
 
 def test_tree_init_():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree1 = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
     npt.assert_allclose(tree1.x, x1)
     npt.assert_allclose(tree1.y, y1)
@@ -25,6 +26,7 @@ def test_tree_init_():
 
 
 def test_tree_is_equal():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree1 = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
     tree2 = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
     assert tree1.is_equal(tree2)
@@ -34,6 +36,7 @@ def test_tree_is_equal():
 
 
 def test_copy_tree():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     tree1 = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
     tree2 = tree1.copy_tree()
     assert tree1.is_equal(tree2)

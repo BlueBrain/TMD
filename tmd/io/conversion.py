@@ -1,5 +1,4 @@
-"""Functions for converting morphio to tmd Neuron
-"""
+"""Functions for converting morphio to tmd Neuron."""
 from collections import namedtuple
 
 import numpy as np
@@ -11,9 +10,11 @@ SectionData = namedtuple("SectionData", ["points", "diameters", "section_type", 
 
 
 def convert_morphio_soma(morphio_soma):
-    """Converts a morphio's morphology
+    """Convert a morphio's morphology.
+
     Args:
-        morphio_soma (Union[morphio.Soma])
+        morphio_soma (Union[morphio.Soma]): A Soma object.
+
     Returns:
         tmd_soma (Soma)
     """
@@ -22,7 +23,7 @@ def convert_morphio_soma(morphio_soma):
 
 
 def _section_to_data(section, tree_length, start, parent):
-    """Extract data from morphio section
+    """Extract data from morphio section.
 
     Args:
         section (morphio.Section): A morphio section object
@@ -48,7 +49,7 @@ def _section_to_data(section, tree_length, start, parent):
 
 
 def convert_morphio_trees(morphio_neuron):
-    """Convert morphio morphology's trees to tmd ones
+    """Convert morphio morphology's trees to tmd ones.
 
     Args:
         morphio_neuron (Union[morphio.Morphology, morphio.mut.Morphology]):

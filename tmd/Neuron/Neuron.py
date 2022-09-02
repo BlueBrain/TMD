@@ -1,6 +1,4 @@
-"""
-tmd class : Neuron
-"""
+"""TMD class : Neuron."""
 import copy
 import warnings
 
@@ -12,9 +10,12 @@ from tmd.utils import TREE_TYPE_DICT
 
 
 class Neuron(object):
-    """
-    A Neuron object is a container for Trees
-    (basal_dendrite, apical_dendrite and axon) and a Soma.
+    """A Neuron object is a container for Trees and a Soma.
+
+    The Trees can be basal_dendrite, apical_dendrite and axon.
+
+    Args:
+        name (str): The name of the Neuron.
     """
 
     # pylint: disable=import-outside-toplevel

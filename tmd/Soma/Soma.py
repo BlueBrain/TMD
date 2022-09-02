@@ -1,47 +1,44 @@
-"""
-tmd class : Soma
-"""
+"""TMD class : Soma."""
 import copy
 
 import numpy as np
 
 
-class Soma(object):
-    """Class of neuron soma"""
+class Soma:
+    """Class of neuron soma.
+
+    Args:
+        x (list[float]): The x-coordinates of surface trace of neuron soma.
+        y (list[float]): The y-coordinates of surface trace of neuron soma.
+        z (list[float]): The z-coordinate of surface trace of neuron soma.
+        d (list[float]): The diameters of surface trace of neuron soma.
+    """
 
     # pylint: disable=import-outside-toplevel
     from tmd.Soma.methods import get_center
     from tmd.Soma.methods import get_diameter
 
-    def __init__(self, x=np.array([]), y=np.array([]), z=np.array([]), d=np.array([])):
-        """
-        Constructor for tmd Soma Object
-
-        Parameters
-        ----------
-        x : numpy array
-            The x-coordinates of surface trace of neuron soma.
-        y : numpy array
-            The y-coordinates of surface trace of neuron soma.
-        z : numpy array
-            The z-coordinate of surface trace of neuron soma.
-        d : numpy array
-            The diameters of surface trace of neuron soma.
-        ----------
-        """
+    def __init__(self, x=None, y=None, z=None, d=None):
+        """Constructor for tmd Soma Object."""
+        if x is None:
+            x = []
+        if y is None:
+            y = []
+        if z is None:
+            z = []
+        if d is None:
+            d = []
         self.x = np.array(x, dtype=float)
         self.y = np.array(y, dtype=float)
         self.z = np.array(z, dtype=float)
         self.d = np.array(d, dtype=float)
 
     def copy_soma(self):
-        """
-        Returns a deep copy of the Soma.
-        """
+        """Returns a deep copy of the Soma."""
         return copy.deepcopy(self)
 
     def is_equal(self, soma):
-        """Tests if all soma data are the same"""
+        """Tests if all soma data are the same."""
         eq = np.alltrue(
             [
                 np.allclose(self.x, soma.x, atol=1e-4),

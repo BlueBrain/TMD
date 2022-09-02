@@ -1,7 +1,4 @@
-"""
-Python module that contains the functions
-about reading swc files.
-"""
+"""Python module that contains the functions about reading swc files."""
 import re
 
 import numpy as np
@@ -11,11 +8,7 @@ SWC_DCT = {"index": 0, "type": 1, "x": 2, "y": 3, "z": 4, "radius": 5, "parent":
 
 
 def read_swc(input_file, line_delimiter="\n"):
-    """Function to properly load a swc file
-    that contains a list of sections,
-    into a 'Data' format that contains all
-    info extracting comments.
-    """
+    """Load a swc file containing a list of sections, into a 'Data' format."""
     # Read all data from file.
     with open(input_file, "r", encoding="utf-8") as f:
 
@@ -62,29 +55,23 @@ def swc_to_data(data_swc):
 
 
 def swc_data_to_lists(data):
-    """
-    Transforms data as loaded from read_swc
-    into a set of 'meaningful' lists:
+    """Transforms data as loaded from read_swc into a set of 'meaningful' lists.
 
-    x: list of floats
+    The lists are the following:
+
+    * x: list of floats
         x-coordinates
-
-    y: list of floats
+    * y: list of floats
         y-coordinates
-
-    z: list of floats
+    * z: list of floats
         z-coordinates
-
-    d: list of floats
+    * d: list of floats
         diameters
-
-    t: list of ints
+    * t: list of ints
         tree type
-
-    p: list of ints
+    * p: list of ints
         parent id
-
-    ch: dictionary
+    * ch: dictionary
         children id(s)
     """
     length = len(data)

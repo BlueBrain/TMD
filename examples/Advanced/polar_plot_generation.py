@@ -1,3 +1,4 @@
+"""Example for polar plots."""
 import matplotlib.pyplot as plt
 
 import tmd

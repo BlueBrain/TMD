@@ -1,13 +1,9 @@
-"""
-tmd Neuron's methods
-"""
+"""TMD Neuron's methods."""
 import numpy as np
 
 
 def size(self, neurite_type="all"):
-    """
-    Neuron method to get size.
-    """
+    """Neuron method to get size."""
     if neurite_type == "all":
         neurite_list = ["basal_dendrite", "axon", "apical_dendrite"]
 
@@ -17,15 +13,14 @@ def size(self, neurite_type="all"):
 
 
 def get_bounding_box(self):
-    """
-    Input
-    ------
-    neuron: tmd neuron
+    """Get the bounding box of the neurites.
 
-    Returns
-    ---------
-    bounding_box: np.array
-        ([xmin,ymin,zmin], [xmax,ymax,zmax])
+    Args:
+        neuron: A TMD neuron.
+
+    Returns:
+        bounding_box: np.array
+            ([xmin,ymin,zmin], [xmax,ymax,zmax])
     """
     x = []
     y = []

@@ -1,3 +1,4 @@
+"""Example script for time series."""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -6,14 +7,13 @@ from tmd.view import plot
 
 
 def find_matching(p1, p2):
-    """Finds the best matching between two
-    persistent diagrams and returns a list
-    of matched indices. The difference is
+    """Finds the best matching between two persistent diagrams.
+
+    Returns a list of matched indices. The difference is
     computed between p2 from p1, and
     the matching starts from the longest
     components.
     """
-
     p2 = sort_ph(p2)
     p2_symm = [((p[0] + p[1]) / 2.0, (p[0] + p[1]) / 2.0) for p in p2]
     avail = range(len(p1))
@@ -42,9 +42,9 @@ def find_matching(p1, p2):
 
 
 def find_matching_time_series(p1, p2):
-    """Finds the best matching between two
-    persistent diagrams and returns a list
-    of matched indices. The difference is
+    """Finds the best matching between two persistent diagrams.
+
+    Returns a list of matched indices. The difference is
     computed between p2 from p1, and
     the matching starts from the longest
     components.
@@ -77,8 +77,8 @@ def find_matching_time_series(p1, p2):
 
 
 def marriage_problem(women_preferences, men_preferences):
-    """Matches N women to M men so that max(M, N)
-    are coupled to their preferred choice that is available
+    """Matches N women to M men so that max(M, N) are coupled to their preferred available choice.
+
     See https://en.wikipedia.org/wiki/Stable_marriage_problem
     """
     N = len(women_preferences)
@@ -122,7 +122,7 @@ def marriage_problem(women_preferences, men_preferences):
 
 
 def marry_components(p1, p2, ax=None, z1=0, z2=0.2):
-    """Returns a list of matching components"""
+    """Returns a list of matching components."""
     from scipy.spatial.distance import cdist
 
     # if ax is None:
@@ -168,6 +168,7 @@ def marry_components(p1, p2, ax=None, z1=0, z2=0.2):
 
 
 def vineyards(ph_list):
+    """TODO: Add relevant docstring."""
     # fig = plt.figure()
     # ax = fig.add_subplot(111, projection='3d')
 
@@ -182,7 +183,7 @@ def vineyards(ph_list):
 
 
 def get_persistence_diagram_timelapse(trees, **kwargs):
-    """Method to extract ph from tree that contains mutlifurcations"""
+    """Method to extract ph from tree that contains mutlifurcations."""
     ph = []
 
     for itr, tree in enumerate(trees):

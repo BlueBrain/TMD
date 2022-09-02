@@ -1,6 +1,4 @@
-"""
-tmd class : Tree
-"""
+"""TMD class : Tree."""
 import copy
 
 import numpy as np
@@ -9,7 +7,16 @@ from cached_property import cached_property
 
 
 class Tree(object):
-    """Tree class"""
+    """Tree class.
+
+    Args:
+        x (list[float]): The x-coordinates of the tree segments.
+        y (list[float]): The y-coordinates of the tree segments.
+        z (list[float]): The z-coordinate of the tree segments.
+        d (list[float]): The diameters of the tree segments.
+        t (list[int]): The types (basal_dendrite, apical_dendrite, axon) of the tree segments.
+        p (list[int]): The index of the parent of the tree segments.
+    """
 
     # pylint: disable=import-outside-toplevel
     from tmd.Tree.methods import get_bif_term
@@ -33,28 +40,7 @@ class Tree(object):
     from tmd.Tree.methods import get_type
 
     def __init__(self, x, y, z, d, t, p):
-        """Constructor of tmd Tree Object
-
-        Parameters
-        ----------
-        x : numpy array
-            The x-coordinates of neuron's tree segments.
-        y : numpy array
-            The y-coordinates of neuron's tree segments.
-        z : numpy array
-            The z-coordinate of neuron's tree segments.
-        d : numpy array
-            The diameters of neuron's tree segments.
-        t : numpy array
-            The types (basal_dendrite, apical_dendrite, axon) of neuron's tree segments.
-        p : numpy array
-            The index of the parent of neuron's tree segments.
-
-        Returns
-        -------
-        tree : Tree
-            tmd Tree object
-        """
+        """Constructor of tmd Tree Object."""
         self.x = np.array(x, dtype=np.float32)
         self.y = np.array(y, dtype=np.float32)
         self.z = np.array(z, dtype=np.float32)
@@ -67,13 +53,11 @@ class Tree(object):
         )
 
     def copy_tree(self):
-        """
-        Returns a deep copy of the Tree.
-        """
+        """Returns a deep copy of the Tree."""
         return copy.deepcopy(self)
 
     def is_equal(self, tree):
-        """Tests if all tree lists are the same"""
+        """Tests if all tree lists are the same."""
         eq = np.alltrue(
             [
                 np.allclose(self.x, tree.x, atol=1e-4),
@@ -87,9 +71,7 @@ class Tree(object):
         return eq
 
     def rotate_xy(self, angle):
-        """Rotates the tree in the x-y plane
-        by the defined angle.
-        """
+        """Rotates the tree in the x-y plane by the defined angle."""
         new_x = self.x * np.cos(angle) - self.y * np.sin(angle)
         new_y = self.x * np.sin(angle) + self.y * np.cos(angle)
 
@@ -97,17 +79,13 @@ class Tree(object):
         self.y = new_y
 
     def move_to_point(self, point=(0, 0, 0)):
-        """Moves the tree in the x-y-z plane
-        so that it starts from the selected point.
-        """
+        """Moves the tree in the x-y-z plane so that it starts from the selected point."""
         self.x = self.x - (self.x[0]) + point[0]
         self.y = self.y - (self.y[0]) + point[1]
         self.z = self.z - (self.z[0]) + point[2]
 
     def extract_simplified(self):
-        """Returns a simplified tree that corresponds
-        to the start - end of the sections points
-        """
+        """Returns a simplified tree that corresponds to the start - end of the sections points."""
         beg0, end0 = self.get_sections_2()
         sections = np.transpose([beg0, end0])
 
@@ -137,7 +115,8 @@ class Tree(object):
 
     @cached_property
     def sections(self):
-        """
+        """Get the sections of the current tree.
+
         Returns:
             tuple:
                 section_beg_point_ids (np.ndarray):
@@ -149,7 +128,7 @@ class Tree(object):
 
     @cached_property
     def parents_children(self):
-        """Returns the parents and children nodes of each section
+        """Returns the parents and children nodes of each section.
 
         Returns:
             parents (dict): Each key corresponds to a section id

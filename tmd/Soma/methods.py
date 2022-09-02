@@ -1,13 +1,9 @@
-"""
-tmd Soma's methods
-"""
+"""TMD Soma's methods."""
 import numpy as np
 
 
 def get_center(self):
-    """
-    Soma method to get the center of the soma.
-    """
+    """Soma method to get the center of the soma."""
     x_center = np.mean(self.x)
     y_center = np.mean(self.y)
     z_center = np.mean(self.z)
@@ -16,9 +12,7 @@ def get_center(self):
 
 
 def get_diameter(self):
-    """
-    Soma method to get the diameter of the soma.
-    """
+    """Soma method to get the diameter of the soma."""
     if len(self.x) == 1:
         diameter = self.d[0]
     else:

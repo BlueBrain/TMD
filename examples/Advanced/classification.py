@@ -1,3 +1,4 @@
+"""Example script of classification."""
 import numpy as np
 
 list_of_modules = ["discriminant_analysis", "discriminant_analysis", "tree"]
@@ -10,8 +11,8 @@ list_of_classifiers = [
 
 
 def train(mod, classifier, data, labels, **kwargs):
-    """Trains the classifier from mod of sklearn
-    with data and targets.
+    """Trains the classifier from mod of sklearn with data and targets.
+
     Returns a fited classifier.
     """
     import importlib
@@ -27,8 +28,8 @@ def train(mod, classifier, data, labels, **kwargs):
 
 def predict(clf, data):
     """Predict label for data for the trained classifier clf.
-    Returns the index of the predicted class
-    for each datapoint in data.
+
+    Returns the index of the predicted class for each datapoint in data.
     """
     predict_label = clf.predict([data])
 
@@ -36,11 +37,10 @@ def predict(clf, data):
 
 
 def leave_one_out(mod, classifier, data, labels, **kwargs):
-    """Leaves one individual out, trains classifier
-    with the rest of the data and returns the score
-    of matching ids between proposed and predicted labels.
-    Score defines how many trials were successful
-    as a percentage over the total number of trials.
+    """Leaves one individual out and trains classifier with the rest of the data.
+
+    Returns the score of matching ids between proposed and predicted labels.
+    Score defines how many trials were successful as a percentage over the total number of trials.
     """
     sample_size = len(labels)
     scores = np.zeros(sample_size)
@@ -63,9 +63,9 @@ def leave_one_out(mod, classifier, data, labels, **kwargs):
 
 
 def leave_one_out_statistics(mod, classifier, data, labels, N=10, **kwargs):
-    """Leaves one individual out, trains classifier
-    with the rest of the data and returns the score
-    of matching ids between proposed and predicted labels.
+    """Leaves one individual out and trains classifier with the rest of the data.
+
+    Returns the score of matching ids between proposed and predicted labels.
     Score defines how many trials were successful
     as a percentage over the total number of trials.
     """
@@ -94,9 +94,9 @@ def leave_one_out_statistics(mod, classifier, data, labels, N=10, **kwargs):
 
 
 def leave_perc_out(mod, classifier, data, labels, iterations=10, percent=10, **kwargs):
-    """Leaves one individual out, trains classifier
-    with the rest of the data and returns the score
-    of matching ids between proposed and predicted labels.
+    """Leaves one individual out and trains classifier with the rest of the data.
+
+    Returns the score of matching ids between proposed and predicted labels.
     Score defines how many trials were successful
     as a percentage over the total number of trials.
     Iteration defines the number of trials.
@@ -131,9 +131,9 @@ def leave_perc_out(mod, classifier, data, labels, iterations=10, percent=10, **k
 
 
 def leave_one_out_mixing(mod, classifier, data, labels, **kwargs):
-    """Leaves one individual out, trains classifier
-    with the rest of the data and returns the score
-    of matching ids between proposed and predicted labels.
+    """Leaves one individual out and trains classifier with the rest of the data.
+
+    Returns the score of matching ids between proposed and predicted labels.
     Score defines how many trials were successful
     as a percentage over the total number of trials.
     """
@@ -171,9 +171,9 @@ def leave_one_out_mixing(mod, classifier, data, labels, **kwargs):
 
 
 def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
-    """Leaves one individual out, trains classifier
-    with the rest of the data and returns the score
-    of matching ids between proposed and predicted labels.
+    """Leaves one individual out and trains classifier with the rest of the data.
+
+    Returns the score of matching ids between proposed and predicted labels.
     Score defines how many trials were successful
     as a percentage over the total number of trials.
     """
@@ -207,6 +207,7 @@ def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
 
 
 def multi(dat, tar, m="tree", cl="DecisionTreeClassifier", n=10, randomize=False):
+    """TODO: Add docstring."""
     score = np.zeros(n)
     if not randomize:
         for i in range(n):

@@ -1,5 +1,8 @@
+"""Example for writing SWC files."""
+
+
 def write_swc_from_data(output_file, data, line_delimiter="\n"):
-    """Write swc"""
+    """Write swc."""
     ffile = open(output_file, "w")
 
     for line in data:

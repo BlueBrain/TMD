@@ -1,4 +1,5 @@
-"""Test tmd.Neuron"""
+"""Test tmd.Neuron."""
+# pylint: disable=use-implicit-booleaness-not-comparison
 import numpy as np
 
 from tmd.Neuron import Neuron
@@ -39,6 +40,7 @@ neu_test.append_tree(apical_test, td)
 
 
 def test_neuron_init_():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
 
     assert neu1.name == "Neuron"
@@ -52,12 +54,14 @@ def test_neuron_init_():
 
 
 def test_neuron_rename():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu1.rename("test")
     assert neu1.name == "test"
 
 
 def test_copy_neuron():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu2 = neu1.copy_neuron()
     assert neu1.is_equal(neu2)
@@ -65,6 +69,7 @@ def test_copy_neuron():
 
 
 def test_neuron_is_equal():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
     neu1.append_tree(apical_test, td)
@@ -82,6 +87,7 @@ def test_neuron_is_equal():
 
 
 def test_neuron_is_same():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
     neu1.append_tree(apical_test, td)
@@ -92,12 +98,14 @@ def test_neuron_is_same():
 
 
 def test_neuron_set_soma():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu1.set_soma(soma_test)
     assert neu1.soma.is_equal(soma_test)
 
 
 def test_append_tree():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     neu1 = Neuron.Neuron()
     neu1.append_tree(apical_test, td)
     assert len(neu1.neurites) == 1

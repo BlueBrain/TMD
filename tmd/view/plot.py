@@ -1,5 +1,4 @@
-"""Plotting functions of tmd"""
-
+"""Plotting functions of TMD."""
 import numpy as np
 from matplotlib import pylab as plt
 
@@ -10,10 +9,9 @@ from tmd.view.common import jet_map
 
 
 def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs):
-    """
-    Generates a 2d figure (barcode) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
+    """Generate a 2d figure (barcode) of the persistent homology of a tree.
+
+    The persistent homology should have been computed by Topology.get_persistent_homology method.
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -32,9 +30,9 @@ def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs)
 def barcode_enhanced(
     ph, new_fig=True, subplot=False, linewidth=1.2, valID=2, cmap=jet_map, **kwargs
 ):
-    """
-    Generates a 2d figure (barcode) of the persistent homology
-    of a tree enhanced by a parameter encodes in ph[valID]
+    """Generate a 2d figure (barcode) of the persistent homology of an enhanced tree.
+
+    The tree is enhanced by a parameter encoded in ph[valID].
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -46,9 +44,7 @@ def barcode_enhanced(
     CS3 = plt.contourf(Z, levels, cmap=cmap)
 
     def sort_ph_enhanced(ph, valID):
-        """
-        Sorts barcode according to length.
-        """
+        """Sorts barcode according to length."""
         ph_sort = [p[: valID + 1] + [np.abs(p[0] - p[1])] for p in ph]
         ph_sort.sort(key=lambda x: x[valID + 1])
         return ph_sort
@@ -69,9 +65,7 @@ def barcode_enhanced(
 def diagram(
     ph, new_fig=True, subplot=False, color="b", alpha=1.0, edgecolors="black", s=30, **kwargs
 ):
-    """
-    Generates a 2d figure (ph diagram) of the persistent homology of a tree.
-    """
+    """Generate a 2d figure (ph diagram) of the persistent homology of a tree."""
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -101,9 +95,9 @@ def diagram_enhanced(
     s=30,
     **kwargs,
 ):
-    """
-    Generates a 2d figure (diagram) of the persistent homology
-    of a tree enhanced by a parameter encodes in ph[valID]
+    """Generate a 2d figure (diagram) of the persistent homology of a enhanced tree.
+
+    The tree is enhanced by a parameter encodes in ph[valID].
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -115,9 +109,7 @@ def diagram_enhanced(
     CS3 = plt.contourf(Z, levels, cmap=cmap)
 
     def sort_ph_enhanced(ph, valID):
-        """
-        Sorts barcode according to length.
-        """
+        """Sorts barcode according to length."""
         ph_sort = [p[: valID + 1] + [np.abs(p[0] - p[1])] for p in ph]
         ph_sort.sort(key=lambda x: x[valID + 1])
         return ph_sort
@@ -165,9 +157,7 @@ def persistence_image(
     bw_method=None,
     **kwargs,
 ):
-    """Plots the gaussian kernel
-    of the ph diagram that is given.
-    """
+    """Plot the gaussian kernel of the ph diagram that is given."""
     if xlims is None or xlims is None:
         xlims, ylims = analysis.get_limits(ph, coll=False)
 
@@ -214,8 +204,9 @@ def persistence_image_diff(
     cmap=jet_map,
     **kwargs,
 ):
-    """Takes as input two images as exported from the gaussian kernel
-    plotting function, and plots their difference.
+    """Plot the difference of 2 images from the gaussian kernel plotting function.
+
+    The difference is computed as: diff(Z1 - Z2))
     """
     if xlims is None or xlims is None:
         xlims, ylims = ((0, 100), (0, 100))
@@ -249,9 +240,7 @@ def persistence_image_add(
     cmap=jet_map,
     **kwargs,
 ):
-    """Takes as input two images as exported from the gaussian kernel
-    plotting function, and plots their addition.
-    """
+    """Plot the sum of 2 images from the gaussian kernel plotting function."""
     if xlims is None or xlims is None:
         xlims, ylims = ((0, 100), (0, 100))
 
@@ -284,7 +273,7 @@ def persistence_image_average(
     weighted=False,
     **kwargs,
 ):
-    """Merges a list of ph diagrams and plots their respective average image."""
+    """Merge a list of ph diagrams and plot their respective average image."""
     # pylint: disable=unexpected-keyword-arg
     av_imgs = analysis.get_average_persistence_image(
         ph_list, xlims=xlims, ylims=ylims, norm_factor=norm_factor, weighted=weighted
@@ -317,9 +306,7 @@ def persistence_image_average(
 
 
 def start_length_diagram(ph, new_fig=True, subplot=False, color="b", alpha=1.0, **kwargs):
-    """Plots the transformed ph diagram that represents lengths and starting points
-    of a component.
-    """
+    """Plot a transformed ph diagram that represents lengths and starting points of a component."""
     ph_transformed = transform_ph_to_length(ph)
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -333,9 +320,7 @@ def start_length_diagram(ph, new_fig=True, subplot=False, color="b", alpha=1.0, 
 
 
 def histogram_stepped(ph, new_fig=True, subplot=False, color="b", alpha=0.7, **kwargs):
-    """Extracts and plots the stepped histogram of a persistent
-    homology array.
-    """
+    """Extract and plot the stepped histogram of a persistent homology array."""
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
     hist_data = analysis.histogram_stepped(ph)
     ax.fill_between(hist_data[0][:-1], 0, hist_data[1], color=color, alpha=alpha)
@@ -345,7 +330,8 @@ def histogram_stepped(ph, new_fig=True, subplot=False, color="b", alpha=0.7, **k
 def histogram_stepped_population(
     ph_list, new_fig=True, subplot=False, color="b", alpha=0.7, **kwargs
 ):
-    """Extracts and plots the stepped histogram of a list of persistence diagrams.
+    """Extract and plot the stepped histogram of a list of persistence diagrams.
+
     The histogram is normalized according to the number of persistence diagrams.
     """
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -355,9 +341,7 @@ def histogram_stepped_population(
 
 
 def histogram_horizontal(ph, new_fig=True, subplot=False, bins=100, color="b", alpha=0.7, **kwargs):
-    """Extracts and plots the binned histogram of a persistent
-    homology array.
-    """
+    """Extract and plot the binned histogram of a persistent homology array."""
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
     hist_data = analysis.histogram_horizontal(ph, num_bins=bins)
     ax.fill_between(hist_data[0][:-1], 0, hist_data[1], color=color, alpha=alpha)

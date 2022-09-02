@@ -1,4 +1,4 @@
-# Example to extract the persistence diagram from a neuronal tree
+"""Example to extract the persistence diagram from a neuronal tree."""
 
 # Step 1: Import the tmd module
 import tmd

@@ -1,8 +1,4 @@
-"""
-Python module that contains the functions
-about reading h5 files.
-"""
-
+"""Python module that contains the functions about reading h5 files."""
 import h5py
 import numpy as np
 
@@ -16,6 +12,7 @@ h5_dct = {"PX": 0, "PY": 1, "PZ": 2, "PD": 3, "GPFIRST": 0, "GTYPE": 1, "GPID": 
 
 def _find_group(point_id, groups):
     """Find the structure group a points id belongs to.
+
     Return: group or section point_id belongs to. Last group if
             point_id out of bounds.
     """
@@ -25,7 +22,7 @@ def _find_group(point_id, groups):
 
 
 def _find_parent_id(point_id, groups):
-    """Find the parent ID of a point"""
+    """Find the parent ID of a point."""
     group = _find_group(point_id, groups)
     if point_id != group[h5_dct["GPFIRST"]]:
         # point is not first point in section
@@ -38,7 +35,7 @@ def _find_parent_id(point_id, groups):
 
 
 def _find_last_point(group_id, groups, points):
-    """Identifies and returns the id of the last point of a group"""
+    """Identifies and returns the id of the last point of a group."""
     group_initial_ids = np.sort(np.transpose(groups)[0])
 
     if group_id != len(group_initial_ids) - 1:
@@ -47,12 +44,15 @@ def _find_last_point(group_id, groups, points):
 
 
 def remove_duplicate_points(points, groups):
-    """Removes the duplicate points from the beginning of a section,
-    if they are present in points-groups representation.
+    """Remove duplicated points from the beginning of a section.
+
+    .. note::
+
+        The points are removed only if they are present in points-groups representation.
+
     Returns:
        points, groups with unique points.
     """
-
     group_initial_ids = groups[:, h5_dct["GPFIRST"]]
 
     to_be_reduced = np.zeros(len(group_initial_ids))
@@ -76,7 +76,7 @@ def remove_duplicate_points(points, groups):
 
 
 def _unpack_data(points, groups):
-    """Unpack data from h5 data groups into internal format"""
+    """Unpack data from h5 data groups into internal format."""
     return np.array(
         [
             (
@@ -94,16 +94,14 @@ def _unpack_data(points, groups):
 
 
 def _unpack_v1(h5file):
-    """Unpacks data of h5_v1 file
-    in a simplified data structure.
-    """
+    """Unpacks data of h5_v1 file in a simplified data structure."""
     points = np.array(h5file["points"])
     groups = np.array(h5file["structure"])
     return points, groups
 
 
 def _unpack_v2(h5file, stage):
-    """Unpack groups from HDF5 v2 file"""
+    """Unpack groups from HDF5 v2 file."""
     if stage == "unraveled":
         stage1 = "raw"
     else:
@@ -130,9 +128,7 @@ def _get_h5_version(h5file):
 
 
 def read_h5(input_file, remove_duplicates=True):
-    """Function to properly load sn h5 file,
-    of v1 or v2 format.
-    """
+    """Function to properly load sn h5 file, of v1 or v2 format."""
     h5file = h5py.File(input_file, mode="r")
     version = _get_h5_version(h5file)
 
@@ -154,31 +150,24 @@ def read_h5(input_file, remove_duplicates=True):
 
 
 def h5_data_to_lists(data):
-    """
-    Transforms data as loaded from read_h5
-    into a set of 'meaningful' lists:
+    """Transforms data as loaded from read_h5 into a set of 'meaningful' lists.
 
-    x: list of floats
-        x-coordinates
+    The lists are the following:
 
-    y: list of floats
-        y-coordinates
-
-    z: list of floats
-        z-coordinates
-
-    d: list of floats
-        diameters
-
-    t: list of ints
-        tree type
-
-    p: list of ints
-        parent id
-
-    ch: dictionary
-        children id(s)
-
+    * x: list of floats
+            x-coordinates
+    * y: list of floats
+            y-coordinates
+    * z: list of floats
+            z-coordinates
+    * d: list of floats
+            diameters
+    * t: list of ints
+            tree type
+    * p: list of ints
+            parent id
+    * ch: dictionary
+            children id(s)
     """
     length = len(data)
 

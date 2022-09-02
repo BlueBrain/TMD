@@ -1,5 +1,4 @@
-"""Plotting functions of tmd (untested and more complex plotting)"""
-
+"""Example script of plotting functions of tmd (untested and more complex plotting)."""
 import common as _cm
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
@@ -17,27 +16,21 @@ from tmd.view.plot import persistence_image
 
 
 def _sort_ph_radii(ph):
-    """
-    Sorts barcode according to length of bars.
-    """
+    """Sorts barcode according to length of bars."""
     ph_sort = [[p[0], p[1], p[2], _np.abs(p[0] - p[1])] for p in ph]
     ph_sort.sort(key=lambda x: x[3])
     return ph_sort
 
 
 def _sort_ph_initial(ph):
-    """
-    Sorts barcode according to length of bars.
-    """
+    """Sorts barcode according to length of bars."""
     ph_sort = [[p[0], p[1], p[2], _np.abs(p[0] - p[1])] for p in ph]
     ph_sort.sort(key=lambda x: x[2])
     return [p[:2] for p in ph_sort]
 
 
 def _mirror_ph(ph):
-    """
-    Sorts barcode according to length of bars.
-    """
+    """Sorts barcode according to length of bars."""
     ph_mirror = [[p[0], p[1], p[0] - p[1]] for p in ph]
     ph_mirror.sort(key=lambda x: x[2])
     return ph_mirror
@@ -54,7 +47,7 @@ def tree_all(
     ylims=None,
     **kwargs,
 ):
-    """Subplot with ph, barcode and tree"""
+    """Subplot with ph, barcode and tree."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -71,8 +64,7 @@ def tree_all(
     # segs = tree.get_segments()
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -112,9 +104,7 @@ def neu_all(
     neurite_type="basal_dendrite",
     **kwargs,
 ):
-    """Subplot with ph, barcode
-    and tree within spheres
-    """
+    """Subplot with ph, barcode and tree within spheres."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.neuron(
@@ -146,9 +136,7 @@ def neu_all(
 
 
 def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, **kwargs):
-    """
-    Generates a 2d figure (barcode) of the persistent homology
-    """
+    """Generate a 2d figure (barcode) of the persistent homology."""
     from pylab import cm
 
     # Initialization of matplotlib figure and axes.
@@ -173,9 +161,7 @@ def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, 
 
 
 def barcode_mirror(ph, new_fig=True, subplot=False, color="b", **kwargs):
-    """
-    Generates a mirrored 2d figure (barcode) of the persistent homology
-    """
+    """Generate a mirrored 2d figure (barcode) of the persistent homology."""
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -195,9 +181,7 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color="b", **kwargs):
 
 
 def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
-    """
-    Generates a 2d figure (ph diagram) of the persistent homology
-    """
+    """Generate a 2d figure (ph diagram) of the persistent homology."""
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -218,10 +202,9 @@ def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
 
 
 def ph_on_tree(tree, new_fig=True, subplot=False, plane="xy", alpha=0.05, **kwargs):
-    """
-    Generates a 3d figure of the tree and adds
-    the corresponding spheres that represent
-    important events in the persistent homology
+    """Generate a 3d figure of the tree.
+
+    Also adds the corresponding spheres that represent important events in the persistent homology
     diagram (birth and death of components).
     """
     # Initialization of matplotlib figure and axes.
@@ -244,10 +227,10 @@ def ph_on_tree(tree, new_fig=True, subplot=False, plane="xy", alpha=0.05, **kwar
 
 
 def barcode_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
-    """
-    Generates a 2d figure (barcode) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
+    """Generate a 2d figure (barcode) of the persistent homology of a tree.
+
+    This persistent homology is supposed to be computed by the Topology.get_persistent_homology()
+    method.
     """
     if plane in ["xy", "yx", "zx", "xz", "yz", "zy"]:
         ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
@@ -302,10 +285,10 @@ def barcode_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
 
 
 def ph_diagram_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
-    """
-    Generates a 2d figure (barcode) of the persistent homology
-    of a tree as it has been computed by
-    Topology.get_persistent_homology method.
+    """Generate a 2d figure (barcode) of the persistent homology of a tree.
+
+    This persistent homology is supposed to be computed by the Topology.get_persistent_homology()
+    method.
     """
     if plane in ["xy", "yx", "zx", "xz", "yz", "zy"]:
         ph = _tm.methods.get_persistence_diagram(tree, dim=plane)
@@ -373,7 +356,7 @@ def tree_instance(
     treecol="b",
     **kwargs,
 ):
-    """Subplot with ph, barcode and tree within spheres"""
+    """Subplot with ph, barcode and tree within spheres."""
     from matplotlib.collections import LineCollection
 
     if new_fig:
@@ -392,8 +375,7 @@ def tree_instance(
     segs = tree.get_segments()
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -445,10 +427,11 @@ def tree_instance(
 
 
 def customized_cmap():
-    """Returns a custom cmap"""
+    """Returns a custom cmap."""
 
     def make_colormap(seq):
-        """Return a LinearSegmentedColormap
+        """Return a LinearSegmentedColormap.
+
         seq: a sequence of floats and RGB-tuples. The floats should be increasing
         and in the interval (0,1).
         """
@@ -515,7 +498,7 @@ def customized_cmap():
 
 
 def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
-    """Plots the gaussian kernel of the ph diagram that is given."""
+    """Plot the gaussian kernel of the ph diagram that is given."""
     values = _np.transpose(ph)
     kernel = stats.gaussian_kde(values)
 
@@ -526,7 +509,7 @@ def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
 
 
 def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, angle=0, **kwargs):
-    """Plots the gaussian kernel of the ph diagram that is given."""
+    """Plot the gaussian kernel of the ph diagram that is given."""
 
     def rotation(x, y, angle=0.0):
         return [_np.cos(angle) * x - _np.sin(angle) * y, _np.sin(angle) * x + _np.cos(angle) * y]
@@ -559,7 +542,7 @@ def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, a
 
 
 def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs):
-    """Plots the gaussian kernel of the ph diagram that is given."""
+    """Plot the gaussian kernel of the ph diagram that is given."""
     xmin = min(_np.transpose(ph)[0])
     xmax = max(_np.transpose(ph)[0])
     ymin = min(_np.transpose(ph)[1])
@@ -588,9 +571,7 @@ def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=No
 def gaussian_kernel_superposition(
     ph, new_fig=True, subplot=111, xlims=None, ylims=None, color="r", **kwargs
 ):
-    """Plots the gaussian kernel
-    of the ph diagram that is given.
-    """
+    """Plot the gaussian kernel of the ph diagram that is given."""
     xmin = min(_np.transpose(ph)[0])
     xmax = max(_np.transpose(ph)[0])
     ymin = min(_np.transpose(ph)[1])
@@ -624,9 +605,7 @@ def gaussian_kernel_superposition(
 def tree_br(
     tree, plane="xy", feature="radial_distances", title="", diameter=True, treecol="b", **kwargs
 ):
-    """Subplot with ph, barcode
-    and tree within spheres
-    """
+    """Subplot with ph, barcode and tree within spheres."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -640,8 +619,7 @@ def tree_br(
     )
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -678,9 +656,7 @@ def tree_gaussian_kernel(
     ylims=None,
     **kwargs,
 ):
-    """Subplot with ph, barcode
-    and tree within spheres
-    """
+    """Subplot with ph, barcode and tree within spheres."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -694,8 +670,7 @@ def tree_gaussian_kernel(
     )
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -732,9 +707,7 @@ def tree_ph(
     ylims=None,
     **kwargs,
 ):
-    """Subplot with ph, barcode
-    and tree within spheres
-    """
+    """Subplot with ph, barcode and tree within spheres."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -748,8 +721,7 @@ def tree_ph(
     )
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -788,9 +760,7 @@ def tree_evol(
     ylim=None,
     **kwargs,
 ):
-    """Subplot with ph, barcode
-    and tree within spheres
-    """
+    """Subplot with ph, barcode and tree within spheres."""
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -804,8 +774,7 @@ def tree_evol(
     )
 
     def _seg_2d(seg):
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -836,12 +805,7 @@ def tree_evol(
 def image_diff_time(
     Z1, Z2, time_steps=100, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs
 ):
-    """Takes as input a set of images
-    as exported from the gaussian kernel
-    plotting function, and plots
-    their difference.
-    """
-
+    """Take as input a set of images and plots their difference."""
     xmin = min(Z1[1][1].get_xlim() + Z2[1][1].get_xlim())
     xmax = max(Z1[1][1].get_xlim() + Z2[1][1].get_xlim())
     ymin = min(Z1[1][1].get_ylim() + Z2[1][1].get_ylim())
@@ -880,7 +844,7 @@ def plot_simple_tree(
     alpha=1.0,
     **kwargs,
 ):
-    """Generates a 2d figure of the tree."""
+    """Generate a 2d figure of the tree."""
     from matplotlib.collections import LineCollection
 
     # Initialization of matplotlib figure and axes.
@@ -890,9 +854,7 @@ def plot_simple_tree(
     bounding_box = tr.get_bounding_box()
 
     def _seg_2d(seg, x_add=0.0, y_add=0.0):
-
-        """2d coordinates required for the plotting of a segment"""
-
+        """2d coordinates required for the plotting of a segment."""
         horz = _utils.term_dict[plane[0]]
         vert = _utils.term_dict[plane[1]]
 
@@ -906,8 +868,6 @@ def plot_simple_tree(
     segs = [_seg_2d(seg, hadd, vadd) for seg in tr.get_segments()]
 
     linewidth = [2 * d * 1.0 for d in tr.d]
-
-    # treecolor = 'b'
 
     # Plot the collection of lines.
     collection = LineCollection(segs, color=treecolor, linewidth=linewidth, alpha=alpha)
@@ -933,8 +893,7 @@ def plot_simple_tree(
 
 
 def plot_intermediate(ph_all, colors_bar, tree, colors, counter, linewidth=1.0, output_path="./"):
-    """plots the tree and the barcode with defined colors"""
-
+    """Plot the tree and the barcode with defined colors."""
     fig, ax1 = _view.common.get_figure(new_fig=True, subplot=122)
 
     for ipers, pers in enumerate(ph_all):
@@ -986,9 +945,7 @@ def plot_persistent_homology_video(
     output_path="./",
     **kwargs,
 ):
-    """Method to extract ph from tree that contains mutlifurcations
-    and generate a video of the process"""
-
+    """Extract ph from tree that contains mutlifurcations and generate a video of the process."""
     ph_all = _tm.methods.get_persistence_diagram(tree)
 
     ph_all = _sort_ph_initial(ph_all)
@@ -1140,6 +1097,7 @@ def plot_persistent_homology_video(
 
 
 def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
+    """Plot multiple trees."""
     plt.figure()
     N = len(trees)
     lims = [_np.min(_np.min(phs)) - 5, _np.max(_np.max(phs)) + 5]
@@ -1165,7 +1123,7 @@ def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
 def polar_plot_custom_color(
     population, bins=25, apical_color="purple", basal_color="r", edgecolor=None, alpha=0.8
 ):
-    """ """
+    """Plot a population."""
     fig = _cm.plt.figure()
     ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
 

@@ -1,9 +1,4 @@
-"""
-Python module that contains the functions
-about reading and writing files.
-"""
-from __future__ import print_function
-
+"""Python module that contains the functions about reading and writing files."""
 import os
 import warnings
 from pathlib import Path
@@ -27,14 +22,11 @@ from tmd.utils import TREE_TYPE_DICT
 
 
 class LoadNeuronError(Exception):
-    """Captures the exception of failing to load a single neuron"""
+    """Captures the exception of failing to load a single neuron."""
 
 
 def make_tree(data):
-    """Make tree structure from loaded data.
-    Returns a tree of tmd.Tree
-    type.
-    """
+    """Make tree structure from loaded data."""
     tr_data = _np.transpose(data)
 
     parents = [
@@ -53,15 +45,13 @@ def make_tree(data):
 
 
 def redefine_types(user_types=None):
-    """
-    Returns tree types depending on the customized types
-        selected by the user.
+    """Return tree types depending on the customized types selected by the user.
 
-        Args:
-            user_types (dictionary or None):
+    Args:
+        user_types (dictionary or None):
 
-        Returns:
-            final_types (dict): tree types for the construction of Neuron.
+    Returns:
+        final_types (dict): tree types for the construction of Neuron.
     """
     final_tree_types = TREE_TYPE_DICT.copy()
     if user_types is not None:
@@ -72,9 +62,7 @@ def redefine_types(user_types=None):
 def load_neuron(
     input_file, line_delimiter="\n", soma_type=None, user_tree_types=None, remove_duplicates=True
 ):
-    """
-    Io method to load an swc or h5 file into a Neuron object.
-    """
+    """I/O method to load an swc or h5 file into a Neuron object."""
     tree_types = redefine_types(user_tree_types)
 
     # Definition of swc types from type_dict function
@@ -84,14 +72,13 @@ def load_neuron(
         soma_index = soma_type
 
     # Make neuron with correct filename and load data
-    if os.path.splitext(input_file)[-1] == '.swc':
-        data = swc_to_data(read_swc(input_file=input_file,
-                                    line_delimiter=line_delimiter))
-        neuron = Neuron.Neuron(name=str(input_file).replace('.swc', ''))
+    if os.path.splitext(input_file)[-1] == ".swc":
+        data = swc_to_data(read_swc(input_file=input_file, line_delimiter=line_delimiter))
+        neuron = Neuron.Neuron(name=str(input_file).replace(".swc", ""))
 
     elif os.path.splitext(input_file)[-1] == ".h5":
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
-        neuron = Neuron.Neuron(name=str(input_file).replace('.h5', ''))
+        neuron = Neuron.Neuron(name=str(input_file).replace(".h5", ""))
 
     # Check for duplicated IDs
     IDs, counts = _np.unique(data[:, 0], return_counts=True)
@@ -138,17 +125,16 @@ def load_neuron(
 
 
 def load_neuron_from_morphio(path_or_obj, user_tree_types=None):
-    """
-    Create Neuron object from morphio object or from path
-        loaded via morphio.
-        Supported file formats: h5, swc, asc.
+    """Create Neuron object from morphio object or from path loaded via morphio.
 
-        Args:
-            path_or_obj (Union[str, morphio.Morphology]):
-                Filepath or morphio object
+    Supported file formats: h5, swc, asc.
 
-        Returns:
-            neuron (Neuron): tmd Neuron object
+    Args:
+        path_or_obj (Union[str, morphio.Morphology]):
+            Filepath or morphio object
+
+    Returns:
+        neuron (Neuron): tmd Neuron object
     """
     from morphio import Morphology  # pylint: disable=import-outside-toplevel
 
@@ -172,8 +158,8 @@ def load_neuron_from_morphio(path_or_obj, user_tree_types=None):
 
 
 def load_population(neurons, user_tree_types=None, name=None, use_morphio=False):
-    """Loads all data of recognised format (swc, h5)
-    into a Population object.
+    """Load all data of recognised format (swc, h5) into a Population object.
+
     Takes as input a directory or a list of files to load.
     """
     if isinstance(neurons, (list, tuple)):
@@ -187,9 +173,9 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
         name = name if name is not None else os.path.basename(neurons)
     else:
         raise TypeError(
-            'The format of the given neurons is not supported. '
-            'Expected an iterable of files, or a directory, or a single morphology file. '
-            f'Got: {neurons}'
+            "The format of the given neurons is not supported. "
+            "Expected an iterable of files, or a directory, or a single morphology file. "
+            f"Got: {neurons}"
         )
 
     pop = Population.Population(name=name)
@@ -198,12 +184,13 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
         try:
             ext = os.path.splitext(filename)[-1][1:]
             if not use_morphio:
-                assert ext in ('h5', 'swc')
+                assert ext in ("h5", "swc")
                 pop.append_neuron(load_neuron(filename, user_tree_types=user_tree_types))
             else:
-                assert ext in ('h5', 'swc', 'asc')
-                pop.append_neuron(load_neuron_from_morphio(filename,
-                                                           user_tree_types=user_tree_types))
+                assert ext in ("h5", "swc", "asc")
+                pop.append_neuron(
+                    load_neuron_from_morphio(filename, user_tree_types=user_tree_types)
+                )
 
         except AssertionError as exc:
             error_msg = "{} is not a valid h5, swc or asc file. If asc set use_morphio to True."

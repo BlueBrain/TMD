@@ -2,8 +2,6 @@
 
 Matplotlib required.
 """
-
-
 try:
     import matplotlib  # noqa
 except ImportError as exc:

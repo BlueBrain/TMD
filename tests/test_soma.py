@@ -1,4 +1,4 @@
-"""Test tmd.soma"""
+"""Test tmd.soma."""
 import numpy as np
 from numpy import testing as npt
 
@@ -13,6 +13,7 @@ x2 = np.array([0.0, 3.0, 4.0, 5.0, 4.0])
 
 
 def test_soma_init_():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     soma1 = Soma.Soma(x=x1, y=y1, z=z1, d=d1)
     npt.assert_allclose(soma1.x, x1)
     npt.assert_allclose(soma1.y, y1)
@@ -21,6 +22,7 @@ def test_soma_init_():
 
 
 def test_soma_is_equal():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     soma1 = Soma.Soma(x=x1, y=y1, z=z1, d=d1)
     soma2 = Soma.Soma(x=x1, y=y1, z=z1, d=d1)
     assert soma1.is_equal(soma2)
@@ -30,6 +32,7 @@ def test_soma_is_equal():
 
 
 def test_copy_soma():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     soma1 = Soma.Soma(x=x1, y=y1, z=z1, d=d1)
     soma2 = soma1.copy_soma()
     assert soma1.is_equal(soma2)

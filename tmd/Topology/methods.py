@@ -1,6 +1,4 @@
-"""
-tmd Topology algorithms implementation
-"""
+"""TMD Topology algorithms implementation."""
 import numpy as np
 import scipy.spatial as sp
 
@@ -11,20 +9,18 @@ from tmd.Topology.persistent_properties import PersistentMeanRadius
 
 
 def write_ph(ph, output_file="test.txt"):
-    """Writes a persistence diagram in
-    an output file.
-    """
+    """Writes a persistence diagram in an output file."""
     with open(output_file, "w", encoding="utf-8") as wfile:
         for p in ph:
             wfile.write(str(p[0]) + " " + str(p[1]) + "\n")
 
 
 def tree_to_property_barcode(tree, filtration_function, property_class=NoProperty):
-    """Decompose a tree data structure into a barcode, where each bar in the barcode
-    is optionally linked with a property determined by property_class.
+    """Decompose a tree data structure into a barcode.
+
+    Each bar in the barcode is optionally linked with a property determined by property_class.
 
     Args:
-
         filtration_function (Callable[tree] -> np.ndarray):
             The filtration function to apply on the tree
 
@@ -91,13 +87,12 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
 
 
 def _filtration_function(feature, **kwargs):
-    """Returns filtration function lambda that will be applied point-wise
-    on the tree"""
+    """Returns filtration function lambda that will be applied point-wise on the tree."""
     return lambda tree: getattr(tree, "get_point_" + feature)(**kwargs)
 
 
 def get_persistence_diagram(tree, feature="radial_distances", **kwargs):
-    """Method to extract ph from tree that contains mutlifurcations"""
+    """Method to extract ph from tree that contains mutlifurcations."""
     ph, _ = tree_to_property_barcode(
         tree, filtration_function=_filtration_function(feature, **kwargs), property_class=NoProperty
     )
@@ -105,7 +100,7 @@ def get_persistence_diagram(tree, feature="radial_distances", **kwargs):
 
 
 def get_ph_angles(tree, feature="radial_distances", **kwargs):
-    """Method to extract ph from tree that contains mutlifurcations"""
+    """Method to extract ph from tree that contains mutlifurcations."""
     ph, _ = tree_to_property_barcode(
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
@@ -115,7 +110,7 @@ def get_ph_angles(tree, feature="radial_distances", **kwargs):
 
 
 def get_ph_radii(tree, feature="radial_distances", **kwargs):
-    """Returns the ph diagram enhanced with the corresponding encoded radii"""
+    """Returns the ph diagram enhanced with the corresponding encoded radii."""
     ph, _ = tree_to_property_barcode(
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
@@ -125,8 +120,7 @@ def get_ph_radii(tree, feature="radial_distances", **kwargs):
 
 
 def get_ph_neuron(neuron, feature="radial_distances", neurite_type="all", **kwargs):
-    """Method to extract ph from a neuron that contains mutlifurcations"""
-
+    """Method to extract ph from a neuron that contains mutlifurcations."""
     ph_all = []
 
     if neurite_type == "all":
@@ -142,7 +136,7 @@ def get_ph_neuron(neuron, feature="radial_distances", neurite_type="all", **kwar
 
 
 def extract_ph(tree, feature="radial_distances", output_file="test.txt", sort=False, **kwargs):
-    """Extracts persistent homology from tree"""
+    """Extracts persistent homology from tree."""
     ph = get_persistence_diagram(tree, feature=feature, **kwargs)
 
     if sort:
@@ -156,7 +150,7 @@ def extract_ph(tree, feature="radial_distances", output_file="test.txt", sort=Fa
 def extract_ph_neuron(
     neuron, feature="radial_distances", output_file=None, neurite_type="all", sort=False, **kwargs
 ):
-    """Extracts persistent homology from tree"""
+    """Extracts persistent homology from tree."""
     ph = get_ph_neuron(neuron, feature=feature, neurite_type="all", **kwargs)
 
     if sort:
@@ -172,6 +166,7 @@ def extract_ph_neuron(
 
 def get_lifetime(tree, feature="point_radial_distances"):
     """Returns the sequence of birth - death times for each section.
+
     This can be used as the first step for the approximation of P.H.
     of the radial distances of the neuronal branches.
     """
@@ -186,7 +181,7 @@ def get_lifetime(tree, feature="point_radial_distances"):
 
 
 def extract_connectivity_from_points(tree, threshold=1.0):
-    """Extract connectivity from list of points"""
+    """Extract connectivity from list of points."""
     coords = np.transpose([tree.x, tree.y, tree.z])
     distances_matrix = sp.distance.cdist(coords, coords)
     mat = distances_matrix < threshold

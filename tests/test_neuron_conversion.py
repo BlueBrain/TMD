@@ -1,3 +1,5 @@
+"""Test Neuron conversions."""
+# pylint: disable=protected-access
 import os
 
 import mock
@@ -14,8 +16,10 @@ DATA_PATH = os.path.join(_path, "data")
 
 
 class MockSection:
-    def __init__(self, id, points, diameters, type, parent=None):
+    """A Mock for the Section class."""
 
+    def __init__(self, id, points, diameters, type, parent=None):
+        # pylint: disable=redefined-builtin
         self.id = id
         self.points = points
         self.diameters = diameters
@@ -24,14 +28,18 @@ class MockSection:
         self.traversal = []
 
     def iter(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return self.traversal
 
     @property
     def is_root(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return self.parent is None
 
 
 class MockNeuron:
+    """A Mock for the Neuron class."""
+
     def __init__(self):
 
         root = MockSection(
@@ -64,19 +72,22 @@ class MockNeuron:
 
     @property
     def diameters(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return np.hstack([s.diameters for root in self.root_sections for s in root.iter()])
 
     @property
     def points(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return np.vstack([s.points for root in self.root_sections for s in root.iter()])
 
     @property
     def n_points(self):
+        # noqa: D102 ; pylint: disable=missing-function-docstring
         return len(self.points)
 
 
 def test_convert_morphio_soma():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     morphio_soma = mock.Mock(
         points=np.array([[0.0, 1.0, 2.0], [2.0, 3.0, 4.0]]),
         diameters=np.array([2.1, 3.4]),
@@ -91,7 +102,7 @@ def test_convert_morphio_soma():
 
 
 def test_section_to_data():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     section = MockSection(
         id=0,
         points=np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
@@ -118,7 +129,7 @@ def test_section_to_data():
 
 
 def test_convert_morphio_trees():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     morphio_neuron = MockNeuron()
 
     trees = list(tested.convert_morphio_trees(morphio_neuron))
@@ -136,7 +147,7 @@ def test_convert_morphio_trees():
 
 
 def _assert_neurons_equal(neuron1, neuron2):
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(neuron1.soma.x, neuron2.soma.x)
     npt.assert_allclose(neuron1.soma.y, neuron2.soma.y)
     npt.assert_allclose(neuron1.soma.z, neuron2.soma.z)
@@ -153,7 +164,7 @@ def _assert_neurons_equal(neuron1, neuron2):
 
 
 def test_neuron_building_consistency__h5():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     path = f"{DATA_PATH}/valid/C010398B-P2.h5"
 
     neuron1 = load_neuron(path)
@@ -167,7 +178,7 @@ def test_neuron_building_consistency__h5():
 
 
 def test_neuron_building_consistency__swc():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     path = f"{DATA_PATH}/valid/C010398B-P2.CNG.swc"
 
     neuron1 = load_neuron(path)

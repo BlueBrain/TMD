@@ -1,4 +1,5 @@
-"""Test tmd.topology.methods"""
+"""Test tmd.topology.methods."""
+# pylint: disable=protected-access
 import os
 
 import mock
@@ -67,6 +68,7 @@ tree1 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
 
 
 def test_get_persistence_diagram():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     ph0 = methods.get_persistence_diagram(tree0)
     ph1 = methods.get_persistence_diagram(tree1)
 
@@ -86,6 +88,7 @@ def test_get_persistence_diagram():
 
 
 def test_extract_persistence_diagram():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     if os.path.isfile("test_ph.txt"):
         os.remove("test_ph.txt")
     methods.extract_ph(tree0, output_file="./test_ph.txt")
@@ -96,6 +99,7 @@ def test_extract_persistence_diagram():
 
 
 def test_get_lifetime():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     lf0 = methods.get_lifetime(tree0)
     lf1 = methods.get_lifetime(tree1)
     npt.assert_allclose(
@@ -114,6 +118,7 @@ def test_get_lifetime():
 
 
 def test_extract_connectivity_from_points():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     dist = methods.extract_connectivity_from_points(tree, threshold=0.1)
     npt.assert_allclose(
         dist,
@@ -173,7 +178,7 @@ def test_extract_connectivity_from_points():
 
 
 def test_filtration_function():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     feature = "radial_distances"
     func = methods._filtration_function(feature)
     npt.assert_allclose(func(tree), [0.0, 1.0, 1.0, 1.41421356, 1.41421356])
@@ -184,13 +189,14 @@ def test_filtration_function():
 
 
 def test_tree_to_property_barcode():
-    def filtration_function(tree):
+    # noqa: D103 ; pylint: disable=missing-function-docstring
+    def filtration_function(_):
         return np.array([0.0, 1.0, 3.0, 5.0, 7.0])
 
-    def prop(*args):
+    def prop1(*args):  # pylint: disable=unused-argument
         return mock.Mock(get=lambda v: [], infinite_component=lambda v: [])
 
-    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop1)
 
     npt.assert_array_equal(
         ph,
@@ -203,10 +209,10 @@ def test_tree_to_property_barcode():
 
     assert bars_to_points == [[2], [3], [4, 1]]
 
-    def prop(*args):
+    def prop2(*args):  # pylint: disable=unused-argument
         return mock.Mock(get=lambda v: [v], infinite_component=lambda v: [0])
 
-    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop2)
 
     npt.assert_array_equal(
         ph,
@@ -219,12 +225,12 @@ def test_tree_to_property_barcode():
 
     assert bars_to_points == [[2], [3], [4, 1]]
 
-    def prop(*args):
+    def prop3(*args):  # pylint: disable=unused-argument
         return mock.Mock(
             get=lambda v: list(range(v, v + 5)), infinite_component=lambda v: [np.nan] * 5
         )
 
-    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
+    ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop3)
 
     npt.assert_array_equal(
         ph,
@@ -239,7 +245,7 @@ def test_tree_to_property_barcode():
 
 
 def _integration_tree():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     xyzdtp = np.array(
         [
             [5.0, -2.0, 5.0, 0.2, 3.0, -1.0],
@@ -273,7 +279,7 @@ def _integration_tree():
 
 
 def test_get_persistence_diagram__integration():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(
         methods.get_persistence_diagram(_integration_tree()),
         [
@@ -286,7 +292,7 @@ def test_get_persistence_diagram__integration():
 
 
 def test_get_ph_angles__integration():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(
         methods.get_ph_angles(_integration_tree()),
         [
@@ -306,7 +312,7 @@ def test_get_ph_angles__integration():
 
 
 def test_get_ph_radii__integration():
-
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(
         methods.get_ph_radii(_integration_tree()),
         [

@@ -1,3 +1,4 @@
+"""Example for distance computation."""
 import numpy as np
 
 import tmd
@@ -8,6 +9,7 @@ import tmd
 
 
 def compute_distances(directory1, directory2):
+    """Compute distances."""
     pop1 = tmd.io.load_population(directory1)
     pop2 = tmd.io.load_population(directory2)
 

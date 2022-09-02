@@ -1,5 +1,4 @@
-"""Persistent properties classes
-"""
+"""Persistent properties classes."""
 from abc import ABC
 from abc import abstractmethod
 
@@ -7,38 +6,37 @@ import numpy as np
 
 
 class PersistentProperty(ABC):
-    """Abstract class for persistent properties that are defined
-    on persistent components.
-    """
+    """Abstract class for persistent properties that are defined on persistent components."""
 
     @abstractmethod
     def get(self, component_start):
-        """Get component property"""
+        """Get component property."""
 
     @abstractmethod
     def infinite_component(self, component_start):
-        """Get property for infinite component"""
+        """Get property for infinite component."""
 
 
 class NoProperty(PersistentProperty):
-    """Function class for extracting a barcode without properties"""
+    """Function class for extracting a barcode without properties."""
 
     def __init__(self, _):
         pass
 
     def get(self, _):
-        """Returns empty list, does not contribute to component"""
+        """Returns empty list, does not contribute to component."""
         return []
 
     def infinite_component(self, _):
-        """Returns empty list, does not contribute to component"""
+        """Returns empty list, does not contribute to component."""
         return []
 
 
 class PersistentMeanRadius(PersistentProperty):
-    """Component mean radii
+    """Component mean radii.
+
     Args:
-        tree (Tree): A tree object
+        tree (Tree): A tree object.
     """
 
     def __init__(self, tree):
@@ -47,32 +45,33 @@ class PersistentMeanRadius(PersistentProperty):
         self._radii = self._section_mean_radii(0.5 * tree.d, section_begs, section_ends)
 
     def get(self, component_start):
-        """
+        """Get one persistent mean radius.
+
         Args:
-            component_start (int): The component start
+            component_start (int): The component start.
+
         Returns:
-            component_angles (list): A list of 1 radius
+            component_angles (list): A list of 1 radius.
         """
         return [self._radii[component_start]]
 
     def infinite_component(self, component_start):
-        """Returns mean radius corresponding to inf
-        component
-        """
+        """Returns mean radius corresponding to inf component."""
         return self.get(component_start)
 
     @staticmethod
     def _section_mean_radii(tree_radii, section_begs, section_ends):
-        """Returns the mean radius per section"""
+        """Returns the mean radius per section."""
         return np.fromiter(
             (np.mean(tree_radii[b:e]) for b, e in zip(section_begs, section_ends)), dtype=float
         )
 
 
 class PersistentAngles(PersistentProperty):
-    """Bifurcation angles per component
+    """Bifurcation angles per component.
+
     Args:
-        tree (Tree): A tree object
+        tree (Tree): A tree object.
     """
 
     def __init__(self, tree):
@@ -83,25 +82,23 @@ class PersistentAngles(PersistentProperty):
         self._angles = self._get_angles(tree, section_begs, section_parents, section_children)
 
     def get(self, component_start):
-        """
+        """Get one persistent angle.
+
         Args:
-            component_start (int): The component start
+            component_start (int): The component start.
+
         Returns:
-            component_angles (list): A list of 4 angles
+            component_angles (list): A list of 4 angles.
         """
         return self._angles[component_start]
 
     def infinite_component(self, _):
-        """Given that there are not angles for the inf
-        component, nans are returned.
-        """
+        """Given that there are not angles for the inf component, nans are returned."""
         return [np.nan, np.nan, np.nan, np.nan]
 
     @staticmethod
     def _phi_theta(u, v):
-        """Computes the angles between vectors u, v
-        in the plane x-y (phi angle) and the plane x-z (theta angle).
-        Returns phi, theta
+        """Compute the angles between vectors u, v in the plane x-y (phi) and the plane x-z (theta).
 
         Args:
             u (np.ndarray): (3,) First vector
@@ -128,13 +125,12 @@ class PersistentAngles(PersistentProperty):
 
     @staticmethod
     def _angles_tree(tree, parID, parEND, ch1ID, ch2ID):
-        """Computes the x-y and x-z angles between parent
-           and children within the given tree.
+        """Compute the x-y and x-z angles between parent and children within the given tree.
 
         Args:
             tree (Tree): Morphology tree
             parID (int): Id of parent section
-            parEnd (int): Id of parent section end
+            parEND (int): Id of parent section end
             ch1ID (int): ID of first child
             ch2ID (int): ID of section child
 
@@ -149,7 +145,6 @@ class PersistentAngles(PersistentProperty):
                 delta_theta (float): Difference of theta_angles th_v - th_u
                     on the x-z plane
         """
-
         parent_direction = tree.get_direction_between(start_id=parID, end_id=parEND)
         child1_direction = tree.get_direction_between(start_id=parEND, end_id=ch1ID)
         child2_direction = tree.get_direction_between(start_id=parEND, end_id=ch2ID)
@@ -170,8 +165,7 @@ class PersistentAngles(PersistentProperty):
 
     @staticmethod
     def _get_angles(tree, beg, parents, children):
-        """Returns the angles between all the triplets (parent, child1, child2)
-        of the tree"""
+        """Return the angles between all the triplets (parent, child1, child2) of the tree."""
         angles = [
             [0, 0, 0, 0],
         ]  # Null angle for non bif point

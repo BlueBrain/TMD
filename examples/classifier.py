@@ -1,8 +1,9 @@
+"""Classifier examples."""
+import importlib
+
 import numpy as np
 
 import tmd
-
-# import view
 
 list_of_modules = ["discriminant_analysis", "discriminant_analysis", "tree"]
 
@@ -14,12 +15,10 @@ list_of_classifiers = [
 
 
 def train(mod, classifier, data, labels, **kwargs):
-    """Trains the classifier from mod of sklearn
-    with data and targets.
+    """Trains the classifier from mod of sklearn with data and targets.
+
     Returns a fited classifier.
     """
-    import importlib
-
     clas_mod = importlib.import_module("sklearn." + mod)
     clf = getattr(clas_mod, classifier)()
     clf.set_params(**kwargs)
@@ -31,8 +30,8 @@ def train(mod, classifier, data, labels, **kwargs):
 
 def predict(clf, data):
     """Predict label for data for the trained classifier clf.
-    Returns the index of the predicted class
-    for each datapoint in data.
+
+    Returns the index of the predicted class for each datapoint in data.
     """
     predict_label = clf.predict([data])
 
@@ -47,7 +46,7 @@ def classify_cell_in_groups(
     classifier_method=list_of_classifiers[0],
     number_of_trials=20,
 ):
-
+    """Classify the cells in groups."""
     # ------------------------ Training dataset --------------------------------
     # Load all data from selected folders
     groups = [tmd.io.load_population(i) for i in list_of_groups]

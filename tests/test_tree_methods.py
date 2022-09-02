@@ -1,4 +1,5 @@
-"""Test tmd.Tree"""
+"""Test tmd.Tree methods."""
+# pylint: disable=protected-access
 import os
 
 import numpy as np
@@ -76,6 +77,7 @@ long_tree = Tree.Tree(
 
 
 def test_rd():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert methods._rd([0, 0], [0, 1]) == 1.0
     assert methods._rd([0, 0, 0], [0, 0, 1]) == 1.0
     assert methods._rd([1, 2, 0], [0, 2, 1]) == np.sqrt(2.0)
@@ -89,21 +91,25 @@ def test_rd():
 
 
 def test_size():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert methods.size(tree0) == 31.0
     assert methods.size(tree1) == 21.0
 
 
 def test_get_type():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     assert tree0.get_type() == 2
     assert tree1.get_type() == 3
 
 
 def test_get_bounding_box():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     np.allclose(tree0.get_bounding_box(), np.array([[-5.0, 0.0, -5.0], [5.0, 10.0, 5.0]]))
     np.allclose(tree1.get_bounding_box(), np.array([[-5.0, 0.0, 0.0], [5.0, 10.0, 0.0]]))
 
 
 def test_get_segments():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     seg0 = tree0.get_segments()
     seg1 = tree1.get_segments()
     seg = tree.get_segments()
@@ -121,16 +127,19 @@ def test_get_segments():
 
 
 def test_get_point_radial_dist():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     prds = tree.get_point_radial_distances()
     npt.assert_allclose(prds, np.array([0.0, 3.74165739, 5.38516481, 7.07106781, 8.77496439]))
 
 
 def test_get_point_path_dist():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     pds = tree.get_point_path_distances()
     npt.assert_allclose(pds, np.array([0.0, 3.74165739, 5.47370819, 7.205759, 8.93780981]))
 
 
 def test_get_point_section_lengths():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     pds = tree.get_point_section_lengths()
     npt.assert_array_almost_equal(pds, np.array([0.0, 3.7416575, 0.0, 3.46410161, 5.19615221]))
 
@@ -141,6 +150,7 @@ def test_get_point_section_lengths():
 
 
 def test_get_trunk_length():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     pds = tree.get_trunk_length()
     npt.assert_almost_equal(pds, 3.7416575)
 
@@ -149,6 +159,7 @@ def test_get_trunk_length():
 
 
 def test_get_sections_2():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     secs = tree.get_sections_2()
     npt.assert_allclose(secs[0], np.array([0, 1, 1]))
     npt.assert_allclose(secs[1], np.array([1, 3, 4]))
@@ -161,6 +172,7 @@ def test_get_sections_2():
 
 
 def test_get_sections_only_points():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     secs = tree.get_sections_only_points()
     npt.assert_allclose(secs[0], np.array([0, 2, 4]))
     npt.assert_allclose(secs[1], np.array([1, 3, 4]))
@@ -173,24 +185,28 @@ def test_get_sections_only_points():
 
 
 def test_get_bif_term():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(tree.get_bif_term(), np.array([1.0, 2.0, 1.0, 0.0, 0.0]))
 
 
 def test_get_bifurcations():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(tree.get_bifurcations(), np.array([1]))
 
 
 def test_get_terminations():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(tree.get_terminations(), np.array([3, 4]))
 
 
 def test_get_way_to_root():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     npt.assert_allclose(methods.get_way_to_root(tree), np.array([-1]))
 
 
 def test_parents_children():
-
-    tree = Tree.Tree(
+    # noqa: D103 ; pylint: disable=missing-function-docstring
+    tested_tree = Tree.Tree(
         x=np.zeros(5),
         y=np.zeros(5),
         z=np.zeros(5),
@@ -199,7 +215,7 @@ def test_parents_children():
         p=np.array([-1, 0, 1, 2, 2]),
     )
 
-    parents, children = tree.parents_children
+    parents, children = tested_tree.parents_children
 
     assert parents == {0: -1, 2: 0, 3: 2, 4: 2}
 

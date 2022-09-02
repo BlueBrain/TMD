@@ -1,12 +1,10 @@
-"""
-tmd matching algorithms implementation
-"""
+"""TMD matching algorithms implementation."""
 import numpy as np
 
 
 def marriage_problem(women_preferences, men_preferences):
-    """Matches N women to M men so that max(M, N)
-    are coupled to their preferred choice that is available
+    """Matches N women to M men so that max(M, N) are coupled to their preferred available choice.
+
     See https://en.wikipedia.org/wiki/Stable_marriage_problem
     """
     N = len(women_preferences)
@@ -50,14 +48,15 @@ def marriage_problem(women_preferences, men_preferences):
 
 
 def symmetric(p):
-    """Returns the symmetric point of a PD point on the diagonal"""
+    """Return the symmetric point of a PD point on the diagonal."""
     return [(p[0] + p[1]) / 2.0, (p[0] + p[1]) / 2]
 
 
 def matching_diagrams(
     p1, p2, plot=False, method="munkres", use_diag=True, new_fig=True, subplot=(111)
 ):
-    """Returns a list of matching components
+    """Return a list of matching components.
+
     Possible matching methods:
     - munkress
     - marriage problem
@@ -68,9 +67,7 @@ def matching_diagrams(
     from tmd.view import common as _cm
 
     def plot_matching(p1, p2, indices, new_fig=True, subplot=(111)):
-        """Plots matching between p1, p2
-        for the corresponding indices
-        """
+        """Plots matching between p1, p2 for the corresponding indices."""
         fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
         for i, j in indices:
             ax.plot((p1[i][0], p2[j][0]), (p1[i][1], p2[j][1]), color="black")

@@ -6,7 +6,7 @@
 
 ### Uncategorized Changes
 
-- Update to *_dendrite types (Alexis Arnaudon - [#52](https://github.com/BlueBrain/TMD/pull/52))
+- Update to dendrite types (Alexis Arnaudon - [#52](https://github.com/BlueBrain/TMD/pull/52))
 - Updated copyright year in several files (alex4200 - [#51](https://github.com/BlueBrain/TMD/pull/51))
 
 <!-- auto-changelog-above -->

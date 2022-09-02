@@ -1,3 +1,4 @@
+"""Examples for variability compputation."""
 import matplotlib.pyplot as plt
 import numpy as np
 import view
@@ -9,17 +10,15 @@ import tmd
 
 
 def img_diff_distance(Z1, Z2, norm=True):
-    """Takes as input two images
-    as exported from the gaussian kernel
-    plotting function, and returns
-    their absolute difference:
-    diff(abs(Z1 - Z2))
+    """Return the absolute difference of 2 images from the gaussian kernel plotting function.
+
+    The absolute difference is computed as: diff(abs(Z1 - Z2))
     """
     if norm:
         Z1 = Z1 / Z1.max()
         Z2 = Z2 / Z2.max()
 
-    diff = np.sum(np.abs(Z2 - Z2))
+    diff = np.sum(np.abs(Z1 - Z2))
 
     # Normalize the difference to % of #pixels
     diff = diff / np.prod(np.shape(Z1))
@@ -28,11 +27,9 @@ def img_diff_distance(Z1, Z2, norm=True):
 
 
 def img_diff(Z1, Z2, norm=True):
-    """Takes as input two images
-    as exported from the gaussian kernel
-    plotting function, and returns
-    their absolute difference:
-    diff(abs(Z1 - Z2))
+    """Return the difference of 2 images from the gaussian kernel plotting function.
+
+    The difference is computed as: diff(Z1 - Z2)
     """
     if norm:
         Z1 = Z1 / Z1.max()
@@ -42,12 +39,13 @@ def img_diff(Z1, Z2, norm=True):
 
 
 def number_of_bars(phs_list):
-    """Returns the length of each ph_diagram of a list"""
+    """Return the length of each ph_diagram of a list."""
     return [len(p) for p in phs_list]
 
 
 def weight_bars(phs_list, max_norm=None):
-    """Returns weights according to the number of branches.
+    """Return weights according to the number of branches.
+
     If max not defined the maximum within a group will be used.
     """
     lengths = number_of_bars(phs_list)
@@ -58,6 +56,7 @@ def weight_bars(phs_list, max_norm=None):
 
 def persistence_image(ph, norm_factor=None, xlims=None, ylims=None):
     """Create the data for the generation of the persistence image.
+
     If norm_factor is provided the data will be normalized based on this,
     otherwise they will be normalized to 1.
     If xlims, ylims are provided the data will be scaled accordingly.
@@ -86,9 +85,11 @@ def persistence_image(ph, norm_factor=None, xlims=None, ylims=None):
 
 
 def average_ph_image(images_list):
-    """Generates a normalized average image
-    from a list of images. Careful: images should be
-    at the same scale (x-y) for appropriate comparison.
+    """Generates a normalized average image from a list of images.
+
+    .. warning::
+
+        Images should be at the same scale (x-y) for appropriate comparison.
     """
     average_imgs = images_list[0]
 
@@ -101,9 +102,11 @@ def average_ph_image(images_list):
 
 
 def average_ph_image_weighted(images_list, weights):
-    """Generates a normalized average image
-    from a list of images. Careful: images should be
-    at the same scale (x-y) for appropriate comparison.
+    """Generates a normalized average image from a list of images.
+
+    .. warning::
+
+        Images should be at the same scale (x-y) for appropriate comparison.
     """
     average_imgs = weights[0] * images_list[0]
 
@@ -116,7 +119,7 @@ def average_ph_image_weighted(images_list, weights):
 
 
 def average_ph_from_list(phs_list, xlims=None, ylims=None, norm_factor=None):
-    """Generates average image from list of phs"""
+    """Generates average image from list of phs."""
     imgs = [
         persistence_image(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims) for p in phs_list
     ]
@@ -126,7 +129,7 @@ def average_ph_from_list(phs_list, xlims=None, ylims=None, norm_factor=None):
 def average_weighted_ph_from_list(
     phs_list, xlims=None, ylims=None, norm_factor=None, max_norm=None
 ):
-    """Generates average image from list of phs"""
+    """Generates average image from list of phs."""
     weights = weight_bars(phs_list, max_norm=max_norm)
     imgs = [
         persistence_image(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims) for p in phs_list
@@ -135,9 +138,7 @@ def average_weighted_ph_from_list(
 
 
 def define_limits(phs_list):
-    """Returns the x-y coordinates limits (min, max)
-    for a list of persistence diagrams
-    """
+    """Return the x-y coordinates limits (min, max) for a list of persistence diagrams."""
     ph = view.plot.collapse(phs_list)
     xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
     ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
@@ -198,7 +199,7 @@ def plot_imgs(
 
 
 def plot_av(phs1, title=""):
-    """Generates and plots the average images from input phs"""
+    """Generates and plots the average images from input phs."""
     xlims, ylims = define_limits(phs1)
     imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
     IMG = average_ph_image(imgs1)
@@ -206,8 +207,7 @@ def plot_av(phs1, title=""):
 
 
 def multiplot(phs1, title=""):
-    """Plots distances, average image and an example from the population"""
-
+    """Plots distances, average image and an example from the population."""
     xlims, ylims = define_limits(phs1)
     imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
 
@@ -228,8 +228,7 @@ def multiplot(phs1, title=""):
 
 
 def multiplot_outliers(phs1, title=""):
-    """Plots distances, average image and an example from the population"""
-
+    """Plots distances, average image and an example from the population."""
     xlims, ylims = define_limits(phs1)
     imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
 
@@ -261,9 +260,7 @@ def multiplot_outliers(phs1, title=""):
 
 
 def outliers_distances(dist_list, n=2):
-    """Outputs the number of cells
-    that are outside the n*sigma regime.
-    """
+    """Outputs the number of cells that are outside the n*sigma regime."""
     d_mean = np.mean(dist_list)
     d_std = np.std(dist_list)
 
@@ -273,9 +270,7 @@ def outliers_distances(dist_list, n=2):
 
 
 def representatives_distances(dist_list, n=3):
-    """Outputs the number of cells
-    that are outside the n*sigma regime.
-    """
+    """Outputs the number of cells that are outside the n*sigma regime."""
     return np.argsort(dist_list)[:n]
 
 
@@ -283,7 +278,7 @@ def representatives_distances(dist_list, n=3):
 
 
 def example_run_outliers(filename="./Female/control 4h/IPL/", title=""):
-    """Special funct"""
+    """Special funct."""
     pop = tmd.io.load_population(filename, tree_types={0: "basal_dendrite"})
 
     phs1 = []
@@ -304,7 +299,7 @@ def example_run_outliers(filename="./Female/control 4h/IPL/", title=""):
 
 
 def example_run(filename="./Female/control 4h/IPL/", title=""):
-    """Special funct"""
+    """Special funct."""
     pop = tmd.io.load_population(filename, tree_types={0: "basal_dendrite"})
 
     phs1 = []
@@ -324,7 +319,7 @@ def example_run(filename="./Female/control 4h/IPL/", title=""):
 
 
 def get_phs_clean(filename="./Female/control 4h/IPL/"):
-    """Special funct"""
+    """Special funct."""
     pop = tmd.io.load_population(filename, tree_types={0: "basal_dendrite"})
 
     phs1 = []
@@ -335,16 +330,13 @@ def get_phs_clean(filename="./Female/control 4h/IPL/"):
             if len(p) > 4:
                 phs1.append(p)
         except Exception:
-            # print(n.name)
             pass
 
     return phs1
 
 
 def norm_limits(ph_list):
-    """Normalizes the limits and the intensity of ph_images
-    in order to compare all the ph of a list.
-    """
+    """Compute the limits of ph_images in order to compare all the ph of a list."""
     # Normalization of limits
     pp = []
     for ph in ph_list:
@@ -355,9 +347,7 @@ def norm_limits(ph_list):
 
 
 def norm_intensity(ph_list):
-    """Normalizes the limits and the intensity of ph_images
-    in order to compare all the ph of a list.
-    """
+    """Normalize the intensity of ph_images in order to compare all the ph of a list."""
     # Normalization of intensity
     intensities = []
     for ph in ph_list:
@@ -370,7 +360,7 @@ def norm_intensity(ph_list):
 
 
 def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
-
+    """Compare multiple plots."""
     xlims, ylims = norm_limits(ph_list)
 
     if norm:
@@ -445,7 +435,7 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
 def multiplot_weighted_comparison_naive(
     ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
 ):
-
+    """Compare multiple weighted plot in a naive way."""
     if xlims is None and ylims is None:
         xlims, ylims = norm_limits(ph_list)
 
@@ -527,7 +517,7 @@ def multiplot_weighted_comparison_naive(
 def multiplot_weighted_comparison(
     ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
 ):
-
+    """Compare multiple weighted plot."""
     if xlims is None and ylims is None:
         xlims, ylims = norm_limits(ph_list)
 
@@ -609,7 +599,7 @@ def multiplot_weighted_comparison(
 def multiplot_weighted_comparison_male_female(
     ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
 ):
-
+    """Compare multiple weighted plot."""
     if xlims is None and ylims is None:
         xlims, ylims = norm_limits(ph_list)
 
@@ -689,7 +679,7 @@ def multiplot_weighted_comparison_male_female(
 
 
 def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylims=None, title=""):
-    # import seaborn
+    """Plot distance number of cells."""
     min_max_size = np.min([len(p) for p in ph_list])
     intervals = np.linspace(step_size, min_max_size, (min_max_size - step_size) / step_size)
 
@@ -752,7 +742,7 @@ def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylim
 
 
 def check_input_data(filename):
-
+    """Check input data."""
     import os
 
     L = os.listdir(filename)
@@ -769,6 +759,5 @@ def check_input_data(filename):
                 counter_process = counter_process + 1
         except Exception:
             counter_load = counter_load + 1
-            # print(c)
 
     return len(L), counter_load, counter_process

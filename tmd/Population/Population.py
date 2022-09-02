@@ -1,14 +1,15 @@
-"""
-tmd class : Population
-"""
+"""TMD class : Population."""
 import warnings
 
 from tmd.Neuron import Neuron
 
 
 class Population(object):
-    """
-    A Population object is a container for Neurons.
+    """A Population object is a container for Neurons.
+
+    Args:
+        name (str): The name of the Population.
+        neurons (list[tmd.Neuron.Neuron.Neuron]): A list of neurons to include in the Population.
     """
 
     def __init__(self, name="Pop", neurons=None):

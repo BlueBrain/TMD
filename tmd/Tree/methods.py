@@ -1,6 +1,4 @@
-"""
-tmd Tree's methods
-"""
+"""TMD Tree's methods."""
 import copy
 from collections import OrderedDict
 from itertools import starmap
@@ -11,43 +9,42 @@ from sklearn.decomposition import PCA
 
 
 def _rd(point1, point2):
-    """Returns euclidean distance between point1 and point2"""
+    """Return euclidean distance between point1 and point2."""
     return np.linalg.norm(np.subtract(point1, point2), 2)
 
 
 def _rd_w(p1, p2, w=(1.0, 1.0, 1.0), normed=True):
-    """Returns weighted euclidean distance between p1 and p2"""
+    """Return weighted euclidean distance between p1 and p2."""
     if normed:
         w = np.array(w) / np.linalg.norm(w)
     return np.dot(w, (np.subtract(p1, p2)))
 
 
 def size(tree):
-    """
-    Tree method to get the size of the tree lists.
+    """Tree method to get the size of the tree lists.
 
-    Note: All the lists of the Tree should be
-    of the same size, but this should be
-    checked in the initialization of the Tree!
+    .. note::
+
+        All the lists of the Tree should be of the same size, but this should be checked in the
+        initialization of the Tree!
     """
     return int(len(tree.x))
 
 
 def get_type(self):
-    """Returns type of tree"""
+    """Return type of tree."""
     return int(np.median(self.t))
 
 
 def get_bounding_box(self):
-    """
-    Input
-    ------
-    tree: tmd tree
+    """Get the bounding box of the neurites.
 
-    Returns
-    ---------
-    bounding_box: np.array
-        ([xmin,ymin,zmin], [xmax,ymax,zmax])
+    Args:
+        self: A TMD tree.
+
+    Return:
+        bounding_box: np.array
+            ([xmin,ymin,zmin], [xmax,ymax,zmax])
     """
     xmin = np.min(self.x)
     xmax = np.max(self.x)
@@ -61,16 +58,15 @@ def get_bounding_box(self):
 
 # Segment features
 def get_segments(self, seg_ids=None):
-    """Return segment coordinates
-    Input
-    ------
-    tree: tmd tree
-    seg_ids: segment numbers to consider
+    """Return segment coordinates.
 
-    Returns
-    ---------
-    seg_list: np.array
-        (child[x,y,z], parent[x,y,z])
+    Args:
+        self: A TMD tree.
+        seg_ids: segment numbers to consider
+
+    Return:
+        seg_list: np.array
+            (child[x,y,z], parent[x,y,z])
     """
     seg_list = []
     if not seg_ids:
@@ -86,11 +82,11 @@ def get_segments(self, seg_ids=None):
 
 
 def get_segment_lengths(tree, seg_ids=None):
-    """Returns segment lengths
-    Input
-    ------
-    tree: tmd tree
-    seg_ids: segment numbers to consider
+    """Return segment lengths.
+
+    Args:
+        tree: tmd tree
+        seg_ids: segment numbers to consider
     """
     if not seg_ids:
         seg_ids = range(0, size(tree) - 1)
@@ -105,6 +101,7 @@ def get_segment_lengths(tree, seg_ids=None):
 # Points features to be used for topological extraction
 def get_point_radial_distances(self, point=None, dim="xyz"):
     """Tree method to get radial distances from a point.
+
     If point is None, the soma surface -defined by
     the initial point of the tree- will be used
     as a reference point.
@@ -128,6 +125,7 @@ def get_point_radial_distances(self, point=None, dim="xyz"):
 
 def get_point_radial_distances_time(self, point=None, dim="xyz", zero_time=0, time=1):
     """Tree method to get radial distances from a point.
+
     If point is None, the soma surface -defined by
     the initial point of the tree- will be used
     as a reference point.
@@ -153,6 +151,7 @@ def get_point_radial_distances_time(self, point=None, dim="xyz", zero_time=0, ti
 
 def get_point_weighted_radial_distances(self, point=None, dim="xyz", w=(1, 1, 1), normed=False):
     """Tree method to get radial distances from a point.
+
     If point is None, the soma surface -defined by
     the initial point of the tree- will be used
     as a reference point.
@@ -211,7 +210,7 @@ def get_point_section_lengths(self):
 
 
 def get_branch_order(tree, seg_id):
-    """Returns branch order of segment"""
+    """Return branch order of segment."""
     B = tree.get_multifurcations()
     return sum(1 if i in B else 0 for i in get_way_to_root(tree, seg_id))
 
@@ -222,10 +221,11 @@ def get_point_section_branch_orders(self):
 
 
 def get_point_projection(self, vect=(0, 1, 0), point=None):
-    """Projects each point in the tree (x,y,z) - input_point
-    to a selected vector. This gives the orientation of
+    """Projects each point in the tree (x,y,z) - input_point to a selected vector.
+
+    This gives the orientation of
     each section according to a vector in space, if normalized,
-    otherwise it returns the relative length of the section.
+    otherwise it return the relative length of the section.
     """
     if point is None:
         point = [self.x[0], self.y[0], self.z[0]]
@@ -237,9 +237,7 @@ def get_point_projection(self, vect=(0, 1, 0), point=None):
 
 # Section features
 def get_sections_2(self):
-    """Tree method to get the indices of the parents of the first sections' points
-    and the indices of the last points of the sections.
-    """
+    """Get indices of the parents of the first sections' points and of their last points."""
     end = np.array(sp.csr_matrix.sum(self.dA, 0) != 1)[0].nonzero()[0]
 
     if 0 in end:  # If first segment is a bifurcation
@@ -263,35 +261,35 @@ def get_sections_only_points(self):
 
 
 def get_bif_term(self):
-    """Returns number of children per point"""
+    """Return number of children per point."""
     return np.array(sp.csr_matrix.sum(self.dA, axis=0))[0]
 
 
 def get_bifurcations(self):
-    """Returns bifurcations"""
+    """Return bifurcations."""
     bif_term = get_bif_term(self)
     bif = np.where(bif_term == 2.0)[0]
     return bif
 
 
 def get_multifurcations(self):
-    """Returns bifurcations"""
+    """Return bifurcations."""
     bif_term = get_bif_term(self)
     bif = np.where(bif_term >= 2.0)[0]
     return bif
 
 
 def get_terminations(self):
-    """Returns terminations"""
+    """Return terminations."""
     bif_term = get_bif_term(self)
     term = np.where(bif_term == 0.0)[0]
     return term
 
 
 def get_direction_between(self, start_id=0, end_id=1):
-    """Returns direction of a branch
-    defined as end point - start point
-    normalized as a unit vector.
+    """Return direction of a branch.
+
+    The direction is defined as end point - start point normalized as a unit vector.
     """
     # pylint: disable=assignment-from-no-return
     vect = np.subtract(
@@ -305,16 +303,17 @@ def get_direction_between(self, start_id=0, end_id=1):
 
 
 def _vec_angle(u, v):
-    """Returns the angle between v and u in 3D."""
+    """Return the angle between v and u in 3D."""
     c = np.dot(u, v) / np.linalg.norm(u) / np.linalg.norm(v)
     return np.arccos(c)
 
 
-def get_angle_between(tree, sec_id1, sec_id2):
-    """Returns local bifurcations angle
-    between two sections, defined by their ids.
-    sec_id1: the start point of the section #1
-    sec_id2: the start point of the section #2
+def get_angle_between(tree, sec_id1, sec_id2):  # noqa: D417
+    """Return local bifurcations angle between two sections, defined by their ids.
+
+    Args:
+        sec_id1: the start point of the section #1
+        sec_id2: the start point of the section #2
     """
     beg, end = tree.get_sections_only_points()
     b1 = np.where(beg == sec_id1)[0][0]
@@ -327,7 +326,7 @@ def get_angle_between(tree, sec_id1, sec_id2):
 
 
 def get_way_to_root(tree, sec_id=0):
-    """Returns way to root"""
+    """Return way to root."""
     way = []
     tmp_id = sec_id
 
@@ -339,17 +338,12 @@ def get_way_to_root(tree, sec_id=0):
 
 
 def get_children(tree):
-    """Returns a dictionary of children
-    for each node of the tree
-    """
+    """Return a dictionary of children for each node of the tree."""
     return OrderedDict({i: np.where(tree.p == i)[0] for i in range(len(tree.p))})
 
 
 def get_pca(self, plane="xy", component=0):
-    """Returns the i-th principal
-    component of PCA on the points
-    of the tree in the selected plane
-    """
+    """Return the i-th principal component of PCA of the tree points in the selected plane."""
     pca = PCA(n_components=2)
     pca.fit(np.transpose([getattr(self, plane[0]), getattr(self, plane[1])]))
 
