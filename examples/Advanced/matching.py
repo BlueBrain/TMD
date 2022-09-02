@@ -1,6 +1,7 @@
 """
 tmd matching algorithms implementation
 """
+import numpy as np
 
 
 def marriage_problem(women_preferences, men_preferences):
@@ -70,8 +71,6 @@ def matching_diagrams(
         """Plots matching between p1, p2
         for the corresponding indices
         """
-        import pylab as plt
-
         fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
         for i, j in indices:
             ax.plot((p1[i][0], p2[j][0]), (p1[i][1], p2[j][1]), color="black")

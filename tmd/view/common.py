@@ -6,7 +6,6 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D  # pylint: disable=unused-import
 
 jet_map = plt.cm.get_cmap("jet")
 blues_map = plt.cm.get_cmap("Blues")

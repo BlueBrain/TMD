@@ -1,12 +1,3 @@
-"""
-    tmd : Neuron class
+"""TMD: Population class."""
 
-    Author: Lida Kanari
-
-    Ecole Polytechnique Federale de Lausanne
-    Blue Brain Project
-
-    (c) 2014-2015. All rights reserved.
-"""
-
-from tmd.Population import Population
+from tmd.Population import Population  # noqa

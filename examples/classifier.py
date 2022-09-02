@@ -50,7 +50,7 @@ def classify_cell_in_groups(
 
     # ------------------------ Training dataset --------------------------------
     # Load all data from selected folders
-    groups = [tmd.io.load_population(l) for l in list_of_groups]
+    groups = [tmd.io.load_population(i) for i in list_of_groups]
     # Define labels depending on the number of neurons in each folder
     labels = [i + 1 for i, k in enumerate(groups) for j in k.neurons]
     # Generate a persistence diagram per neuron
@@ -80,7 +80,7 @@ def classify_cell_in_groups(
 
     predict_labels = []
     # Train classifier with training images for selected number_of_trials
-    for i in xrange(number_of_trials):
+    for i in range(number_of_trials):
 
         clf = train(classifier_module, classifier_method, train_dataset, labels)
         # Test classifier with test image and return predictions

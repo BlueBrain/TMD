@@ -1,3 +1,10 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+from tmd.Topology.analysis import sort_ph
+from tmd.view import plot
+
+
 def find_matching(p1, p2):
     """Finds the best matching between two
     persistent diagrams and returns a list
@@ -6,8 +13,6 @@ def find_matching(p1, p2):
     the matching starts from the longest
     components.
     """
-    from scipy.spatial import distance
-    from view import plot
 
     p2 = sort_ph(p2)
     p2_symm = [((p[0] + p[1]) / 2.0, (p[0] + p[1]) / 2.0) for p in p2]
@@ -36,7 +41,7 @@ def find_matching(p1, p2):
             avail_symm.remove(np.where(p2_symm == value)[0][0])
 
 
-def find_matching_time_series(p_list):
+def find_matching_time_series(p1, p2):
     """Finds the best matching between two
     persistent diagrams and returns a list
     of matched indices. The difference is
@@ -44,9 +49,6 @@ def find_matching_time_series(p_list):
     the matching starts from the longest
     components.
     """
-    from scipy.spatial import distance
-    from view import plot
-
     p2 = sort_ph(p2)
     p1_symm = [((p[0] + p[1]) / 2.0, (p[0] + p[1]) / 2.0) for p in p1]
     avail = range(len(p1))
@@ -95,9 +97,7 @@ def marriage_problem(women_preferences, men_preferences):
     free_women = range(N)
     free_men = range(M)
 
-    couples = {x: None for x in xrange(N)}  # woman first, then current husband
-
-    count = 0
+    couples = {x: None for x in range(N)}  # woman first, then current husband
 
     while len(free_men) > 0:
         m = free_men.pop()
@@ -123,7 +123,6 @@ def marriage_problem(women_preferences, men_preferences):
 
 def marry_components(p1, p2, ax=None, z1=0, z2=0.2):
     """Returns a list of matching components"""
-    from mpl_toolkits.mplot3d.art3d import Line3DCollection
     from scipy.spatial.distance import cdist
 
     # if ax is None:
@@ -169,9 +168,6 @@ def marry_components(p1, p2, ax=None, z1=0, z2=0.2):
 
 
 def vineyards(ph_list):
-    from matplotlib import pylab as plt
-    from mpl_toolkits.mplot3d import Axes3D
-
     # fig = plt.figure()
     # ax = fig.add_subplot(111, projection='3d')
 
@@ -204,9 +200,9 @@ def get_persistence_diagram_timelapse(trees, **kwargs):
 
         while len(np.where(active)[0]) > 1:
             alive = list(np.where(active)[0])
-            for l in alive:
+            for i in alive:
 
-                p = parents[l]
+                p = parents[i]
                 c = children[p]
 
                 if np.alltrue(active[c]):

@@ -1,6 +1,4 @@
 import numpy as np
-from mock import Mock
-from mock import patch
 from numpy import testing as npt
 
 from tmd.Topology import persistent_properties as tested

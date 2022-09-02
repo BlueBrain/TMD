@@ -8,55 +8,18 @@ import pytest
 from numpy import testing as npt
 
 from tmd.io import io
-from tmd.Soma import Soma
-from tmd.Tree import Tree
-
-_path = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(_path, "data")
-POP_PATH = os.path.join(DATA_PATH, "valid")
-
-# Filenames for testing
-basic_file = os.path.join(DATA_PATH, "basic.swc")
-nosecids_file = os.path.join(DATA_PATH, "basic_no_sec_ids.swc")
-sample_file = os.path.join(DATA_PATH, "sample.swc")
-
-sample_h5_v1_file = os.path.join(DATA_PATH, "sample_v1.h5")
-sample_h5_v2_file = os.path.join(DATA_PATH, "sample_v2.h5")
-sample_h5_v0_file = os.path.join(DATA_PATH, "sample_v0.h5")
-
-neuron_v1 = io.load_neuron(sample_h5_v1_file)
-neuron_v2 = io.load_neuron(sample_h5_v2_file)
-neuron1 = io.load_neuron(sample_file)
-
-soma_test = Soma.Soma([0.0], [0.0], [0.0], [12.0])
-soma_test1 = Soma.Soma([0.0], [0.0], [0.0], [6.0])
-apical_test = Tree.Tree(
-    x=np.array([5.0, 5.0]),
-    y=np.array([6.0, 6.0]),
-    z=np.array([7.0, 7.0]),
-    d=np.array([16.0, 16.0]),
-    t=np.array([4, 4]),
-    p=np.array([-1, 0]),
-)
-basal_test = Tree.Tree(
-    x=np.array([4.0]),
-    y=np.array([5.0]),
-    z=np.array([6.0]),
-    d=np.array([14.0]),
-    t=np.array([3]),
-    p=np.array([-1]),
-)
-axon_test = Tree.Tree(
-    x=np.array([3.0]),
-    y=np.array([4.0]),
-    z=np.array([5.0]),
-    d=np.array([12.0]),
-    t=np.array([2]),
-    p=np.array([-1]),
-)
 
 
-def test_load_swc_neuron():
+def test_load_swc_neuron(
+    soma_test,
+    soma_test1,
+    apical_test,
+    basal_test,
+    axon_test,
+    basic_file,
+    sample_file,
+    basic_nosecids_file,
+):
     neuron = io.load_neuron(basic_file)
     assert neuron.soma.is_equal(soma_test)
     assert len(neuron.apical_dendrite) == 1
@@ -75,32 +38,26 @@ def test_load_swc_neuron():
     tree_1 = neuron1.axon[0]
     npt.assert_allclose(tree_1.get_bifurcations(), np.array([10, 20]))
     npt.assert_allclose(tree_1.get_terminations(), np.array([15, 25, 30]))
-    try:
-        neuron = io.load_neuron(nosecids_file)
-        assert False
-    except:
-        assert True
+
+    with pytest.warns(UserWarning, match=r"The following IDs are duplicated: \[3\.\]"):
+        io.load_neuron(basic_nosecids_file)
 
 
-def test_load_h5_neuron():
+def test_load_h5_neuron(neuron_v1, neuron_v2, sample_h5_v0_file):
     assert neuron_v1.soma.is_equal(neuron_v2.soma)
     assert neuron_v1.basal_dendrite[0].is_equal(neuron_v2.basal_dendrite[0])
     assert neuron_v1.axon[0].is_equal(neuron_v2.axon[0])
-    try:
-        neuron = io.load_neuron(sample_h5_v0_file)
-        assert False
-    except:
-        assert True
+
+    with pytest.raises(Exception, match="Not recognized h5 version"):
+        io.load_neuron(sample_h5_v0_file)
 
 
-def test_io_load():
-    # neuron_v1 = io.load_neuron(sample_h5_v1_file)
-    # neuron_v2 = io.load_neuron(sample_h5_v2_file)
+def test_io_load(neuron1, neuron_v1, neuron_v2, POP_PATH):
     assert neuron1.is_equal(neuron_v1)
     assert neuron1.is_equal(neuron_v2)
 
 
-def test_load_population():
+def test_load_population(POP_PATH):
     # Testing with a directory
     population = io.load_population(POP_PATH)
     assert len(population.neurons) == 5
@@ -181,7 +138,7 @@ def test_load_population():
         io.load_population(0)
 
 
-def test_tree_type():
+def test_tree_type(DATA_PATH):
     tree_types = {5: "soma", 6: "axon", 7: "basal_dendrite", 8: "apical_dendrite"}
 
     neuron = io.load_neuron(

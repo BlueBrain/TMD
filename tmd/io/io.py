@@ -5,6 +5,7 @@ about reading and writing files.
 from __future__ import print_function
 
 import os
+import warnings
 from pathlib import Path
 
 import numpy as _np
@@ -92,22 +93,29 @@ def load_neuron(
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
         neuron = Neuron.Neuron(name=str(input_file).replace('.h5', ''))
 
+    # Check for duplicated IDs
+    IDs, counts = _np.unique(data[:, 0], return_counts=True)
+    if (counts != 1).any():
+        warnings.warn(f"The following IDs are duplicated: {IDs[counts > 1]}")
+
+    data_T = _np.transpose(data)
+
     try:
-        soma_ids = _np.where(_np.transpose(data)[1] == soma_index)[0]
+        soma_ids = _np.where(data_T[1] == soma_index)[0]
     except IndexError as exc:
         raise LoadNeuronError("Soma points not in the expected format") from exc
 
     # Extract soma information from swc
     soma = Soma.Soma(
-        x=_np.transpose(data)[SWC_DCT["x"]][soma_ids],
-        y=_np.transpose(data)[SWC_DCT["y"]][soma_ids],
-        z=_np.transpose(data)[SWC_DCT["z"]][soma_ids],
-        d=_np.transpose(data)[SWC_DCT["radius"]][soma_ids],
+        x=data_T[SWC_DCT["x"]][soma_ids],
+        y=data_T[SWC_DCT["y"]][soma_ids],
+        z=data_T[SWC_DCT["z"]][soma_ids],
+        d=data_T[SWC_DCT["radius"]][soma_ids],
     )
 
     # Save soma in Neuron
     neuron.set_soma(soma)
-    p = _np.array(_np.transpose(data)[6], dtype=int) - _np.transpose(data)[0][0]
+    p = _np.array(data_T[6], dtype=int) - _np.transpose(data)[0][0]
     # return p, soma_ids
     try:
         dA = sp.csr_matrix(

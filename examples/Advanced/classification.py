@@ -1,3 +1,5 @@
+import numpy as np
+
 list_of_modules = ["discriminant_analysis", "discriminant_analysis", "tree"]
 
 list_of_classifiers = [
@@ -215,4 +217,4 @@ def multi(dat, tar, m="tree", cl="DecisionTreeClassifier", n=10, randomize=False
                 m, cl, dat, np.random.randint(min(tar), max(tar) + 1, size=len(tar))
             )
 
-    return mean(score), std(score)
+    return np.mean(score), np.std(score)

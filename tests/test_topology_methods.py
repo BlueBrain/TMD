@@ -1,12 +1,10 @@
 """Test tmd.topology.methods"""
 import os
-from collections import OrderedDict
 
 import mock
 import numpy as np
 from numpy import testing as npt
 
-from tmd.io import io
 from tmd.Topology import analysis
 from tmd.Topology import methods
 from tmd.Tree import Tree
@@ -30,292 +28,40 @@ p2 = np.array([-1, 0, 1, 1, 1])
 tree = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p1)
 tree_trifork = Tree.Tree(x=x1, y=y1, z=z1, d=d1, t=t1, p=p2)
 
+# fmt: off
 # ===================================== tree0 =======================================
-
-x2 = np.array(
-    [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        -1.0,
-        -2.0,
-        -3.0,
-        -4.0,
-        -5.0,
-        1.0,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-        5.0,
-    ]
-)
-y2 = np.array(
-    [
-        0.0,
-        1.0,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-        6.0,
-        7.0,
-        8.0,
-        9.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-    ]
-)
-z2 = np.array(
-    [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-        -1.0,
-        -2.0,
-        -3.0,
-        -4.0,
-        -5.0,
-    ]
-)
-d2 = np.array(
-    [
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-    ]
-)
-t2 = np.array(
-    [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-)
-p2 = np.array(
-    [
-        -1,
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        10,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        20,
-        26,
-        27,
-        28,
-        29,
-    ]
-)
+x2 = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1., -2.,
+               -3., -4., -5., 1., 2., 3., 4., 5., 5., 5., 5., 5., 5.,
+               5., 5., 5., 5., 5.])
+y2 = np.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 10., 10.,
+               10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10.,
+               10., 10., 10., 10., 10.])
+z2 = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0., 0., 0., 0., 0., 1., 2., 3., 4., 5.,
+               -1., -2., -3., -4., -5.])
+d2 = np.array([0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+               0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+               0.4, 0.4, 0.4, 0.4, 0.4])
+t2 = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+               2, 2, 2, 2, 2, 2, 2, 2, 2])
+p2 = np.array([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10,
+               16, 17, 18, 19, 20, 21, 22, 23, 24, 20, 26, 27, 28, 29])
 
 tree0 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
 
 # ===================================== tree1 =======================================
-x2 = np.array(
-    [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        -1.0,
-        -2.0,
-        -3.0,
-        -4.0,
-        -5.0,
-        1.0,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-    ]
-)
-y2 = np.array(
-    [
-        0.0,
-        1.0,
-        2.0,
-        3.0,
-        4.0,
-        5.0,
-        6.0,
-        7.0,
-        8.0,
-        9.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-        10.0,
-    ]
-)
-z2 = np.array(
-    [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ]
-)
-d2 = np.array(
-    [
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-        0.4,
-    ]
-)
+x2 = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., -1., -2.,
+               -3., -4., -5., 1., 2., 3., 4., 5.])
+y2 = np.array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 10., 10.,
+               10., 10., 10., 10., 10., 10., 10., 10.])
+z2 = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               0., 0., 0., 0.])
+d2 = np.array([0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,
+               0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4])
 t2 = np.array([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
-p2 = np.array([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10, 16, 17, 18, 19])
+p2 = np.array([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 10,
+               16, 17, 18, 19])
+# fmt: on
 
 tree1 = Tree.Tree(x=x2, y=y2, z=z2, d=d2, t=t2, p=p2)
 
@@ -340,8 +86,6 @@ def test_get_persistence_diagram():
 
 
 def test_extract_persistence_diagram():
-    import filecmp
-
     if os.path.isfile("test_ph.txt"):
         os.remove("test_ph.txt")
     methods.extract_ph(tree0, output_file="./test_ph.txt")
@@ -440,10 +184,11 @@ def test_filtration_function():
 
 
 def test_tree_to_property_barcode():
+    def filtration_function(tree):
+        return np.array([0.0, 1.0, 3.0, 5.0, 7.0])
 
-    filtration_function = lambda tree: np.array([0.0, 1.0, 3.0, 5.0, 7.0])
-
-    prop = lambda *args: mock.Mock(get=lambda v: [], infinite_component=lambda v: [])
+    def prop(*args):
+        return mock.Mock(get=lambda v: [], infinite_component=lambda v: [])
 
     ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 
@@ -458,7 +203,8 @@ def test_tree_to_property_barcode():
 
     assert bars_to_points == [[2], [3], [4, 1]]
 
-    prop = lambda *args: mock.Mock(get=lambda v: [v], infinite_component=lambda v: [0])
+    def prop(*args):
+        return mock.Mock(get=lambda v: [v], infinite_component=lambda v: [0])
 
     ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 
@@ -473,9 +219,10 @@ def test_tree_to_property_barcode():
 
     assert bars_to_points == [[2], [3], [4, 1]]
 
-    prop = lambda *args: mock.Mock(
-        get=lambda v: list(range(v, v + 5)), infinite_component=lambda v: [np.nan] * 5
-    )
+    def prop(*args):
+        return mock.Mock(
+            get=lambda v: list(range(v, v + 5)), infinite_component=lambda v: [np.nan] * 5
+        )
 
     ph, bars_to_points = methods.tree_to_property_barcode(tree_trifork, filtration_function, prop)
 

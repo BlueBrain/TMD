@@ -1,6 +1,7 @@
-from view import polar_plots
+import matplotlib.pyplot as plt
 
 import tmd
+from tmd.view import polar_plots
 
 filename = "./"
 

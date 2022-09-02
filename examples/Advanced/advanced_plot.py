@@ -1,11 +1,19 @@
 """Plotting functions of tmd (untested and more complex plotting)"""
 
 import common as _cm
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
 import numpy as _np
 import view as _view
+from scipy import stats
 
 from tmd import Topology as _tm
+from tmd import utils as _utils
+from tmd import view
 from tmd.analysis import sort_ph
+from tmd.view.plot import barcode
+from tmd.view.plot import diagram
+from tmd.view.plot import persistence_image
 
 
 def _sort_ph_radii(ph):
@@ -47,10 +55,6 @@ def tree_all(
     **kwargs,
 ):
     """Subplot with ph, barcode and tree"""
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -63,8 +67,8 @@ def tree_all(
         diameter=diameter,
     )
 
-    feat = getattr(tree, "get_section_" + feature)()
-    segs = tree.get_segments()
+    # feat = getattr(tree, "get_section_" + feature)()
+    # segs = tree.get_segments()
 
     def _seg_2d(seg):
         """2d coordinates required for the plotting of a segment"""
@@ -84,16 +88,16 @@ def tree_all(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-    fig1, ax2 = ph_diagram(ph, new_fig=False, subplot=222, color=treecol)
+    # bounds = max(max(ph))
+    fig1, ax2 = diagram(ph, new_fig=False, subplot=222, color=treecol)
     fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
-    fig1, ax4 = ph_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
     _cm.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _cm.save_plot(fig=ax1, **kwargs)
+        _cm.save_plot(fig=ax1, **kwargs)
 
-    return fig1, ax1
+    return fig1, ax1, ax2, ax3, ax4
 
 
 def neu_all(
@@ -111,10 +115,6 @@ def neu_all(
     """Subplot with ph, barcode
     and tree within spheres
     """
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.neuron(
@@ -133,14 +133,14 @@ def neu_all(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-    fig1, ax2 = ph_diagram(ph, new_fig=False, subplot=222, color=treecol)
+    # bounds = max(max(ph))
+    fig1, ax2 = diagram(ph, new_fig=False, subplot=222, color=treecol)
     fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
-    fig1, ax4 = ph_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
     _cm.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _cm.save_plot(fig=ax1, **kwargs)
+        _cm.save_plot(fig=ax1, **kwargs)
 
     return fig1, ax1
 
@@ -158,7 +158,7 @@ def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, 
     Z = [[0, 0], [0, 0]]
     levels = _np.linspace(0.0, diam_max, 200)
     CS3 = _view.common.plt.contourf(Z, levels, cmap=cm.jet)
-    ph_sort = sort_ph_radii(ph)
+    ph_sort = _sort_ph_radii(ph)
 
     for ip, p in enumerate(ph_sort):
         ax.plot(p[:2], [ip, ip], c=cm.jet(p[2] / diam_max), linewidth=linewidth)
@@ -203,12 +203,11 @@ def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
 
     ph_sort = sort_ph(ph)
 
-    bounds = _np.max(_np.max(ph))
-
     for p in ph_sort:
 
         ax.scatter(p[0], p[2], c=color)
 
+    # bounds = _np.max(_np.max(ph))
     # _view.common.plt.plot([0, bounds], [0, bounds], c=color)
 
     kwargs["title"] = kwargs.get("title", "Birth-Length diagram")
@@ -377,8 +376,6 @@ def tree_instance(
     """Subplot with ph, barcode and tree within spheres"""
     from matplotlib.collections import LineCollection
 
-    from tmd import utils as _utils
-
     if new_fig:
         fig1, ax1 = _view.tree(
             tree,
@@ -412,11 +409,9 @@ def tree_instance(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-
     if new_fig:
         fig1, ax2 = barcode(ph, new_fig=False, subplot=222, color=treecol)
-        fig1, ax3 = ph_diagram(ph, new_fig=False, subplot=224, color=treecol)
+        fig1, ax3 = diagram(ph, new_fig=False, subplot=224, color=treecol)
     else:
         fig1, ax2 = _view.common.get_figure(new_fig=new_fig, subplot=222)
         fig1, ax3 = _view.common.get_figure(new_fig=new_fig, subplot=224)
@@ -451,9 +446,6 @@ def tree_instance(
 
 def customized_cmap():
     """Returns a custom cmap"""
-    import matplotlib.colors as mcolors
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     def make_colormap(seq):
         """Return a LinearSegmentedColormap
@@ -470,8 +462,6 @@ def customized_cmap():
                 cdict["green"].append([item, g1, g2])
                 cdict["blue"].append([item, b1, b2])
         return mcolors.LinearSegmentedColormap("CustomMap", cdict)
-
-    c = mcolors.ColorConverter().to_rgb
 
     rvb = make_colormap(
         [
@@ -526,10 +516,6 @@ def customized_cmap():
 
 def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
     """Plots the gaussian kernel of the ph diagram that is given."""
-    import numpy as _np
-    from numpy.random import multivariate_normal
-    from scipy import stats
-
     values = _np.transpose(ph)
     kernel = stats.gaussian_kde(values)
 
@@ -541,7 +527,6 @@ def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
 
 def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, angle=0, **kwargs):
     """Plots the gaussian kernel of the ph diagram that is given."""
-    from scipy import stats
 
     def rotation(x, y, angle=0.0):
         return [_np.cos(angle) * x - _np.sin(angle) * y, _np.sin(angle) * x + _np.cos(angle) * y]
@@ -575,8 +560,6 @@ def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, a
 
 def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs):
     """Plots the gaussian kernel of the ph diagram that is given."""
-    from scipy import stats
-
     xmin = min(_np.transpose(ph)[0])
     xmax = max(_np.transpose(ph)[0])
     ymin = min(_np.transpose(ph)[1])
@@ -608,8 +591,6 @@ def gaussian_kernel_superposition(
     """Plots the gaussian kernel
     of the ph diagram that is given.
     """
-    from scipy import stats
-
     xmin = min(_np.transpose(ph)[0])
     xmax = max(_np.transpose(ph)[0])
     ymin = min(_np.transpose(ph)[1])
@@ -646,10 +627,6 @@ def tree_br(
     """Subplot with ph, barcode
     and tree within spheres
     """
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -661,9 +638,6 @@ def tree_br(
         treecolor=treecol,
         diameter=diameter,
     )
-
-    feat = getattr(tree, "get_section_" + feature)()
-    segs = tree.get_segments()
 
     def _seg_2d(seg):
         """2d coordinates required for the plotting of a segment"""
@@ -683,14 +657,12 @@ def tree_br(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-
     fig1, ax2 = barcode(ph, new_fig=False, subplot=122, color=treecol, ylabel="")
 
     _view.common.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _view.common.save_plot(fig=ax1, **kwargs)
+        _view.common.save_plot(fig=ax1, **kwargs)
 
     return fig1, ax1
 
@@ -709,10 +681,6 @@ def tree_gaussian_kernel(
     """Subplot with ph, barcode
     and tree within spheres
     """
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -724,9 +692,6 @@ def tree_gaussian_kernel(
         treecolor=treecol,
         diameter=diameter,
     )
-
-    feat = getattr(tree, "get_section_" + feature)()
-    segs = tree.get_segments()
 
     def _seg_2d(seg):
         """2d coordinates required for the plotting of a segment"""
@@ -746,14 +711,12 @@ def tree_gaussian_kernel(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-
-    fig1, ax2 = gaussian_kernel(ph, new_fig=False, subplot=122, xlims=xlims, ylims=ylims)
+    fig1, ax2 = gaussian_kernel_weighted(ph, new_fig=False, subplot=122, xlims=xlims, ylims=ylims)
 
     _view.common.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _view.common.save_plot(fig=ax1, **kwargs)
+        _view.common.save_plot(fig=ax1, **kwargs)
 
     return fig1, ax1
 
@@ -772,10 +735,6 @@ def tree_ph(
     """Subplot with ph, barcode
     and tree within spheres
     """
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -787,9 +746,6 @@ def tree_ph(
         treecolor=treecol,
         diameter=diameter,
     )
-
-    feat = getattr(tree, "get_section_" + feature)()
-    segs = tree.get_segments()
 
     def _seg_2d(seg):
         """2d coordinates required for the plotting of a segment"""
@@ -809,14 +765,12 @@ def tree_ph(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-
-    fig1, ax2 = ph_diagram(ph, new_fig=False, subplot=122, color=treecol)
+    fig1, ax2 = diagram(ph, new_fig=False, subplot=122, color=treecol)
 
     _view.common.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _view.common.save_plot(fig=ax1, **kwargs)
+        _view.common.save_plot(fig=ax1, **kwargs)
 
     return fig1, ax1
 
@@ -837,10 +791,6 @@ def tree_evol(
     """Subplot with ph, barcode
     and tree within spheres
     """
-    from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
-
     kwargs["output_path"] = kwargs.get("output_path", None)
 
     fig1, ax1 = _view.tree(
@@ -852,9 +802,6 @@ def tree_evol(
         treecolor=treecol,
         diameter=diameter,
     )
-
-    feat = getattr(tree, "get_section_" + feature)()
-    segs = tree.get_segments()
 
     def _seg_2d(seg):
         """2d coordinates required for the plotting of a segment"""
@@ -874,22 +821,20 @@ def tree_evol(
     else:
         raise Exception("Plane value not recognised")
 
-    bounds = max(max(ph))
-
     fig1, ax3 = barcode(ph, new_fig=False, subplot=222, color=treecol, xlim=xlim, ylim=ylim)
 
-    fig1, ax4 = gaussian_kernel(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = gaussian_kernel_weighted(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
 
     _view.common.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
-        fig = _view.common.save_plot(fig=ax1, **kwargs)
+        _view.common.save_plot(fig=ax1, **kwargs)
 
     return fig1, ax1
 
 
 def image_diff_time(
-    Z_sequence, time_steps=100, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs
+    Z1, Z2, time_steps=100, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs
 ):
     """Takes as input a set of images
     as exported from the gaussian kernel
@@ -937,8 +882,6 @@ def plot_simple_tree(
 ):
     """Generates a 2d figure of the tree."""
     from matplotlib.collections import LineCollection
-
-    from tmd import utils as _utils
 
     # Initialization of matplotlib figure and axes.
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
@@ -1050,13 +993,13 @@ def plot_persistent_homology_video(
 
     ph_all = _sort_ph_initial(ph_all)
 
-    colors_bar = _np.array([c4 for s in xrange(len(ph_all))])
+    colors_bar = _np.array([c4 for s in range(len(ph_all))])
 
     ph = []
 
     rd = getattr(tree, "get_point_" + feature)(**kwargs)
 
-    colors = _np.array([c1 for s in xrange(len(tree.x) - 1)])
+    colors = _np.array([c1 for s in range(len(tree.x) - 1)])
 
     counter = 5
 
@@ -1074,7 +1017,7 @@ def plot_persistent_homology_video(
     parents = {e: b for b, e in zip(beg, end)}
     children = {b: end[_np.where(beg == b)[0]] for b in _np.unique(beg)}
 
-    colors_bar = _np.array([c3 for s in xrange(len(ph_all))])
+    colors_bar = _np.array([c3 for s in range(len(ph_all))])
 
     plot_intermediate(ph_all, colors_bar, tree, colors, counter, output_path=output_path)
 
@@ -1085,9 +1028,9 @@ def plot_persistent_homology_video(
     while len(_np.where(active)[0]) > 1:
         alive = list(_np.where(active)[0])
 
-        for l in alive:
+        for i in alive:
 
-            p = parents[l]
+            p = parents[i]
             c = children[p]
 
             if _np.alltrue(active[c]):
@@ -1197,9 +1140,9 @@ def plot_persistent_homology_video(
 
 
 def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
-    fig = plt.figure()
+    plt.figure()
     N = len(trees)
-    lims = [np.min(np.min(phs)) - 5, np.max(np.max(phs)) + 5]
+    lims = [_np.min(_np.min(phs)) - 5, _np.max(_np.max(phs)) + 5]
 
     for i, tr in enumerate(trees):
         view.view.tree(
@@ -1214,7 +1157,7 @@ def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
         )
 
         view.plot.barcode(phs[i], new_fig=False, subplot=(3, N, i + 1 + N), title="", xlim=lims)
-        view.plot.ph_image(
+        view.plot.persistence_image(
             phs[i], new_fig=False, subplot=(3, N, i + 1 + 2 * N), title="", xlims=lims, ylims=lims
         )
 
@@ -1226,21 +1169,21 @@ def polar_plot_custom_color(
     fig = _cm.plt.figure()
     ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
 
-    input_data1 = _get_polar_data(population, neurite_type="basal_dendrite", bins=bins)
-    input_data2 = _get_polar_data(population, neurite_type="apical_dendrite", bins=bins)
+    input_data1 = view.view._get_polar_data(population, neurite_type="basal_dendrite", bins=bins)
+    input_data2 = view.view._get_polar_data(population, neurite_type="apical_dendrite", bins=bins)
 
     maximum = _np.max(_np.array(input_data1)[:, 2].tolist() + _np.array(input_data2)[:, 2].tolist())
 
     theta = _np.array(input_data1)[:, 0]
     radii = _np.array(input_data1)[:, 2] / maximum
     width = 2 * _np.pi / len(input_data1)
-    bars = ax.bar(
+    ax.bar(
         theta, radii, width=width, edgecolor=edgecolor, bottom=0.0, alpha=alpha, color=basal_color
     )
 
     theta = _np.array(input_data2)[:, 0]
     radii = _np.array(input_data2)[:, 2] / maximum
     width = 2 * _np.pi / len(input_data2)
-    bars = ax.bar(
+    ax.bar(
         theta, radii, width=width, edgecolor=edgecolor, bottom=0.0, alpha=alpha, color=apical_color
     )

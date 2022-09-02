@@ -1,8 +1,11 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import view
+from matplotlib import cm
 
 import tmd
 
-### Defining average images
+# Defining average images
 
 
 def img_diff_distance(Z1, Z2, norm=True):
@@ -142,7 +145,7 @@ def define_limits(phs_list):
     return xlims, ylims
 
 
-### Plotting functions
+# Plotting functions
 
 
 def plot_imgs(
@@ -160,7 +163,6 @@ def plot_imgs(
 ):
     """Plots the gaussian kernel of the input image."""
     import numpy as np
-    from scipy import stats
     from view import common
 
     if xlims is None:
@@ -293,7 +295,7 @@ def example_run_outliers(filename="./Female/control 4h/IPL/", title=""):
             if len(p) > 4:
                 phs1.append(p)
                 pids.append(i)
-        except:
+        except Exception:
             print(n.name)
 
     distances = multiplot_outliers(phs1, title=title)
@@ -312,7 +314,7 @@ def example_run(filename="./Female/control 4h/IPL/", title=""):
             p = tmd.methods.get_ph_neuron(n)
             if len(p) > 4:
                 phs1.append(p)
-        except:
+        except Exception:
             # print(n.name)
             pass
 
@@ -332,7 +334,7 @@ def get_phs_clean(filename="./Female/control 4h/IPL/"):
             p = tmd.methods.get_ph_neuron(n)
             if len(p) > 4:
                 phs1.append(p)
-        except:
+        except Exception:
             # print(n.name)
             pass
 
@@ -359,7 +361,8 @@ def norm_intensity(ph_list):
     # Normalization of intensity
     intensities = []
     for ph in ph_list:
-        Z = average_ph_from_list(ph, norm_factor=1.0, xlims=xlims, ylims=ylims)
+        xlims, ylims = define_limits([ph])
+        Z = average_ph_from_list([ph], norm_factor=1.0, xlims=xlims, ylims=ylims)
         intensities.append(np.max(Z))
     M = np.max(intensities)
 
@@ -703,7 +706,7 @@ def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylim
         for s in np.arange(samples):
             Zns = []
             for ph in ph_list:
-                ph_random_indices = random.choice(np.arange(len(ph)), int(i), replace=False)
+                ph_random_indices = np.random.choice(np.arange(len(ph)), int(i), replace=False)
                 ph_random = np.array(ph)[ph_random_indices]
                 Z = average_weighted_ph_from_list(
                     ph_random, norm_factor=None, xlims=xlims, ylims=ylims
@@ -721,7 +724,7 @@ def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylim
         distancesCD4std.append(np.std(d4))
         distancesCD48std.append(np.std(d48))
 
-    fig = plt.figure(figsize=(15, 10))
+    plt.figure(figsize=(15, 10))
     plt.plot(intervals, distancesCD4, c="b", label="Dist: C-D4")
     plt.plot(intervals, distancesCD48, c="r", label="Dist: C-D48")
 
@@ -761,10 +764,10 @@ def check_input_data(filename):
         try:
             n = tmd.io.load_neuron(filename + c, tree_types={0: "basal_dendrite"})
             try:
-                p = tmd.methods.get_ph_neuron(n)
-            except:
+                tmd.methods.get_ph_neuron(n)
+            except Exception:
                 counter_process = counter_process + 1
-        except:
+        except Exception:
             counter_load = counter_load + 1
             # print(c)
 

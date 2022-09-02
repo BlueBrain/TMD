@@ -1,4 +1,5 @@
 # Example script to compute the diversity index from a set of classes.
+import numpy as np
 
 
 def diversity_index(perc, simil, q):
@@ -11,8 +12,6 @@ def diversity_index(perc, simil, q):
          between species of size SxS.
          q: the order of diversity index.
     """
-    import numpy as np
-
     perc = np.array(perc, dtype=float) / sum(perc)
 
     diq = 0.0
@@ -34,8 +33,6 @@ def diversity_index_inf(perc, simil):
          between species of size SxS.
          q: the order of diversity index is set to inf
     """
-    import numpy as np
-
     diq = np.inf
 
     perc = np.array(perc, dtype=float) / sum(perc)
@@ -57,8 +54,6 @@ def diversity_index_one(perc, simil):
          between species of size SxS.
          q: the order of diversity index is set to one
     """
-    import numpy as np
-
     diq = 1.0
 
     perc = np.array(perc, dtype=float) / sum(perc)
@@ -80,8 +75,6 @@ def diversity_index_zero(perc, simil):
          between species of size SxS.
          q: the order of diversity index is set to one
     """
-    import numpy as np
-
     diq = 1.0
 
     perc = np.array(perc, dtype=float) / sum(perc)

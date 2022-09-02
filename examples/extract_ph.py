@@ -2,6 +2,8 @@
 
 # Step 1: Import the tmd module
 import tmd
+from tmd.view import plot
+from tmd.view import view
 
 # Step 2: Load your morphology
 filename = "../tests/data/valid/C010398B-P2.CNG.swc"
@@ -21,8 +23,6 @@ ph_axon = tmd.methods.get_ph_neuron(neu, neurite_type="axon")
 ph_basal = tmd.methods.get_ph_neuron(neu, neurite_type="basal_dendrite")
 
 # Step 6: Plot the extracted topological data with three different ways
-from tmd.view import plot
-from tmd.view import view
 
 # Visualize the neuron
 view.neuron(neu)
