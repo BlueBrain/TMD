@@ -211,12 +211,6 @@ def barcode_bin_centers(ph, num_bins=100, min_bin=None, max_bin=None):
         for i in range(num_bins - 1)
         if np.max(p) > bins[i + 1] and np.min(p) < bins[i]
     ]
-    # TODO: Fix dead code
-    # data = []
-    # for i in range(num_bins - 1):
-    #    for p in ph_2D:
-    #        if np.max(p) > bins[i + 1] and np.min(p) < bins[i]:
-    #            data.append(bin_centers[i])
     return bin_centers, data
 
 
