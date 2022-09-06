@@ -6,8 +6,8 @@ Lida Kanari (@lidakanari)
 
 Lida Kanari @lidakanari
 Alexis Arnaudon @arnaudon
-Benoît Coste @ BBP
-Eleftherios Zisis @ BBP
+Benoît Coste @wizmer
+Eleftherios Zisis @eleftherioszisis
 Adrien Berchet @adrien-berchet
 Julien Francioli @ BBP
-Stanislav Schmidt @ BBP
+Stanislav Schmidt @Stannislav
