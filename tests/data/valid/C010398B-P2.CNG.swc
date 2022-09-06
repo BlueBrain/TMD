@@ -5,23 +5,23 @@
 # Irregularities and fixes documented in C010398B-P2.asc.swc.std.  See StdSwc1.21.doc for more information.
 #
 # Neurolucida to SWC conversion from L-Measure. R. Scorcioni: rscorcio@gmu.edu
-# Original fileName:C:\Documents and Settings\Duncan\Desktop\Cellular morphology\Archives\Markram\Combined(204)\Origional\All.stdors (type 2 included)\origional ASC files\C010398B-P2.asc
+# Original fileName:C:\Documents and Settings\Duncan\Desktop\Cellular morphology\Archives\Markram\Combined(204)\Original\All.stdors (type 2 included)\original ASC files\C010398B-P2.asc
 #
-# ORIGINAL_SOURCE 
-# CREATURE 
-# REGION 
-# FIELD/LAYER 
-# TYPE 
-# CONTRIBUTOR 
-# REFERENCE 
-# RAW 
-# EXTRAS 
-# SOMA_AREA 
-# SHRINKAGE_CORRECTION 
-# VERSION_NUMBER 
-# VERSION_DATE 
-# ********************************************* 
-# SCALE 1.0 1.0 1.0 
+# ORIGINAL_SOURCE
+# CREATURE
+# REGION
+# FIELD/LAYER
+# TYPE
+# CONTRIBUTOR
+# REFERENCE
+# RAW
+# EXTRAS
+# SOMA_AREA
+# SHRINKAGE_CORRECTION
+# VERSION_NUMBER
+# VERSION_DATE
+# *********************************************
+# SCALE 1.0 1.0 1.0
  1 1 27.48 22.09 2.37 6.474 -1
  2 1 27.48 28.56 2.37 6.474 1
  3 1 27.48 15.61 2.37 6.474 1

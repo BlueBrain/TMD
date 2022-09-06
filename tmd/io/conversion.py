@@ -1,32 +1,45 @@
-"""Functions for converting morphio to tmd Neuron
-"""
+"""Functions for converting morphio to tmd Neuron."""
+
+# Copyright (C) 2022  Blue Brain Project, EPFL
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from collections import namedtuple
+
 import numpy as np
+
 from tmd.Soma.Soma import Soma
 from tmd.Tree import Tree
 
-
-SectionData = namedtuple('SectionData', ['points', 'diameters', 'section_type', 'parents'])
+SectionData = namedtuple("SectionData", ["points", "diameters", "section_type", "parents"])
 
 
 def convert_morphio_soma(morphio_soma):
-    """Converts a morphio's morphology
+    """Convert a morphio's morphology.
+
     Args:
-        morphio_soma (Union[morphio.Soma])
+        morphio_soma (Union[morphio.Soma]): A Soma object.
+
     Returns:
         tmd_soma (Soma)
     """
     points = morphio_soma.points
-    return Soma(
-        x=points[:, 0],
-        y=points[:, 1],
-        z=points[:, 2],
-        d=morphio_soma.diameters
-    )
+    return Soma(x=points[:, 0], y=points[:, 1], z=points[:, 2], d=morphio_soma.diameters)
 
 
 def _section_to_data(section, tree_length, start, parent):
-    """Extract data from morphio section
+    """Extract data from morphio section.
 
     Args:
         section (morphio.Section): A morphio section object
@@ -48,15 +61,11 @@ def _section_to_data(section, tree_length, start, parent):
     parents = np.arange(tree_length - 1, tree_length + n - 1, dtype=np.int64)
     parents[0] = parent
 
-    return n, SectionData(
-        points[start:],
-        section.diameters[start:],
-        int(section.type),
-        parents)
+    return n, SectionData(points[start:], section.diameters[start:], int(section.type), parents)
 
 
 def convert_morphio_trees(morphio_neuron):
-    """Convert morphio morphology's trees to tmd ones
+    """Convert morphio morphology's trees to tmd ones.
 
     Args:
         morphio_neuron (Union[morphio.Morphology, morphio.mut.Morphology]):
@@ -98,26 +107,26 @@ def convert_morphio_trees(morphio_neuron):
 
             n, data = _section_to_data(section, tree_length, start, parent)
 
-            x[tree_end: n + tree_end] = data.points[:, 0]
-            y[tree_end: n + tree_end] = data.points[:, 1]
-            z[tree_end: n + tree_end] = data.points[:, 2]
-            d[tree_end: n + tree_end] = data.diameters
-            t[tree_end: n + tree_end] = data.section_type
-            p[tree_end: n + tree_end] = data.parents
+            x[tree_end : n + tree_end] = data.points[:, 0]
+            y[tree_end : n + tree_end] = data.points[:, 1]
+            z[tree_end : n + tree_end] = data.points[:, 2]
+            d[tree_end : n + tree_end] = data.diameters
+            t[tree_end : n + tree_end] = data.section_type
+            p[tree_end : n + tree_end] = data.parents
 
             tree_end += n
             tree_length += n
 
             # keep track of the last node in the section because we need
-            # to establish the correct connectivity when we ommit the first
+            # to establish the correct connectivity when we omit the first
             # point from the children sections
             section_final_nodes[section.id] = tree_length - 1
 
         yield Tree.Tree(
-            x=x[tree_beg: tree_end],
-            y=y[tree_beg: tree_end],
-            z=z[tree_beg: tree_end],
-            d=d[tree_beg: tree_end],
-            t=t[tree_beg: tree_end],
-            p=p[tree_beg: tree_end]
+            x=x[tree_beg:tree_end],
+            y=y[tree_beg:tree_end],
+            z=z[tree_beg:tree_end],
+            d=d[tree_beg:tree_end],
+            t=t[tree_beg:tree_end],
+            p=p[tree_beg:tree_end],
         )

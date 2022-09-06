@@ -1,10 +1,11 @@
 TMD - Topological Morphology Descriptor Python library
 
 TMD is licensed under the LGPL, unless noted otherwise, e.g., for external
-dependencies. See files COPYING-LGPL and COPYING-BSD for the full licenses.
+dependencies. See files LICENSE-LGPL.txt and LICENSE-BSD.txt for the full licenses.
 Examples and test are BSD-licensed.
 External dependencies are either LGPL or BSD-licensed.
-See file ACKNOWLEDGEMENTS.txt and AUTHORS.txt for further details.
+See the AUTHORS.md file and the Funding & Acknowledgment section in the README.md file
+for further details.
 
 Copyright (c) 2016-2022 Blue Brain Project/EPFL
 

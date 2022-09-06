@@ -1,7 +1,42 @@
-*~
-*.pyc
-*.egg-info
-.coverage
-.tox
+# data
 .eggs
+.idea
+*.pyc
+*.swp
+*py~
+*~
+*.egg-info
+
+# Mac related stuff
+.DS_Store
+
+# Packaging builds
+build
+dist
+
+# tox
+.tox
+
+# coverage
+.coverage
+.coverage*
 coverage.xml
+
+# venv
+venv
+test_venv
+
+# docs
+docs/build
+docs/source/generated
+docs/source/examples
+
+# reports
+reports
+
+# examples
+examples/.ipynb_checkpoints
+
+# Node
+node_modules
+package-lock.json

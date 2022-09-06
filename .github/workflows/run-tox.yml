@@ -1,10 +1,10 @@
-name: Run all tox python3
+name: Run all tox jobs using Python3
 
 on:
-    pull_request:
-    push:
-      branches:
-        - master
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
     - uses: actions/checkout@v2
@@ -27,3 +27,15 @@ jobs:
     - name: Run tox
       run: |
         tox
+    - name: JUnit Report Action
+      uses: mikepenz/action-junit-report@v3.2.0
+      if: always() # always run even if the previous step fails
+      with:
+        report_paths: 'reports/pytest-*.xml'
+    - name: Upload to codecov
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: false
+        files: ./reports/coverage-*.xml
+        flags: pytest
+        name: "TMD-py${{ matrix.python-version }}"

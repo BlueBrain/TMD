@@ -1,15 +1,27 @@
-'''
-tmd Neuron's methods
-'''
+"""TMD Neuron's methods."""
+
+# Copyright (C) 2022  Blue Brain Project, EPFL
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import numpy as np
 
 
-def size(self, neurite_type='all'):
-    """
-    Neuron method to get size.
-    """
-    if neurite_type == 'all':
-        neurite_list = ['basal', 'axon', 'apical']
+def size(self, neurite_type="all"):
+    """Neuron method to get size."""
+    if neurite_type == "all":
+        neurite_list = ["basal_dendrite", "axon", "apical_dendrite"]
 
     s = np.sum([len(getattr(self, neu)) for neu in neurite_list])
 
@@ -17,15 +29,14 @@ def size(self, neurite_type='all'):
 
 
 def get_bounding_box(self):
-    """
-    Input
-    ------
-    neuron: tmd neuron
+    """Get the bounding box of the neurites.
 
-    Returns
-    ---------
-    bounding_box: np.array
-        ([xmin,ymin,zmin], [xmax,ymax,zmax])
+    Args:
+        neuron: A TMD neuron.
+
+    Returns:
+        bounding_box: np.array
+            ([xmin,ymin,zmin], [xmax,ymax,zmax])
     """
     x = []
     y = []

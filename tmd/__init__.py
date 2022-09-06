@@ -1,21 +1,33 @@
-"""
-    TopologyNeuron
+"""TMD package.
 
-    Author: Lida Kanari
-
-    Ecole Polytechnique Federale de Lausanne
-    Blue Brain Project
-
-    (c) 2014-2015. All rights reserved.
+A python package for the topological analysis of neurons.
 """
 
+# Copyright (C) 2022  Blue Brain Project, EPFL
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from tmd.io import io
-from tmd.Soma import Soma
-from tmd.Tree import Tree
-from tmd.Neuron import Neuron
-from tmd.Population import Population
-from tmd.Topology import methods
-from tmd.Topology import analysis
-from tmd.Topology import statistics
-from tmd import utils
+import pkg_resources
+
+from tmd import utils  # noqa
+from tmd.io import io  # noqa
+from tmd.Neuron import Neuron  # noqa
+from tmd.Population import Population  # noqa
+from tmd.Soma import Soma  # noqa
+from tmd.Topology import analysis  # noqa
+from tmd.Topology import methods  # noqa
+from tmd.Topology import statistics  # noqa
+from tmd.Tree import Tree  # noqa
+
+__version__ = pkg_resources.get_distribution("TMD").version

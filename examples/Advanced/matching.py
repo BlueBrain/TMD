@@ -1,13 +1,12 @@
-'''
-tmd matching algorithms implementation
-'''
+"""TMD matching algorithms implementation."""
+import numpy as np
 
 
 def marriage_problem(women_preferences, men_preferences):
-    '''Matches N women to M men so that max(M, N)
-    are coupled to their preferred choice that is available
+    """Matches N women to M men so that max(M, N) are coupled to their preferred available choice.
+
     See https://en.wikipedia.org/wiki/Stable_marriage_problem
-    '''
+    """
     N = len(women_preferences)
     M = len(men_preferences)
 
@@ -49,31 +48,31 @@ def marriage_problem(women_preferences, men_preferences):
 
 
 def symmetric(p):
-    '''Returns the symmetric point of a PD point on the diagonal
-    '''
-    return [(p[0] + p[1]) / 2., (p[0] + p[1]) / 2]
+    """Return the symmetric point of a PD point on the diagonal."""
+    return [(p[0] + p[1]) / 2.0, (p[0] + p[1]) / 2]
 
 
-def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_fig=True, subplot=(111)):
-    '''Returns a list of matching components
+def matching_diagrams(
+    p1, p2, plot=False, method="munkres", use_diag=True, new_fig=True, subplot=(111)
+):
+    """Return a list of matching components.
+
     Possible matching methods:
     - munkress
     - marriage problem
-    '''
-    from scipy.spatial.distance import cdist
+    """
     import munkres
+    from scipy.spatial.distance import cdist
+
     from tmd.view import common as _cm
 
     def plot_matching(p1, p2, indices, new_fig=True, subplot=(111)):
-        '''Plots matching between p1, p2
-        for the corresponding indices
-        '''
-        import pylab as plt
+        """Plots matching between p1, p2 for the corresponding indices."""
         fig, ax = _cm.get_figure(new_fig=new_fig, subplot=subplot)
         for i, j in indices:
-            ax.plot((p1[i][0], p2[j][0]), (p1[i][1], p2[j][1]), color='black')
-            ax.scatter(p1[i][0], p1[i][1], c='r')
-            ax.scatter(p2[j][0], p2[j][1], c='b')
+            ax.plot((p1[i][0], p2[j][0]), (p1[i][1], p2[j][1]), color="black")
+            ax.scatter(p1[i][0], p1[i][1], c="r")
+            ax.scatter(p2[j][0], p2[j][1], c="b")
 
     if use_diag:
         p1_enh = p1 + [symmetric(i) for i in p2]
@@ -84,10 +83,10 @@ def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_f
 
     D = cdist(p1_enh, p2_enh)
 
-    if method == 'munkres':
+    if method == "munkres":
         m = munkres.Munkres()
         indices = m.compute(np.copy(D))
-    elif method == 'marriage':
+    elif method == "marriage":
         first_pref = [np.argsort(k).tolist() for k in cdist(p1_enh, p2_enh)]
         second_pref = [np.argsort(k).tolist() for k in cdist(p2_enh, p1_enh)]
         indices = marriage_problem(first_pref, second_pref)
@@ -98,4 +97,3 @@ def matching_diagrams(p1, p2, plot=False, method='munkres', use_diag=True, new_f
     ssum = np.sum([D[i][j] for (i, j) in indices])
 
     return indices, ssum
-
