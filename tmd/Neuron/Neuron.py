@@ -25,7 +25,7 @@ from tmd.Tree import Tree
 from tmd.utils import TREE_TYPE_DICT
 
 
-class Neuron(object):
+class Neuron:
     """A Neuron object is a container for Trees and a Soma.
 
     The Trees can be basal_dendrite, apical_dendrite and axon.

@@ -20,7 +20,7 @@ import warnings
 from tmd.Neuron import Neuron
 
 
-class Population(object):
+class Population:
     """A Population object is a container for Neurons.
 
     Args:

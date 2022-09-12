@@ -22,7 +22,7 @@ import scipy.sparse as sp
 from cached_property import cached_property
 
 
-class Tree(object):
+class Tree:
     """Tree class.
 
     Args:
