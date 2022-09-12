@@ -1,0 +1,70 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  A Topological Representation of Branching Neuronal
+  Morphologies.
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - family-names: Kanari
+    given-names: Lida
+    orcid: 'https://orcid.org/0000-0002-9539-5070'
+  - family-names: Dłotko
+    given-names: Paweł
+  - family-names: Scolamiero
+    given-names: Martina
+  - family-names: Levi
+    given-names: Ran
+  - family-names: Shillcock
+    given-names: Julian
+    orcid: 'https://orcid.org/0000-0002-7885-735X'
+  - given-names: Kathryn
+    family-names: Hess
+    orcid: 'https://orcid.org/0000-0003-2788-9754'
+  - family-names: Markram
+    given-names: Henry
+    orcid: 'https://orcid.org/0000-0001-6164-2590'
+  - family-names: Arnaudon
+    given-names: Alexis
+    orcid: 'https://orcid.org/0000-0001-9486-1458'
+identifiers:
+  - type: doi
+    value: 10.1007/s12021-017-9341-1
+    description: The DOI of the related article.
+repository-code: 'https://github.com/BlueBrain/TMD'
+abstract: >-
+  Many biological systems consist of branching
+  structures that exhibit a wide variety of shapes.
+  Our understanding of their systematic roles is
+  hampered from the start by the lack of a
+  fundamental means of standardizing the description
+  of complex branching patterns, such as those of
+  neuronal trees. To solve this problem, we have
+  invented the Topological Morphology Descriptor
+  (TMD), a method for encoding the spatial
+  structure of any tree as a 'barcode', a unique
+  topological signature. As opposed to traditional
+  morphometrics, the TMD couples the topology of
+  the branches with their spatial extents by tracking
+  their topological evolution in 3-dimensional space.
+  We prove that neuronal trees, as well as
+  stochastically generated trees, can be accurately
+  categorized based on their TMD profiles. The
+  TMD retains sufficient global and local
+  information to create an unbiased benchmark test
+  for their categorization and is able to quantify
+  and characterize the structural differences between
+  distinct morphological groups. The use of this
+  mathematically rigorous method will advance our
+  understanding of the anatomy and diversity of
+  branching morphologies.
+keywords:
+  - Branching morphology
+  - Clustering trees
+  - Neuronal morphologies
+  - Topological data analysis
+license: LGPL-3.0

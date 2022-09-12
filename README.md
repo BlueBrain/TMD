@@ -43,9 +43,7 @@ pd = tmd.methods.get_persistence_diagram(neuron.neurites[0])
 
 ## Citation
 
-When you use the ``TMD`` software or method for your research, we ask you to cite the following publication associated to this repository:
-
-### Main publication
+If you use this software or method for your research, we kindly ask you to cite the following publication associated to this repository:
 
 **A Topological Representation of Branching Neuronal Morphologies**
 
@@ -54,7 +52,7 @@ _Cite this article as:_
 Kanari, L., Dłotko P., Scolamiero M., et al., A Topological Representation of Branching Neuronal Morphologies, Neuroinformatics 16, nᵒ 1 (2018): 3‑13. https://doi.org/10.1007/s12021-017-9341-1.
 
 
-### Related publications
+## Related publications
 
 **Comprehensive Morpho-Electrotonic Analysis Shows 2 Distinct Classes of L2 and L3 Pyramidal Neurons in Human Temporal Cortex, Cerebral Cortex**
 
