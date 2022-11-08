@@ -55,7 +55,7 @@ def barcode_enhanced(
     val_max = np.max(ph, axis=0)[valID]
 
     # Hack for colorbar creation
-    Z = [[0, 0], [0, 0]]
+    Z = [[-100, -100], [-100, -100]]
     levels = np.linspace(0.0, val_max, 200)
     CS3 = plt.contourf(Z, levels, cmap=cmap)
 

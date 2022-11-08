@@ -18,11 +18,14 @@
 # pylint: disable=too-many-lines
 import numpy as _np
 from matplotlib.collections import LineCollection as _LC
+import matplotlib.pyplot as plt
 
 from tmd.utils import TREE_TYPE_DICT
 from tmd.utils import term_dict
 from tmd.view import common as _cm
 from tmd.view.common import blues_map
+from tmd.view import plot
+from tmd.Topology import analysis
 
 
 def _get_default(variable, **kwargs):
@@ -208,7 +211,7 @@ def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
     # Plot the outline of the soma as a circle, is outline is selected.
     if not outline:
-        soma_circle = _cm.plt.Circle(
+        soma_circle = plt.Circle(
             sm.get_center() + [hadd, vadd, 0.0],
             sm.get_diameter() / 2.0,
             color=treecolor,
@@ -221,7 +224,7 @@ def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
         horz = _np.append(horz, horz[0])  # To close the loop for a soma
         vert = _np.append(vert, vert[0])  # To close the loop for a soma
-        _cm.plt.plot(
+        plt.plot(
             horz,
             vert,
             color=treecolor,
@@ -1079,7 +1082,7 @@ def density_cloud(
             tree(temp_tree, plane="xy", hadd=-h, vadd=-v, treecolor="r", **kwargs)
 
     if colorbar:
-        _cm.plt.colorbar(plots)
+        plt.colorbar(plots)
     # soma(neu.soma, new_fig=False)
     return _cm.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -1115,10 +1118,201 @@ def polar_plot(pop, neurite_type="neurites", bins=20):
     """Generate a polar plot of a neuron or population."""
     input_data = _get_polar_data(pop, neurite_type=neurite_type, bins=bins)
 
-    fig = _cm.plt.figure()
+    fig = plt.figure()
     ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
 
     theta = _np.array(input_data)[:, 0]
     radii = _np.array(input_data)[:, 2] / _np.max(input_data)
     width = 2 * _np.pi / len(input_data)
     ax.bar(theta, radii, width=width, bottom=0.0, alpha=0.8)
+
+
+def tree_barcode_colors(tree, plane="xy", feature='path_distances', cmap=_cm.jet_map):
+    """Generate a 2d pic of the tree, each branch has a unique color.
+       Generate a barcode using the corrresponding colors.
+    """
+    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
+    from tmd.Topology.methods import _filtration_function
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+
+    # Initialization of matplotlib figure and axes.
+    fig = plt.figure()
+    ax = fig.add_subplot(211)
+
+    # Initialization of colors to be used.
+    ph, ph_graph = tp_barcode(tree, filtration_function=_filtration_function(feature))
+    random_nums = [_np.float(i) / len(ph) for i in _np.arange(len(ph))]
+    colors_random = cmap(random_nums)
+
+    # Definition of tree branch colors based on persistence
+    def get_colors_ph(tree, ph_graph, colors):
+        """Assigns colors to each tree branch
+           according to the persistence levels.
+        """
+        beg, end = tree.get_sections_2()
+        end_graph = {}
+        for j, graph_id in enumerate(ph_graph):
+            for gi in graph_id:
+                end_id = _np.where(end == gi)[0][0]
+                end_graph[end_id] = j
+
+        sec_ids = [1] * (end[0] - beg[0])
+        for i,e in enumerate(end[1:]):
+            sec_ids = sec_ids + [i+2] * (e-end[i])
+
+        colors_select = [colors[end_graph[s-1]]
+                         for s in sec_ids]
+        return colors_select
+
+    treecolors = get_colors_ph(tree, ph_graph, colors_random)
+
+    # Data needed for the viewer: x,y,z,r
+    bounding_box = tree.get_bounding_box()
+
+    def _seg_2d(seg):
+        """2d coordinates required for the plotting of a segment."""
+        horz = term_dict[plane[0]]
+        vert = term_dict[plane[1]]
+
+        horz1 = seg[0][horz]
+        horz2 = seg[1][horz]
+        vert1 = seg[0][vert]
+        vert2 = seg[1][vert]
+
+        return ((horz1, vert1), (horz2, vert2))
+
+    segs = [_seg_2d(seg) for seg in tree.get_segments()]
+
+    # Definition of the linewidth according to diameter, if diameter is True.
+
+    linewidth = [d * 1. for d in tree.d]
+
+    # Plot the collection of lines.
+    collection = _LC(segs, color=treecolors, linewidth=linewidth, alpha=1.0)
+
+    ax.add_collection(collection)
+
+    ax.set_xlim(bounding_box[0][term_dict[plane[0]]], bounding_box[1][term_dict[plane[0]]])
+    ax.set_ylim(bounding_box[0][term_dict[plane[1]]], bounding_box[1][term_dict[plane[1]]])
+    ax.set_title("Tree structure")
+
+    ax = fig.add_subplot(212)
+
+    # Enhance barcode with colors
+
+    ph_sort = analysis.sort_ph(ph)
+
+    for ip, p in enumerate(ph_sort):
+        ax.plot(p[:2], [ip, ip], c=colors_random[ip])
+
+    ax.set_title("Persistence barcode")
+    ax.set_ylim([-1, len(ph_sort)])
+
+    return fig, ax
+
+
+def tree_full_persistence_colors(tree, plane="xy", feature='path_distances', cmap=_cm.jet_map):
+    """Generate a 2d pic of the tree, each branch has a unique color.
+       Generate a barcode using the corrresponding colors.
+    """
+    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
+    from tmd.Topology.methods import _filtration_function
+    if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
+        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+
+    # Initialization of matplotlib figure and axes.
+    fig = plt.figure()
+    ax = fig.add_subplot(221)
+
+    # Initialization of colors to be used.
+    ph, ph_graph = tp_barcode(tree, filtration_function=_filtration_function(feature))
+    random_nums = [_np.float(i) / len(ph) for i in _np.arange(len(ph))]
+    colors_random = cmap(random_nums)
+
+    # Definition of tree branch colors based on persistence
+    def get_colors_ph(tree, ph_graph, colors):
+        """Assigns colors to each tree branch
+           according to the persistence levels.
+        """
+        beg, end = tree.get_sections_2()
+        end_graph = {}
+        for j, graph_id in enumerate(ph_graph):
+            for gi in graph_id:
+                end_id = _np.where(end == gi)[0][0]
+                end_graph[end_id] = j
+
+        sec_ids = [1] * (end[0] - beg[0])
+        for i,e in enumerate(end[1:]):
+            sec_ids = sec_ids + [i+2] * (e-end[i])
+
+        colors_select = [colors[end_graph[s-1]]
+                         for s in sec_ids]
+        return colors_select
+
+    treecolors = get_colors_ph(tree, ph_graph, colors_random)
+
+    # Data needed for the viewer: x,y,z,r
+    bounding_box = tree.get_bounding_box()
+
+    def _seg_2d(seg):
+        """2d coordinates required for the plotting of a segment."""
+        horz = term_dict[plane[0]]
+        vert = term_dict[plane[1]]
+
+        horz1 = seg[0][horz]
+        horz2 = seg[1][horz]
+        vert1 = seg[0][vert]
+        vert2 = seg[1][vert]
+
+        return ((horz1, vert1), (horz2, vert2))
+
+    segs = [_seg_2d(seg) for seg in tree.get_segments()]
+
+    # Definition of the linewidth according to diameter, if diameter is True.
+
+    linewidth = [d * 1. for d in tree.d]
+
+    # Plot the collection of lines.
+    collection = _LC(segs, color=treecolors, linewidth=linewidth, alpha=1.0)
+
+    ax.add_collection(collection)
+
+    ax.set_xlim(bounding_box[0][term_dict[plane[0]]], bounding_box[1][term_dict[plane[0]]])
+    ax.set_ylim(bounding_box[0][term_dict[plane[1]]], bounding_box[1][term_dict[plane[1]]])
+    ax.set_title("Tree structure")
+
+    ax = fig.add_subplot(222)
+
+    # Enhance barcode with colors
+
+    ph_sort = analysis.sort_ph(ph)
+
+    for ip, p in enumerate(ph_sort):
+        ax.plot(p[:2], [ip, ip], c=colors_random[ip])
+
+    ax.set_title("Persistence barcode")
+    ax.set_ylim([-1, len(ph_sort)])
+
+    ax = fig.add_subplot(223)
+
+    # Enhance diagram with colors
+
+    bounds_max = _np.max(ph)
+    bounds_min = _np.min(ph)
+    ax.plot([bounds_min, bounds_max], [bounds_min, bounds_max], c="black")
+
+    ax.scatter(
+        _np.array(ph)[:, 0], _np.array(ph)[:, 1], c=colors_random
+    )
+
+    ax.set_title("Persistence diagram")
+
+    ax = fig.add_subplot(224)
+
+    plot.persistence_image(ph, cmap=cmap, new_fig=False, subplot=(224),
+                           xlims=(-10, bounds_max), ylims=(-10, bounds_max))
+
+    ax.set_title("Persistence image")
+
+    return fig, ax
