@@ -14,3 +14,9 @@ def test_population(population, neuron):
 
     population.append_neuron(neuron)
     assert len(population.neurons) == 6
+
+    assert len(population.get_by_name("Neuron")) == 1
+
+    population.append_neuron(neuron)
+    assert len(population.neurons) == 7
+    assert len(population.get_by_name("Neuron")) == 2
