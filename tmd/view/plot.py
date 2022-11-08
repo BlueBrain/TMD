@@ -34,10 +34,13 @@ def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs)
     ph_sort = analysis.sort_ph(ph)
 
     for ip, p in enumerate(ph_sort):
-        ax.plot(p[:2], [ip, ip], c=color, linewidth=linewidth)
+        if type(color) is not list:
+            ax.plot(p[:2], [ip, ip], c=color, linewidth=linewidth)
+        else:
+            ax.plot(p[:2], [ip, ip], c=color[ip], linewidth=linewidth)
 
     kwargs["title"] = kwargs.get("title", "Persistence barcode")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime: radial distance from soma")
+    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime: radial distance")
 
     plt.ylim([-1, len(ph_sort)])
     return cm.plot_style(fig=fig, ax=ax, **kwargs)
@@ -55,7 +58,7 @@ def barcode_enhanced(
     val_max = np.max(ph, axis=0)[valID]
 
     # Hack for colorbar creation
-    Z = [[0, 0], [0, 0]]
+    Z = [[-100, -100], [-100, -100]]
     levels = np.linspace(0.0, val_max, 200)
     CS3 = plt.contourf(Z, levels, cmap=cmap)
 
@@ -70,7 +73,7 @@ def barcode_enhanced(
     for ip, p in enumerate(ph_sort):
         ax.plot(p[:2], [ip, ip], c=cmap(p[valID] / val_max), linewidth=linewidth)
 
-    kwargs["title"] = kwargs.get("title", "Barcode of p.h.")
+    kwargs["title"] = kwargs.get("title", "Persistence barcode")
     kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
     plt.ylim([-1, len(ph_sort)])
     plt.colorbar(CS3)
@@ -94,8 +97,8 @@ def diagram(
     )
 
     kwargs["title"] = kwargs.get("title", "Persistence diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance from soma")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance from soma")
+    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
     return cm.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -148,8 +151,8 @@ def diagram_enhanced(
     )
 
     kwargs["title"] = kwargs.get("title", "Persistence diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance from soma")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance from soma")
+    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
     plt.ylim([-1, len(ph_sort)])
     plt.colorbar(CS3)
@@ -201,8 +204,8 @@ def persistence_image(
     kwargs["xlim"] = xlims
     kwargs["ylim"] = ylims
     kwargs["title"] = kwargs.get("title", "Persistence image")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance from soma")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance from soma")
+    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
     return Zn, cm.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -315,8 +318,8 @@ def persistence_image_average(
     kwargs["xlim"] = xlims
     kwargs["ylim"] = ylims
     kwargs["title"] = kwargs.get("title", "Average persistence image")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance from soma")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance from soma")
+    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
+    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
     return av_imgs, cm.plot_style(fig=fig, ax=ax, **kwargs)
 
