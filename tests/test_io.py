@@ -67,6 +67,9 @@ def test_load_population(POP_PATH):
     assert len(population.neurons) == 5
     names = np.array([os.path.basename(n.name) for n in population.neurons])
 
+    sample_neuron = population.get_by_name(POP_PATH + "/sample")[0]
+    assert sample_neuron.name == POP_PATH + "/sample"
+
     # Testing with a glob
     L = glob.glob(POP_PATH + "/*")
     population1 = io.load_population(L)
@@ -74,7 +77,7 @@ def test_load_population(POP_PATH):
 
     names1 = np.array([os.path.basename(n.name) for n in population1.neurons])
     npt.assert_array_equal(names, names1)
-    assert population.neurons[0].is_equal(population1.neurons[0])
+    assert sample_neuron.is_equal(population1.get_by_name(POP_PATH + "/sample")[0])
 
     # Testing with a posix path
     population2 = io.load_population(os.path.join(POP_PATH, "sample.swc"))
@@ -82,7 +85,7 @@ def test_load_population(POP_PATH):
 
     names2 = np.array([os.path.basename(n.name) for n in population2.neurons])
     npt.assert_array_equal(["sample"], names2)
-    assert population.neurons[0].is_equal(population2.neurons[0])
+    assert sample_neuron.is_equal(population2.neurons[0])
 
     # Testing with a list of posix paths
     population3 = io.load_population([os.path.join(POP_PATH, "sample.swc")])
@@ -90,7 +93,7 @@ def test_load_population(POP_PATH):
 
     names3 = np.array([os.path.basename(n.name) for n in population3.neurons])
     npt.assert_array_equal(["sample"], names3)
-    assert population.neurons[0].is_equal(population3.neurons[0])
+    assert sample_neuron.is_equal(population3.neurons[0])
 
     # Testing with a posix pathlib.Path object
     population4 = io.load_population(Path(os.path.join(POP_PATH, "sample.swc")))
@@ -98,15 +101,15 @@ def test_load_population(POP_PATH):
 
     names4 = np.array([os.path.basename(n.name) for n in population4.neurons])
     npt.assert_array_equal(["sample"], names4)
-    assert population.neurons[0].is_equal(population4.neurons[0])
+    assert sample_neuron.is_equal(population4.neurons[0])
 
     # Testing with a list of posix pathlib.Path objects
-    population4 = io.load_population([Path(os.path.join(POP_PATH, "sample.swc"))])
-    assert len(population4.neurons) == 1
+    population5 = io.load_population([Path(os.path.join(POP_PATH, "sample.swc"))])
+    assert len(population5.neurons) == 1
 
-    names5 = np.array([os.path.basename(n.name) for n in population4.neurons])
+    names5 = np.array([os.path.basename(n.name) for n in population5.neurons])
     npt.assert_array_equal(["sample"], names5)
-    assert population.neurons[0].is_equal(population4.neurons[0])
+    assert sample_neuron.is_equal(population5.neurons[0])
 
     # A posix path pointing to a file that does not exist should raise an exception
     with pytest.raises(

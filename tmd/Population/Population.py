@@ -89,3 +89,7 @@ class Population:
         """Append a Neuron object to the Population."""
         if isinstance(new_neuron, Neuron.Neuron):
             self.neurons.append(new_neuron)
+
+    def get_by_name(self, name):
+        """Get the neurons whose name is equal to the one given."""
+        return [n for n in self.neurons if n.name == name]

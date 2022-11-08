@@ -15,9 +15,9 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -28,7 +28,7 @@ jobs:
       run: |
         tox
     - name: JUnit Report Action
-      uses: mikepenz/action-junit-report@v3.2.0
+      uses: mikepenz/action-junit-report@v3
       if: always() # always run even if the previous step fails
       with:
         report_paths: 'reports/pytest-*.xml'
