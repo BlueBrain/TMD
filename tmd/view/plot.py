@@ -34,7 +34,7 @@ def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs)
     ph_sort = analysis.sort_ph(ph)
 
     for ip, p in enumerate(ph_sort):
-        if type(color) is not list:
+        if not isinstance(color, list):
             ax.plot(p[:2], [ip, ip], c=color, linewidth=linewidth)
         else:
             ax.plot(p[:2], [ip, ip], c=color[ip], linewidth=linewidth)

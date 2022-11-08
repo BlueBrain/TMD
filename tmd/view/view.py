@@ -16,16 +16,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # pylint: disable=too-many-lines
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.collections import LineCollection as _LC
 
 from tmd.utils import TREE_TYPE_DICT
 from tmd.utils import term_dict
 from tmd.view import common as cm
-from tmd.view.common import blues_map
 from tmd.view import plot
-from tmd.Topology import analysis
+from tmd.view.common import blues_map
 
 
 def _get_default(variable, **kwargs):
@@ -151,9 +150,7 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     if tr.get_type() not in TREE_TYPE_DICT:
         treecolor = "black"
     else:
-        treecolor = cm.get_color(
-            _get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()]
-        )
+        treecolor = cm.get_color(_get_default("treecolor", **kwargs), TREE_TYPE_DICT[tr.get_type()])
 
     # Plot the collection of lines.
     collection = _LC(
@@ -328,9 +325,7 @@ def neuron(
     to_plot = []
 
     if rotation == "apical_dendrite":
-        angle = np.arctan2(
-            nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1]
-        )
+        angle = np.arctan2(nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1])
         angle = np.arctan2(rotation[1], rotation[0])
 
     if neurite_type == "all":
@@ -1137,9 +1132,10 @@ def tree_colors(
     plane="xy",
     cmap=plt.cm.jet,
     **kwargs,
-):
+):  # pylint: disable=redefined-outer-name
     """Generate a 2d pic of the tree, each branch has a unique color.
-       Generate a barcode using the corrresponding colors.
+
+    Generate a barcode using the corresponding colors.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
@@ -1156,9 +1152,7 @@ def tree_colors(
 
     # Definition of tree branch colors based on persistence
     def get_colors_ph(tree, ph_graph, colors):
-        """Assigns colors to each tree branch
-           according to the persistence levels.
-        """
+        """Assigns colors to each tree branch according to the persistence levels."""
         beg, end = tree.get_sections_2()
         end_graph = {}
         for j, graph_id in enumerate(ph_graph):
@@ -1167,11 +1161,10 @@ def tree_colors(
                 end_graph[end_id] = j
 
         sec_ids = [1] * (end[0] - beg[0])
-        for i,e in enumerate(end[1:]):
-            sec_ids = sec_ids + [i+2] * (e-end[i])
+        for i, e in enumerate(end[1:]):
+            sec_ids = sec_ids + [i + 2] * (e - end[i])
 
-        colors_select = [colors[end_graph[s-1]]
-                         for s in sec_ids]
+        colors_select = [colors[end_graph[s - 1]] for s in sec_ids]
         return colors_select
 
     treecolors = get_colors_ph(tree, ph_graph, colors_random)
@@ -1195,7 +1188,7 @@ def tree_colors(
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    linewidth = [d * 1. for d in tree.d]
+    linewidth = [d * 1.0 for d in tree.d]
 
     # Plot the collection of lines.
     collection = _LC(segs, color=treecolors, linewidth=linewidth, alpha=1.0)
@@ -1228,12 +1221,14 @@ def tree_colors(
     return cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def tree_barcode_colors(tree, plane="xy", feature='path_distances', cmap=cm.jet_map):
+def tree_barcode_colors(tree, plane="xy", feature="path_distances", cmap=cm.jet_map):
     """Generate a 2d pic of the tree, each branch has a unique color.
-       Generate a barcode using the corrresponding colors.
+
+    Generate a barcode using the corresponding colors.
     """
-    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
+    # pylint: disable=redefined-outer-name, import-outside-toplevel, unused-argument
     from tmd.Topology.methods import _filtration_function
+    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
 
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tree, filtration_function=_filtration_function(feature))
@@ -1241,21 +1236,20 @@ def tree_barcode_colors(tree, plane="xy", feature='path_distances', cmap=cm.jet_
 
     fig, ax = tree_colors(tree, ph_graph, colors=colors_random, new_fig=True, subplot=(211))
 
-    ax2 = fig.add_subplot(212)
+    _ = fig.add_subplot(212)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(212))
 
     return fig, ax
 
 
-def tree_full_persistence_colors(tree, plane="xy", feature='path_distances', cmap=cm.jet_map):
+def tree_full_persistence_colors(tree, plane="xy", feature="path_distances", cmap=cm.jet_map):
     """Generate a 2d pic of the tree, each branch has a unique color.
-       Generate a barcode using the corrresponding colors.
+
+    Generate a barcode using the corresponding colors.
     """
-    """Generate a 2d pic of the tree, each branch has a unique color.
-       Generate a barcode using the corrresponding colors.
-    """
-    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
+    # pylint: disable=redefined-outer-name, import-outside-toplevel, unused-argument
     from tmd.Topology.methods import _filtration_function
+    from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
 
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tree, filtration_function=_filtration_function(feature))
@@ -1263,17 +1257,22 @@ def tree_full_persistence_colors(tree, plane="xy", feature='path_distances', cma
 
     fig, ax = tree_colors(tree, ph_graph, colors=colors_random, new_fig=True, subplot=(221))
 
-    ax2 = fig.add_subplot(222)
+    _ = fig.add_subplot(222)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(222))
 
     bounds_max = np.max(ph)
-    bounds_min = np.min(ph)
 
-    ax3 = fig.add_subplot(223)
+    _ = fig.add_subplot(223)
     plot.diagram(ph, color=colors_random, new_fig=False, subplot=(223))
 
     ax = fig.add_subplot(224)
-    plot.persistence_image(ph, cmap=cmap, new_fig=False, subplot=(224),
-                           xlims=(-10, bounds_max), ylims=(-10, bounds_max))
+    plot.persistence_image(
+        ph,
+        cmap=cmap,
+        new_fig=False,
+        subplot=(224),
+        xlims=(-10, bounds_max),
+        ylims=(-10, bounds_max),
+    )
 
     return fig, ax
