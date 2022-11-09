@@ -33,9 +33,9 @@ def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs)
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
     ph_sort = analysis.sort_ph(ph)
 
-    for ibar, bar in enumerate(ph_sort):
+    for ibar, pbar in enumerate(ph_sort):
         bar_color = color[ibar] if isinstance(color, list) else color
-        ax.plot(bar[:2], [ibar, ibar], c=bar_color, linewidth=linewidth)
+        ax.plot(pbar[:2], [ibar, ibar], c=bar_color, linewidth=linewidth)
 
     kwargs["title"] = kwargs.get("title", "Persistence barcode")
     kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime: radial distance")
@@ -68,8 +68,8 @@ def barcode_enhanced(
 
     ph_sort = sort_ph_enhanced(ph, valID)
 
-    for ibar, bar in enumerate(ph_sort):
-        ax.plot(bar[:2], [ibar, ibar], c=cmap(bar[valID] / val_max), linewidth=linewidth)
+    for ibar, pbar in enumerate(ph_sort):
+        ax.plot(pbar[:2], [ibar, ibar], c=cmap(pbar[valID] / val_max), linewidth=linewidth)
 
     kwargs["title"] = kwargs.get("title", "Persistence barcode")
     kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
