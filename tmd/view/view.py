@@ -20,13 +20,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.collections import LineCollection as _LC
 
+from tmd.Topology.methods import _filtration_function
+from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
 from tmd.utils import TREE_TYPE_DICT
 from tmd.utils import term_dict
 from tmd.view import common as cm
 from tmd.view import plot
 from tmd.view.common import blues_map
-from tmd.Topology.methods import _filtration_function
-from tmd.Topology.methods import tree_to_property_barcode as tp_barcode
 
 
 def _get_default(variable, **kwargs):
@@ -1232,8 +1232,9 @@ def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_ma
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
-    fig, ax = tree_colors(tr, ph_graph, colors=colors_random,
-                          plane=plane, new_fig=True, subplot=(211))
+    fig, ax = tree_colors(
+        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(211)
+    )
 
     _ = fig.add_subplot(212)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(212))
@@ -1250,8 +1251,9 @@ def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
-    fig, ax = tree_colors(tr, ph_graph, colors=colors_random,
-                          plane=plane, new_fig=True, subplot=(221))
+    fig, ax = tree_colors(
+        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(221)
+    )
 
     _ = fig.add_subplot(222)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(222))
