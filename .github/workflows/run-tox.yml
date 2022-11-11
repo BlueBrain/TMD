@@ -39,3 +39,13 @@ jobs:
         files: ./reports/coverage-*.xml
         flags: pytest
         name: "TMD-py${{ matrix.python-version }}"
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: tests-${{ matrix.python-version }}
+        retention-days: 4
+        path: |
+          .tox/py*/tmp
+          docs/build
+          reports
