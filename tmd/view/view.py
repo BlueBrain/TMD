@@ -56,7 +56,7 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
         N (int): Number of segments.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -118,7 +118,7 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
         vadd (float): Y shift.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -200,7 +200,7 @@ def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     outline = kwargs.get("outline", True)
 
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -310,7 +310,7 @@ def neuron(
         A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot, new_axes=new_axes)
@@ -414,7 +414,7 @@ def all_trunks(
         A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -496,7 +496,7 @@ def population(
         A 3D matplotlib figure with a tree view, at the selected plane.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -984,7 +984,7 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
             All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
 
     Returns:
-        A 3D matplotlib figure with a tree view.
+        A 3D matplotlib figure with a population view.
     """
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(
@@ -1124,7 +1124,7 @@ def polar_plot(pop, neurite_type="neurites", bins=20):
     ax.bar(theta, norm_radii, width=width, bottom=0.0, alpha=0.8)
 
 
-def tree_colors(
+def _tree_colors(
     tr,
     ph_graph,
     colors=None,
@@ -1137,17 +1137,54 @@ def tree_colors(
 ):
     """Generate a 2d pic of the tree, each branch has a unique color.
 
-    Generate a barcode using the corresponding colors.
+    Args:
+        tr (Tree):
+            A Tree object.
+
+        plane (str):
+            Accepted values: Any sorted pair of of xyz:
+            (xy, xz, yx, yz, zx, zy)
+            Default value is 'xy'.
+
+        ph_graph (list): The list of bars corresponding to tree branches
+            as extracted as the second output
+            from tree_to_property_barcode function.
+
+        colors (list of matplotlib colors): If None,
+            a list of colors will be generated.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+
+        subplot (matplotlib subplot value or False):
+            If False the default subplot 111 will be used.
+            For any other value a matplotlib subplot
+            will be generated.
+            Default value is False.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.common.plot_style`.
+
+    Returns:
+        A 2D matplotlib figure with a tree view.
     """
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
-        return None, "No such plane found! Please select one of: xy, xz, yx, yz, zx, zy."
+        raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
     # Initialization of matplotlib figure and axes.
     fig, ax = cm.get_figure(new_fig=new_fig, new_axes=new_axes, subplot=subplot)
 
     # Initialization of colors to be used.
     if colors is None:
-        ordered_nums = [np.float(i) / len(ph_graph) for i in np.arange(len(ph_graph))]
+        ordered_nums = np.arange(len(ph_graph)) / len(ph_graph)
         colors_random = cmap(ordered_nums)
     else:
         colors_random = colors
@@ -1158,13 +1195,13 @@ def tree_colors(
         beg, end = tr.get_sections_2()
         end_graph = {}
         for j, graph_id in enumerate(ph_graph):
-            for gi in graph_id:
-                end_id = np.where(end == gi)[0][0]
+            for gid in graph_id:
+                end_id = np.where(end == gid)[0][0]
                 end_graph[end_id] = j
 
         sec_ids = [1] * (end[0] - beg[0])
         for i, e in enumerate(end[1:]):
-            sec_ids = sec_ids + [i + 2] * (e - end[i])
+            sec_ids += [i + 2] * (e - end[i])
 
         colors_select = [colors[end_graph[s - 1]] for s in sec_ids]
         return colors_select
@@ -1190,7 +1227,7 @@ def tree_colors(
 
     # Definition of the linewidth according to diameter, if diameter is True.
 
-    linewidth = [d * 1.0 for d in tr.d]
+    linewidth = list(tr.d)
 
     # Plot the collection of lines.
     collection = _LC(segs, color=treecolors, linewidth=linewidth, alpha=1.0)
@@ -1225,45 +1262,76 @@ def tree_colors(
 
 def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_map):
     """Generate a 2d pic of the tree, each branch has a unique color.
+                a persistence barcode with the same colors at each bar.
+    Args:
+        tr (Tree):
+            A Tree object.
 
-    Generate a barcode using the corresponding colors.
+        plane (str):
+            Accepted values: Any sorted pair of of xyz:
+            (xy, xz, yx, yz, zx, zy)
+            Default value is 'xy'.
+
+        feature (str):
+            Accepted values: path_distances, radial_distances.
+            Default value is 'path_distances'.
+
+        cmap (matplotlib colormap):
+            Default value is jet.
     """
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
-    fig, ax = tree_colors(
+    fig, ax = _tree_colors(
         tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(211)
     )
 
-    _ = fig.add_subplot(212)
+    fig.add_subplot(212)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(212))
 
     return fig, ax
 
 
 def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_map):
-    """Generate a 2d pic of the tree, each branch has a unique color.
+    """Generates a 2d pic of the tree, each branch has a unique color.
+                 a persistence barcode with the same colors at each bar,
+                 a persistence diagram with the same colors,
+                 a persistence image with the same colormap.
 
-    Generate a barcode using the corresponding colors.
+    Args:
+        tr (Tree):
+            A Tree object.
+
+        plane (str):
+            Accepted values: Any sorted pair of of xyz:
+            (xy, xz, yx, yz, zx, zy)
+            Default value is 'xy'.
+
+        feature (str):
+            Accepted values: path_distances, radial_distances.
+            Default value is 'path_distances'.
+
+        cmap (matplotlib colormap):
+            Default value is jet.
     """
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
-    fig, ax = tree_colors(
+    fig, _ = _tree_colors(
         tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(221)
     )
 
-    _ = fig.add_subplot(222)
+    fig.add_subplot(222)
     plot.barcode(ph, color=colors_random, new_fig=False, subplot=(222))
 
     bounds_max = np.max(ph)
 
-    _ = fig.add_subplot(223)
+    fig.add_subplot(223)
     plot.diagram(ph, color=colors_random, new_fig=False, subplot=(223))
 
-    _ = fig.add_subplot(224)
+    ax = fig.add_subplot(224)
     plot.persistence_image(
         ph,
         cmap=cmap,
