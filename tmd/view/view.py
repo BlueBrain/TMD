@@ -257,7 +257,7 @@ def neuron(
         neuron (Neuron): A neuron object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz.
+            Accepted values: Any sorted pair of xyz.
             Default value is 'xy'.
 
         linewidth (float):
@@ -379,7 +379,7 @@ def all_trunks(
         nrn (Neuron): A Neuron object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz.
+            Accepted values: Any sorted pair of xyz.
             Default value is 'xy'.
 
         new_fig (bool):
@@ -461,7 +461,7 @@ def population(
             A Population object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz.
+            Accepted values: Any sorted pair of xyz.
             Default value is 'xy'.
 
         new_fig (bool):
@@ -1142,7 +1142,7 @@ def _tree_colors(
             A Tree object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz:
+            Accepted values: Any sorted pair of xyz:
             (xy, xz, yx, yz, zx, zy)
             Default value is 'xy'.
 
@@ -1271,7 +1271,7 @@ def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_ma
             A Tree object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz:
+            Accepted values: Any sorted pair of xyz:
             (xy, xz, yx, yz, zx, zy)
             Default value is 'xy'.
 
@@ -1312,7 +1312,7 @@ def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=
             A Tree object.
 
         plane (str):
-            Accepted values: Any sorted pair of of xyz:
+            Accepted values: Any sorted pair of xyz:
             (xy, xz, yx, yz, zx, zy)
             Default value is 'xy'.
 
