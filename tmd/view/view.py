@@ -1261,8 +1261,11 @@ def _tree_colors(
 
 
 def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_map):
-    """Generate a 2d pic of the tree, each branch has a unique color.
-                a persistence barcode with the same colors at each bar.
+    """Generates a two panel figure with color-coded branches, bars.
+
+    Generates a 2d pic of the tree, each branch has a unique color.
+    A persistence barcode with the same colors at each bar.
+
     Args:
         tr (Tree):
             A Tree object.
@@ -1278,6 +1281,9 @@ def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_ma
 
         cmap (matplotlib colormap):
             Default value is jet.
+
+    Returns:
+        2d matplotlib figure, axes.
     """
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
@@ -1294,10 +1300,12 @@ def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_ma
 
 
 def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_map):
-    """Generates a 2d pic of the tree, each branch has a unique color.
-                 a persistence barcode with the same colors at each bar,
-                 a persistence diagram with the same colors,
-                 a persistence image with the same colormap.
+    """Generates a four panel figure with color-coded branches, bars.
+
+    Generates a 2d pic of the tree, each branch has a unique color.
+    A persistence barcode with the same colors at each bar,
+    A persistence diagram with the same colors,
+    A persistence image with the same colormap.
 
     Args:
         tr (Tree):
@@ -1314,6 +1322,9 @@ def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=
 
         cmap (matplotlib colormap):
             Default value is jet.
+
+    Returns:
+        2d matplotlib figure, axes.
     """
     # Extract ph and ph_graph
     ph, ph_graph = tp_barcode(tr, filtration_function=_filtration_function(feature))
