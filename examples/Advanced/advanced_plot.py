@@ -151,13 +151,16 @@ def barcode_radii(ph, new_fig=True, subplot=False, linewidth=1.2, diam_max=2.0, 
     for ip, p in enumerate(ph_sort):
         ax.plot(p[:2], [ip, ip], c=cm.jet(p[2] / diam_max), linewidth=linewidth)
 
-    kwargs["title"] = kwargs.get("title", "Barcode of p.h.")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
+    all_kwargs = {
+        "title": "Barcode of p.h.",
+        "xlabel": "Lifetime",
+    }
+    all_kwargs.update(kwargs)
 
     _view.common.plt.ylim([-1, len(ph_sort)])
     _view.common.plt.colorbar(CS3)
 
-    return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
+    return _view.common.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def barcode_mirror(ph, new_fig=True, subplot=False, color="b", **kwargs):
@@ -173,11 +176,14 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color="b", **kwargs):
         if p[2] < 0:
             ax.plot(_np.subtract([0, 0], p[:2]), [ip, ip], c=color)
 
-    kwargs["title"] = kwargs.get("title", "Mirror Barcode of p.h.")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
+    all_kwargs = {
+        "title": "Mirror Barcode of p.h.",
+        "xlabel": "Lifetime",
+    }
+    all_kwargs.update(kwargs)
     _view.common.plt.ylim([-len(ph_mirror), len(ph_mirror)])
 
-    return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
+    return _view.common.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
@@ -194,11 +200,14 @@ def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
     # bounds = _np.max(_np.max(ph))
     # _view.common.plt.plot([0, bounds], [0, bounds], c=color)
 
-    kwargs["title"] = kwargs.get("title", "Birth-Length diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Birth")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Length")
+    all_kwargs = {
+        "title": "Birth-Length diagram",
+        "xlabel": "Birth",
+        "ylabel": "Length",
+    }
+    all_kwargs.update(kwargs)
 
-    return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
+    return _view.common.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def ph_on_tree(tree, new_fig=True, subplot=False, plane="xy", alpha=0.05, **kwargs):
@@ -261,27 +270,26 @@ def barcode_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
             else:
                 ax.plot(p1[:2], [ip1, ip1], c="r")
 
-        kwargs["title"] = kwargs.get("title", "Barcode of p.h.")
-        kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
-        kwargs["ylabel"] = kwargs.get("ylabel", "")
+        all_kwargs = {
+            "title": "Barcode of p.h.",
+            "xlabel": "Lifetime",
+            "ylabel": "",
+        }
+        all_kwargs.update(kwargs)
 
         _view.common.plt.ylim([-1, len(ph)])
 
-        _view.common.plot_style(fig, ax, **kwargs)
+        _view.common.plot_style(fig, ax, **all_kwargs)
 
         if output_dir is not None:
-            kwargs["output_path"] = output_dir
-            kwargs["output_name"] = (
+            all_kwargs["output_path"] = output_dir
+            all_kwargs["output_name"] = (
                 "barcode_"
                 + "0" * (2 - len(str(len(tree.get_bifurcations()) - ip)))
                 + str(len(tree.get_bifurcations()) - ip)
             )
 
-        _view.common.save_plot(fig, **kwargs)
-
-        if output_dir is not None:
-            kwargs["output_path"] = None
-            kwargs["output_name"] = None
+        _view.common.save_plot(fig, **all_kwargs)
 
 
 def ph_diagram_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
@@ -321,28 +329,27 @@ def ph_diagram_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
             else:
                 ax.scatter(p1[0], p1[1], c="r", s=50)
 
-        kwargs["title"] = kwargs.get("title", "P.H. diagram")
-        kwargs["xlabel"] = kwargs.get("xlabel", "Birth")
-        kwargs["ylabel"] = kwargs.get("ylabel", "Death")
+        all_kwargs = {
+            "title": "P.H. diagram",
+            "xlabel": "Birth",
+            "ylabel": "Death",
+        }
+        all_kwargs.update(kwargs)
 
-        _view.common.plot_style(fig, ax, **kwargs)
+        _view.common.plot_style(fig, ax, **all_kwargs)
 
         _view.common.plt.plot([0, bounds], [0, bounds])
 
         if output_dir is not None:
-            kwargs["output_path"] = output_dir
-            kwargs["output_name"] = (
+            all_kwargs["output_path"] = output_dir
+            all_kwargs["output_name"] = (
                 "ph_"
                 + "0" * (2 - len(str(len(tree.get_bifurcations()) - ip)))
                 + str(len(tree.get_bifurcations()) - ip)
                 + ".png"
             )
 
-        _view.common.save_plot(fig, **kwargs)
-
-        if output_dir is not None:
-            kwargs["output_path"] = None
-            kwargs["output_name"] = None
+        _view.common.save_plot(fig, **all_kwargs)
 
 
 def tree_instance(
@@ -875,22 +882,19 @@ def plot_simple_tree(
 
     ax.add_collection(collection)
 
-    kwargs["xlim"] = kwargs.get(
-        "xlim",
-        [
+    all_kwargs = {
+        "xlim": [
             bounding_box[0][_utils.term_dict[plane[0]]] - 20,
             bounding_box[1][_utils.term_dict[plane[0]]] + 20,
         ],
-    )
-    kwargs["ylim"] = kwargs.get(
-        "ylim",
-        [
+        "ylim": [
             bounding_box[0][_utils.term_dict[plane[1]]] - 20,
             bounding_box[1][_utils.term_dict[plane[1]]] + 20,
         ],
-    )
+    }
+    all_kwargs.update(kwargs)
 
-    return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
+    return _view.common.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def plot_intermediate(ph_all, colors_bar, tree, colors, counter, linewidth=1.0, output_path="./"):

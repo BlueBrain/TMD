@@ -99,11 +99,14 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
 
     ax.add_collection(collection)
 
-    kwargs["title"] = kwargs.get("title", "Tree view")
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
+    all_kwargs = {
+        "title": "Tree view",
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
@@ -161,28 +164,23 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
 
     ax.add_collection(collection)
 
-    kwargs["title"] = kwargs.get("title", "Tree view")
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
-
     white_space = _get_default("white_space", **kwargs)
-
-    kwargs["xlim"] = kwargs.get(
-        "xlim",
-        [
+    all_kwargs = {
+        "title": "Tree view",
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+        "xlim": [
             bounding_box[0][term_dict[plane[0]]] - white_space,
             bounding_box[1][term_dict[plane[0]]] + white_space,
         ],
-    )
-    kwargs["ylim"] = kwargs.get(
-        "ylim",
-        [
+        "ylim": [
             bounding_box[0][term_dict[plane[1]]] - white_space,
             bounding_box[1][term_dict[plane[1]]] + white_space,
         ],
-    )
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwargs):
@@ -231,11 +229,14 @@ def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
             linewidth=_get_default("linewidth", **kwargs),
         )
 
-    kwargs["title"] = kwargs.get("title", "Soma view")
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
+    all_kwargs = {
+        "title": "Soma view",
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def neuron(
@@ -254,11 +255,17 @@ def neuron(
     """Generate a 2d figure of the neuron that contains a soma and a list of trees.
 
     Args:
-        neuron (Neuron): A neuron object.
+        nrn (Neuron): A neuron object.
 
         plane (str):
             Accepted values: Any sorted pair of xyz.
             Default value is 'xy'.
+
+        new_fig (bool):
+            Defines if the neuron will be plotted
+            in the current figure (False)
+            or in a new figure (True).
+            Default value is True.
 
         linewidth (float):
             Defines the linewidth of the tree and soma
@@ -282,12 +289,6 @@ def neuron(
             * Undefined tree: "black"
 
             Default value is None.
-
-        new_fig (bool):
-            Defines if the neuron will be plotted
-            in the current figure (False)
-            or in a new figure (True).
-            Default value is True.
 
         subplot (matplotlib subplot value or False):
             If False the default subplot 111 will be used.
@@ -327,8 +328,9 @@ def neuron(
     to_plot = []
 
     if rotation == "apical_dendrite":
-        angle = np.arctan2(nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1])
-        angle = np.arctan2(rotation[1], rotation[0])
+        rotation = np.arctan2(
+            nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1]
+        )
 
     if neurite_type == "all":
         to_plot = nrn.neurites
@@ -338,7 +340,7 @@ def neuron(
 
     for temp_tree in to_plot:
         if rotation is not None:
-            temp_tree.rotate_xy(angle)
+            temp_tree.rotate_xy(rotation)
 
         bounding_box = temp_tree.get_bounding_box()
 
@@ -347,19 +349,17 @@ def neuron(
 
         tree(temp_tree, hadd=hadd, vadd=vadd, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", nrn.name)
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
-
     white_space = _get_default("white_space", **kwargs)
-    kwargs["xlim"] = kwargs.get(
-        "xlim", [np.min(h) - white_space + hadd, np.max(h) + white_space + hadd]
-    )
-    kwargs["ylim"] = kwargs.get(
-        "ylim", [np.min(v) - white_space + vadd, np.max(v) + white_space + vadd]
-    )
+    all_kwargs = {
+        "title": nrn.name,
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+        "xlim": [np.min(h) - white_space + hadd, np.max(h) + white_space + hadd],
+        "ylim": [np.min(v) - white_space + vadd, np.max(v) + white_space + vadd],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def all_trunks(
@@ -436,19 +436,16 @@ def all_trunks(
 
         trunk(temp_tree, N=N, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", nrn.name)
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
+    all_kwargs = {
+        "title": nrn.name,
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+        "xlim": [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N],
+        "ylim": [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N],
+    }
+    all_kwargs.update(kwargs)
 
-    kwargs["xlim"] = kwargs.get(
-        "xlim", [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N]
-    )
-
-    kwargs["ylim"] = kwargs.get(
-        "ylim", [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N]
-    )
-
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def population(
@@ -536,13 +533,16 @@ def population(
 
                 tree(temp_tree, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", "Neuron view")
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
-    kwargs["xlim"] = kwargs.get("xlim", [np.min(h), np.max(h)])
-    kwargs["ylim"] = kwargs.get("ylim", [np.min(v), np.max(v)])
+    all_kwargs = {
+        "title": "Neuron view",
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+        "xlim": [np.min(h), np.max(h)],
+        "ylim": [np.min(v), np.max(v)],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
@@ -621,36 +621,28 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
 
     ax.add_collection3d(collection)
 
-    kwargs["title"] = kwargs.get("title", "Tree 3d-view")
-    kwargs["xlabel"] = kwargs.get("xlabel", "X")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
-    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
-
     white_space = _get_default("white_space", **kwargs)
-
-    kwargs["xlim"] = kwargs.get(
-        "xlim",
-        [
+    all_kwargs = {
+        "title": "Tree 3d-view",
+        "xlabel": "X",
+        "ylabel": "Y",
+        "zlabel": "Z",
+        "xlim": [
             bounding_box[0][term_dict["x"]] - white_space,
             bounding_box[1][term_dict["x"]] + white_space,
         ],
-    )
-    kwargs["ylim"] = kwargs.get(
-        "ylim",
-        [
+        "ylim": [
             bounding_box[0][term_dict["y"]] - white_space,
             bounding_box[1][term_dict["y"]] + white_space,
         ],
-    )
-    kwargs["zlim"] = kwargs.get(
-        "zlim",
-        [
+        "zlim": [
             bounding_box[0][term_dict["z"]] - white_space,
             bounding_box[1][term_dict["z"]] + white_space,
         ],
-    )
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
@@ -732,12 +724,15 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
 
     ax.add_collection3d(collection)
 
-    kwargs["title"] = kwargs.get("title", "Tree 3d-view")
-    kwargs["xlabel"] = kwargs.get("xlabel", "X")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
-    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
+    all_kwargs = {
+        "title": "Tree 3d-view",
+        "xlabel": "X",
+        "ylabel": "Y",
+        "zlabel": "Z",
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
@@ -796,12 +791,15 @@ def soma3d(sm, new_fig=True, new_axes=True, subplot=False, **kwargs):
         alpha=_get_default("alpha", **kwargs),
     )
 
-    kwargs["title"] = kwargs.get("title", "Soma view")
-    kwargs["xlabel"] = kwargs.get("xlabel", "X")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Y")
-    kwargs["zlabel"] = kwargs.get("zlabel", "Z")
+    all_kwargs = {
+        "title": "Soma view",
+        "xlabel": "X",
+        "ylabel": "Y",
+        "zlabel": "Z",
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all", **kwargs):
@@ -870,13 +868,16 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all"
 
         tree3d(temp_tree, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", nrn.name)
     white_space = _get_default("white_space", **kwargs)
-    kwargs["xlim"] = kwargs.get("xlim", [np.min(h) - white_space, np.max(h) + white_space])
-    kwargs["ylim"] = kwargs.get("ylim", [np.min(v) - white_space, np.max(v) + white_space])
-    kwargs["zlim"] = kwargs.get("zlim", [np.min(d) - white_space, np.max(d) + white_space])
+    all_kwargs = {
+        "title": nrn.name,
+        "xlim": [np.min(h) - white_space, np.max(h) + white_space],
+        "ylim": [np.min(v) - white_space, np.max(v) + white_space],
+        "zlim": [np.min(d) - white_space, np.max(d) + white_space],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def all_trunks3d(
@@ -940,20 +941,15 @@ def all_trunks3d(
 
         trunk3d(temp_tree, N=N, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", nrn.name)
-    kwargs["xlim"] = kwargs.get(
-        "xlim", [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N]
-    )
+    all_kwargs = {
+        "title": nrn.name,
+        "xlim": [nrn.soma.get_center()[0] - 2.0 * N, nrn.soma.get_center()[0] + 2.0 * N],
+        "ylim": [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N],
+        "zlim": [nrn.soma.get_center()[2] - 2.0 * N, nrn.soma.get_center()[2] + 2.0 * N],
+    }
+    all_kwargs.update(kwargs)
 
-    kwargs["ylim"] = kwargs.get(
-        "ylim", [nrn.soma.get_center()[1] - 2.0 * N, nrn.soma.get_center()[1] + 2.0 * N]
-    )
-
-    kwargs["zlim"] = kwargs.get(
-        "zlim", [nrn.soma.get_center()[2] - 2.0 * N, nrn.soma.get_center()[2] + 2.0 * N]
-    )
-
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
@@ -1008,13 +1004,16 @@ def population3d(pop, new_fig=True, new_axes=True, subplot=False, **kwargs):
             d.append([bounding_box[0][term_dict["z"]], bounding_box[1][term_dict["z"]]])
             tree3d(temp_tree, **kwargs)
 
-    kwargs["title"] = kwargs.get("title", "")
     white_space = _get_default("white_space", **kwargs)
-    kwargs["xlim"] = kwargs.get("xlim", [np.min(h) - white_space, np.max(h) + white_space])
-    kwargs["ylim"] = kwargs.get("ylim", [np.min(v) - white_space, np.max(v) + white_space])
-    kwargs["zlim"] = kwargs.get("zlim", [np.min(d) - white_space, np.max(d) + white_space])
+    all_kwargs = {
+        "title": "",
+        "xlim": [np.min(h) - white_space, np.max(h) + white_space],
+        "ylim": [np.min(v) - white_space, np.max(v) + white_space],
+        "zlim": [np.min(d) - white_space, np.max(d) + white_space],
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 # pylint: disable=too-many-locals
@@ -1237,27 +1236,23 @@ def _tree_colors(
     ax.set_xlim(bounding_box[0][term_dict[plane[0]]], bounding_box[1][term_dict[plane[0]]])
     ax.set_ylim(bounding_box[0][term_dict[plane[1]]], bounding_box[1][term_dict[plane[1]]])
 
-    kwargs["title"] = kwargs.get("title", "Tree structure")
-    kwargs["xlabel"] = kwargs.get("xlabel", plane[0])
-    kwargs["ylabel"] = kwargs.get("ylabel", plane[1])
-
     white_space = _get_default("white_space", **kwargs)
-    kwargs["xlim"] = kwargs.get(
-        "xlim",
-        [
+    all_kwargs = {
+        "title": "Tree structure",
+        "xlabel": plane[0],
+        "ylabel": plane[1],
+        "xlim": [
             bounding_box[0][term_dict[plane[0]]] - white_space,
             bounding_box[1][term_dict[plane[0]]] + white_space,
         ],
-    )
-    kwargs["ylim"] = kwargs.get(
-        "ylim",
-        [
+        "ylim": [
             bounding_box[0][term_dict[plane[1]]] - white_space,
             bounding_box[1][term_dict[plane[1]]] + white_space,
         ],
-    )
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_map):

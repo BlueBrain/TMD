@@ -37,11 +37,14 @@ def barcode(ph, new_fig=True, subplot=False, color="b", linewidth=1.2, **kwargs)
         bar_color = color[ibar] if isinstance(color, list) else color
         ax.plot(pbar[:2], [ibar, ibar], c=bar_color, linewidth=linewidth)
 
-    kwargs["title"] = kwargs.get("title", "Persistence barcode")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime: radial distance")
+    all_kwargs = {
+        "title": "Persistence barcode",
+        "xlabel": "Lifetime: radial distance",
+    }
+    all_kwargs.update(kwargs)
 
     plt.ylim([-1, len(ph_sort)])
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def barcode_enhanced(
@@ -71,12 +74,16 @@ def barcode_enhanced(
     for ibar, pbar in enumerate(ph_sort):
         ax.plot(pbar[:2], [ibar, ibar], c=cmap(pbar[valID] / val_max), linewidth=linewidth)
 
-    kwargs["title"] = kwargs.get("title", "Persistence barcode")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Lifetime")
+    all_kwargs = {
+        "title": "Persistence barcode",
+        "xlabel": "Lifetime",
+    }
+    all_kwargs.update(kwargs)
+
     plt.ylim([-1, len(ph_sort)])
     plt.colorbar(CS3)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def diagram(
@@ -94,11 +101,14 @@ def diagram(
         np.array(ph)[:, 0], np.array(ph)[:, 1], c=color, alpha=alpha, edgecolors=edgecolors, s=s
     )
 
-    kwargs["title"] = kwargs.get("title", "Persistence diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
+    all_kwargs = {
+        "title": "Persistence diagram",
+        "xlabel": "End radial distance",
+        "ylabel": "Start radial distance",
+    }
+    all_kwargs.update(kwargs)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def diagram_enhanced(
@@ -148,14 +158,17 @@ def diagram_enhanced(
         s=s,
     )
 
-    kwargs["title"] = kwargs.get("title", "Persistence diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
+    all_kwargs = {
+        "title": "Persistence diagram",
+        "xlabel": "End radial distance",
+        "ylabel": "Start radial distance",
+    }
+    all_kwargs.update(kwargs)
 
     plt.ylim([-1, len(ph_sort)])
     plt.colorbar(CS3)
 
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def persistence_image(
@@ -201,11 +214,15 @@ def persistence_image(
 
     kwargs["xlim"] = xlim
     kwargs["ylim"] = ylim
-    kwargs["title"] = kwargs.get("title", "Persistence image")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
-    return Zn, cm.plot_style(fig=fig, ax=ax, **kwargs)
+    all_kwargs = {
+        "title": "Persistence image",
+        "xlabel": "End radial distance",
+        "ylabel": "Start radial distance",
+    }
+    all_kwargs.update(kwargs)
+
+    return Zn, cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def persistence_image_diff(
@@ -315,11 +332,15 @@ def persistence_image_average(
 
     kwargs["xlim"] = xlim
     kwargs["ylim"] = ylim
-    kwargs["title"] = kwargs.get("title", "Average persistence image")
-    kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
 
-    return av_imgs, cm.plot_style(fig=fig, ax=ax, **kwargs)
+    all_kwargs = {
+        "title": "Average persistence image",
+        "xlabel": "End radial distance",
+        "ylabel": "Start radial distance",
+    }
+    all_kwargs.update(kwargs)
+
+    return av_imgs, cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def start_length_diagram(ph, new_fig=True, subplot=False, color="b", alpha=1.0, **kwargs):
@@ -330,10 +351,13 @@ def start_length_diagram(ph, new_fig=True, subplot=False, color="b", alpha=1.0, 
     for p in ph_transformed:
         ax.scatter(p[0], p[1], c=color, edgecolors="black", alpha=alpha)
 
-    kwargs["title"] = kwargs.get("title", "Transformed Persistence diagram")
-    kwargs["xlabel"] = kwargs.get("xlabel", "Start of the component")
-    kwargs["ylabel"] = kwargs.get("ylabel", "Length of the component")
-    return cm.plot_style(fig=fig, ax=ax, **kwargs)
+    all_kwargs = {
+        "title": "Transformed Persistence diagram",
+        "xlabel": "Start of the component",
+        "ylabel": "Length of the component",
+    }
+    all_kwargs.update(kwargs)
+    return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
 def histogram_stepped(ph, new_fig=True, subplot=False, color="b", alpha=0.7, **kwargs):
