@@ -177,7 +177,7 @@ def barcode_mirror(ph, new_fig=True, subplot=False, color="b", **kwargs):
             ax.plot(_np.subtract([0, 0], p[:2]), [ip, ip], c=color)
 
     all_kwargs = {
-        "title": "Mirror Barcode of p.h.",
+        "title": "Mirror persistence barcode",
         "xlabel": "Lifetime",
     }
     all_kwargs.update(kwargs)
@@ -271,7 +271,7 @@ def barcode_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
                 ax.plot(p1[:2], [ip1, ip1], c="r")
 
         all_kwargs = {
-            "title": "Barcode of p.h.",
+            "title": "Persistence barcode",
             "xlabel": "Lifetime",
             "ylabel": "",
         }

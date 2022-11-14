@@ -206,7 +206,7 @@ def soma(sm, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     # Definition of the tree color depending on the tree type.
     treecolor = cm.get_color(treecolor, tree_type="soma")
 
-    # Plot the outline of the soma as a circle, is outline is selected.
+    # Plot the outline of the soma as a circle, if outline is selected.
     if not outline:
         soma_circle = plt.Circle(
             sm.get_center() + [hadd, vadd, 0.0],
@@ -247,8 +247,8 @@ def neuron(
     hadd=0.0,
     vadd=0.0,
     neurite_type="all",
-    rotation=None,
-    nosoma=False,
+    apical_alignment=False,
+    plot_soma=True,
     new_axes=True,
     **kwargs,
 ):
@@ -267,49 +267,44 @@ def neuron(
             or in a new figure (True).
             Default value is True.
 
-        linewidth (float):
-            Defines the linewidth of the tree and soma
-            of the neuron, if diameter is set to False.
-            Default value is 1.2.
+        subplot (bool):
+            Create a subplot if set to `True`.
 
-        alpha (float):
-            Defines the transparency of the neuron.
-            0.0 transparent through 1.0 opaque.
-            Default value is 0.8.
+        hadd (float):
+            X shift.
+            Default value is 0.
 
-        treecolor (str or None):
-            Defines the color of the trees.
-            If None the default values will be used,
-            depending on the type of tree:
+        vadd (float):
+            Y shift.
+            Default value is 0.
 
-            * Soma: "black"
-            * Basal dendrite: "red"
-            * Axon : "blue"
-            * Apical dendrite: "purple"
-            * Undefined tree: "black"
+        neurite_type (str):
+            The types of neurites that should be plotted.
+            Default value is 'all'.
 
-            Default value is None.
-
-        subplot (matplotlib subplot value or False):
-            If False the default subplot 111 will be used.
-            For any other value a matplotlib subplot
-            will be generated.
+        apical_alignment (bool):
+            Defines if the neuron will be automatically aligned toward the pia.
             Default value is False.
 
-        diameter (bool):
-            If True the diameter, scaled with diameter_scale factor,
-            will define the width of the tree lines.
-            If False use linewidth to select the width of the tree lines.
+        plot_soma (bool):
+            Defines if the soma will be plotted.
             Default value is True.
 
-        diameter_scale (float):
-            Defines the scale factor that will be multiplied
-            with the diameter to define the width of the tree line.
-            Default value is 1.
+        new_axes (bool):
+            Defines if the neuron will be plotted
+            in the current axes (False)
+            or in new axes (True).
+            Default value is True.
+
+    Keyword args:
+        **kwargs:
+            All keyword arguments will be passed to :func:`tmd.view.view.soma`,
+            :func:`tmd.view.view.tree` and :func:`tmd.view.common.plot_style`.
 
     Returns:
         A 3D matplotlib figure with a tree view, at the selected plane.
     """
+    # pylint: disable=too-many-locals
     if plane not in ("xy", "yx", "xz", "zx", "yz", "zy"):
         raise ValueError("No such plane found! Please select one of: xy, xz, yx, yz, zx, zy.")
 
@@ -319,7 +314,7 @@ def neuron(
     kwargs["new_fig"] = False
     kwargs["subplot"] = subplot
 
-    if not nosoma:
+    if plot_soma:
         soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
     h = []
@@ -327,10 +322,14 @@ def neuron(
 
     to_plot = []
 
-    if rotation == "apical_dendrite":
-        rotation = np.arctan2(
-            nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1]
-        )
+    if apical_alignment:
+        if not nrn.apical_dendrite:
+            raise ValueError(
+                "The 'apical_alignment' is set to True but the neuron has no apical dendrite."
+            )
+        angle = np.arctan2(nrn.apical_dendrite[0].get_pca()[0], nrn.apical_dendrite[0].get_pca()[1])
+    else:
+        angle = None
 
     if neurite_type == "all":
         to_plot = nrn.neurites
@@ -339,8 +338,8 @@ def neuron(
             to_plot = to_plot + getattr(nrn, neu_type)
 
     for temp_tree in to_plot:
-        if rotation is not None:
-            temp_tree.rotate_xy(rotation)
+        if angle is not None:
+            temp_tree.rotate_xy(angle)
 
         bounding_box = temp_tree.get_bounding_box()
 

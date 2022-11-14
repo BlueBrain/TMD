@@ -352,7 +352,7 @@ def start_length_diagram(ph, new_fig=True, subplot=False, color="b", alpha=1.0, 
         ax.scatter(p[0], p[1], c=color, edgecolors="black", alpha=alpha)
 
     all_kwargs = {
-        "title": "Transformed Persistence diagram",
+        "title": "Transformed persistence diagram",
         "xlabel": "Start of the component",
         "ylabel": "Length of the component",
     }
