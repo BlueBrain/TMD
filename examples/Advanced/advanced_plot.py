@@ -43,8 +43,8 @@ def tree_all(
     title="",
     diameter=True,
     treecol="b",
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     **kwargs,
 ):
     """Subplot with ph, barcode and tree."""
@@ -83,7 +83,7 @@ def tree_all(
     # bounds = max(max(ph))
     fig1, ax2 = diagram(ph, new_fig=False, subplot=222, color=treecol)
     fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
-    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlim=xlim, ylim=ylim)
     _cm.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
@@ -99,8 +99,8 @@ def neu_all(
     title="",
     diameter=True,
     treecol="b",
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     neurite_type="basal_dendrite",
     **kwargs,
 ):
@@ -126,7 +126,7 @@ def neu_all(
     # bounds = max(max(ph))
     fig1, ax2 = diagram(ph, new_fig=False, subplot=222, color=treecol)
     fig1, ax3 = barcode(ph, new_fig=False, subplot=223, color=treecol)
-    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = persistence_image(ph, new_fig=False, subplot=224, xlim=xlim, ylim=ylim)
     _cm.plt.tight_layout(True)
 
     if kwargs["output_path"] is not None:
@@ -508,7 +508,7 @@ def gaussian_kernel_resample(ph, num_samples=None, scale_persistent_comp=10):
     return _np.transpose(kernel.resample(size=num_samples))
 
 
-def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, angle=0, **kwargs):
+def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlim=None, ylim=None, angle=0, **kwargs):
     """Plot the gaussian kernel of the ph diagram that is given."""
 
     def rotation(x, y, angle=0.0):
@@ -521,12 +521,12 @@ def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, a
     ymin = min(_np.transpose(ph_r)[1])
     ymax = max(_np.transpose(ph_r)[1])
 
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
+    if xlim is None:
+        xlim = [xmin, xmax]
+    if ylim is None:
+        ylim = [ymin, ymax]
 
-    X, Y = _np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = _np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     values = _np.transpose(ph_r)
     kernel = stats.gaussian_kde(values)
@@ -541,19 +541,19 @@ def gaussian_kernel_rot(ph, new_fig=True, subplot=111, xlims=None, ylims=None, a
     return Z, _view.common.plot_style(fig=fig, ax=ax, **kwargs)
 
 
-def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs):
+def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlim=None, ylim=None, **kwargs):
     """Plot the gaussian kernel of the ph diagram that is given."""
     xmin = min(_np.transpose(ph)[0])
     xmax = max(_np.transpose(ph)[0])
     ymin = min(_np.transpose(ph)[1])
     ymax = max(_np.transpose(ph)[1])
 
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
+    if xlim is None:
+        xlim = [xmin, xmax]
+    if ylim is None:
+        ylim = [ymin, ymax]
 
-    X, Y = _np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = _np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     values = _np.transpose(ph)
     kernel = stats.gaussian_kde(values)
@@ -569,7 +569,7 @@ def gaussian_kernel_weighted(ph, new_fig=True, subplot=111, xlims=None, ylims=No
 
 
 def gaussian_kernel_superposition(
-    ph, new_fig=True, subplot=111, xlims=None, ylims=None, color="r", **kwargs
+    ph, new_fig=True, subplot=111, xlim=None, ylim=None, color="r", **kwargs
 ):
     """Plot the gaussian kernel of the ph diagram that is given."""
     xmin = min(_np.transpose(ph)[0])
@@ -577,12 +577,12 @@ def gaussian_kernel_superposition(
     ymin = min(_np.transpose(ph)[1])
     ymax = max(_np.transpose(ph)[1])
 
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
+    if xlim is None:
+        xlim = [xmin, xmax]
+    if ylim is None:
+        ylim = [ymin, ymax]
 
-    X, Y = _np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = _np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     values = _np.transpose(ph)
     kernel = stats.gaussian_kde(values)
@@ -593,13 +593,12 @@ def gaussian_kernel_superposition(
     fig, ax = _view.common.get_figure(new_fig=new_fig, subplot=subplot)
 
     ax.pcolor(Zn, vmin=0.0, vmax=1.0, cmap=_view.common.plt.cm.inferno)
-    # ax.contour(Z, extent=xlims+ylims)
 
     for p in ph:
 
         ax.scatter(p[0], p[1], c=color)
 
-    return _view.common.plot_style(fig=fig, ax=ax, xlim=xlims, ylim=ylims, **kwargs)
+    return _view.common.plot_style(fig=fig, ax=ax, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def tree_br(
@@ -652,8 +651,8 @@ def tree_gaussian_kernel(
     title="",
     diameter=True,
     treecol="b",
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     **kwargs,
 ):
     """Subplot with ph, barcode and tree within spheres."""
@@ -686,7 +685,7 @@ def tree_gaussian_kernel(
     else:
         raise Exception("Plane value not recognised")
 
-    fig1, ax2 = gaussian_kernel_weighted(ph, new_fig=False, subplot=122, xlims=xlims, ylims=ylims)
+    fig1, ax2 = gaussian_kernel_weighted(ph, new_fig=False, subplot=122, xlim=xlim, ylim=ylim)
 
     _view.common.plt.tight_layout(True)
 
@@ -703,8 +702,6 @@ def tree_ph(
     title="",
     diameter=True,
     treecol="b",
-    xlims=None,
-    ylims=None,
     **kwargs,
 ):
     """Subplot with ph, barcode and tree within spheres."""
@@ -754,10 +751,10 @@ def tree_evol(
     title="",
     diameter=True,
     treecol="b",
-    xlims=None,
-    ylims=None,
-    xlim=None,
-    ylim=None,
+    barcode_xlim=None,
+    barcode_ylim=None,
+    kernel_xlim=None,
+    kernel_ylim=None,
     **kwargs,
 ):
     """Subplot with ph, barcode and tree within spheres."""
@@ -790,9 +787,13 @@ def tree_evol(
     else:
         raise Exception("Plane value not recognised")
 
-    fig1, ax3 = barcode(ph, new_fig=False, subplot=222, color=treecol, xlim=xlim, ylim=ylim)
+    fig1, ax3 = barcode(
+        ph, new_fig=False, subplot=222, color=treecol, xlim=barcode_xlim, ylim=barcode_ylim
+    )
 
-    fig1, ax4 = gaussian_kernel_weighted(ph, new_fig=False, subplot=224, xlims=xlims, ylims=ylims)
+    fig1, ax4 = gaussian_kernel_weighted(
+        ph, new_fig=False, subplot=224, xlim=kernel_xlim, ylim=kernel_ylim
+    )
 
     _view.common.plt.tight_layout(True)
 
@@ -803,7 +804,7 @@ def tree_evol(
 
 
 def image_diff_time(
-    Z1, Z2, time_steps=100, new_fig=True, subplot=111, xlims=None, ylims=None, **kwargs
+    Z1, Z2, time_steps=100, new_fig=True, subplot=111, xlim=None, ylim=None, **kwargs
 ):
     """Take as input a set of images and plots their difference."""
     xmin = min(Z1[1][1].get_xlim() + Z2[1][1].get_xlim())
@@ -811,12 +812,12 @@ def image_diff_time(
     ymin = min(Z1[1][1].get_ylim() + Z2[1][1].get_ylim())
     ymax = max(Z1[1][1].get_ylim() + Z2[1][1].get_ylim())
 
-    if xlims is None:
-        xlims = [xmin, xmax]
-    if ylims is None:
-        ylims = [ymin, ymax]
+    if xlim is None:
+        xlim = [xmin, xmax]
+    if ylim is None:
+        ylim = [ymin, ymax]
 
-    X, Y = _np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = _np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     img1 = Z1[0] / Z1[0].max()
     img2 = Z2[0] / Z2[0].max()
@@ -827,8 +828,8 @@ def image_diff_time(
 
     _view.common.plt.colorbar()
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
 
     return _view.common.plot_style(fig=fig, ax=ax, **kwargs)
 
@@ -1096,7 +1097,7 @@ def plot_persistent_homology_video(
     return ph
 
 
-def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
+def multiple_trees_plot(trees, phs, title_1="Asymmetry"):
     """Plot multiple trees."""
     plt.figure()
     N = len(trees)
@@ -1116,7 +1117,7 @@ def multiple_trees_plot(trees, phs, xlim=None, ylim=None, title_1="Asymmetry"):
 
         view.plot.barcode(phs[i], new_fig=False, subplot=(3, N, i + 1 + N), title="", xlim=lims)
         view.plot.persistence_image(
-            phs[i], new_fig=False, subplot=(3, N, i + 1 + 2 * N), title="", xlims=lims, ylims=lims
+            phs[i], new_fig=False, subplot=(3, N, i + 1 + 2 * N), title="", xlim=lims, ylim=lims
         )
 
 

@@ -747,8 +747,8 @@ def plot_img_basic(
     new_fig=True,
     subplot=111,
     title="",
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     colorbar=False,
     cmap=jet_map,
     vmin=None,
@@ -758,10 +758,10 @@ def plot_img_basic(
     **kwargs,
 ):
     """Plots the gaussian kernel of the input image."""
-    if xlims is None:
-        xlims = (0, 100)
-    if ylims is None:
-        ylims = (0, 100)
+    if xlim is None:
+        xlim = (0, 100)
+    if ylim is None:
+        ylim = (0, 100)
 
     if vmin is None:
         vmin = np.min(img)
@@ -779,11 +779,11 @@ def plot_img_basic(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     kwargs["title"] = title
 
     if colorbar:

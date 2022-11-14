@@ -17,20 +17,20 @@ def compute_distances(directory1, directory2):
     phs2 = [tmd.methods.get_ph_neuron(n, neurite_type="basal_dendrite") for n in pop2.neurons]
 
     # Normalize the limits
-    xlims, ylims = tmd.analysis.get_limits(phs1 + phs2)
+    xlim, ylim = tmd.analysis.get_limits(phs1 + phs2)
 
     # Create average images for populations
-    # imgs1 = [tmd.analysis.get_persistence_image_data(p, xlims=xlims, ylims=ylims) for p in phs1]
-    IMG1 = tmd.analysis.get_average_persistence_image(phs1, xlims=xlims, ylims=ylims)
-    # imgs2 = [tmd.analysis.get_persistence_image_data(p, xlims=xlims, ylims=ylims) for p in phs2]
-    IMG2 = tmd.analysis.get_average_persistence_image(phs2, xlims=xlims, ylims=ylims)
+    # imgs1 = [tmd.analysis.get_persistence_image_data(p, xlim=xlim, ylim=ylim) for p in phs1]
+    IMG1 = tmd.analysis.get_average_persistence_image(phs1, xlim=xlim, ylim=ylim)
+    # imgs2 = [tmd.analysis.get_persistence_image_data(p, xlim=xlim, ylim=ylim) for p in phs2]
+    IMG2 = tmd.analysis.get_average_persistence_image(phs2, xlim=xlim, ylim=ylim)
 
     # You can plot the images if you want to create pretty figures
     # average_figure1 = view.common.plot_img_basic(
-    #     IMG1, title="", xlims=xlims, ylims=ylims, cmap=cm.jet
+    #     IMG1, title="", xlim=xlim, ylim=ylim, cmap=cm.jet
     # )
     # average_figure2 = view.common.plot_img_basic(
-    #     IMG2, title="", xlims=xlims, ylims=ylims, cmap=cm.jet
+    #     IMG2, title="", xlim=xlim, ylim=ylim, cmap=cm.jet
     # )
 
     # Create the difference between the two images

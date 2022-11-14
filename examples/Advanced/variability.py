@@ -54,22 +54,22 @@ def weight_bars(phs_list, max_norm=None):
     return np.array(lengths, dtype=np.float) / max_norm
 
 
-def persistence_image(ph, norm_factor=None, xlims=None, ylims=None):
+def persistence_image(ph, norm_factor=None, xlim=None, ylim=None):
     """Create the data for the generation of the persistence image.
 
     If norm_factor is provided the data will be normalized based on this,
     otherwise they will be normalized to 1.
-    If xlims, ylims are provided the data will be scaled accordingly.
+    If xlim, ylim are provided the data will be scaled accordingly.
     """
     import numpy as np
     from scipy import stats
 
-    if xlims is None:
-        xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
-    if ylims is None:
-        ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+    if xlim is None:
+        xlim = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
+    if ylim is None:
+        ylim = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
 
-    X, Y = np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     values = np.transpose(ph)
     kernel = stats.gaussian_kde(values)
@@ -118,32 +118,26 @@ def average_ph_image_weighted(images_list, weights):
     return average_imgs / np.max(average_imgs)
 
 
-def average_ph_from_list(phs_list, xlims=None, ylims=None, norm_factor=None):
+def average_ph_from_list(phs_list, xlim=None, ylim=None, norm_factor=None):
     """Generates average image from list of phs."""
-    imgs = [
-        persistence_image(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims) for p in phs_list
-    ]
+    imgs = [persistence_image(p, norm_factor=norm_factor, xlim=xlim, ylim=ylim) for p in phs_list]
     return average_ph_image(imgs)
 
 
-def average_weighted_ph_from_list(
-    phs_list, xlims=None, ylims=None, norm_factor=None, max_norm=None
-):
+def average_weighted_ph_from_list(phs_list, xlim=None, ylim=None, norm_factor=None, max_norm=None):
     """Generates average image from list of phs."""
     weights = weight_bars(phs_list, max_norm=max_norm)
-    imgs = [
-        persistence_image(p, norm_factor=norm_factor, xlims=xlims, ylims=ylims) for p in phs_list
-    ]
+    imgs = [persistence_image(p, norm_factor=norm_factor, xlim=xlim, ylim=ylim) for p in phs_list]
     return average_ph_image_weighted(imgs, weights=weights)
 
 
 def define_limits(phs_list):
     """Return the x-y coordinates limits (min, max) for a list of persistence diagrams."""
     ph = view.plot.collapse(phs_list)
-    xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
-    ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+    xlim = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
+    ylim = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
 
-    return xlims, ylims
+    return xlim, ylim
 
 
 # Plotting functions
@@ -154,8 +148,8 @@ def plot_imgs(
     new_fig=True,
     subplot=111,
     title="",
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     cmap=cm.jet,
     vmin=0,
     vmax=1.0,
@@ -166,10 +160,10 @@ def plot_imgs(
     import numpy as np
     from view import common
 
-    if xlims is None:
-        xlims = (0, 100)
-    if ylims is None:
-        ylims = (0, 100)
+    if xlim is None:
+        xlim = (0, 100)
+    if ylim is None:
+        ylim = (0, 100)
 
     fig, ax = common.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -182,13 +176,13 @@ def plot_imgs(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
     kwargs = {}
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     kwargs["title"] = title
 
     plt.colorbar(cax)
@@ -200,16 +194,16 @@ def plot_imgs(
 
 def plot_av(phs1, title=""):
     """Generates and plots the average images from input phs."""
-    xlims, ylims = define_limits(phs1)
-    imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
+    xlim, ylim = define_limits(phs1)
+    imgs1 = [persistence_image(p, xlim=xlim, ylim=ylim) for p in phs1]
     IMG = average_ph_image(imgs1)
-    return plot_imgs(IMG, xlims=xlims, ylims=ylims, title=title)
+    return plot_imgs(IMG, xlim=xlim, ylim=ylim, title=title)
 
 
 def multiplot(phs1, title=""):
     """Plots distances, average image and an example from the population."""
-    xlims, ylims = define_limits(phs1)
-    imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
+    xlim, ylim = define_limits(phs1)
+    imgs1 = [persistence_image(p, xlim=xlim, ylim=ylim) for p in phs1]
 
     IMG = average_ph_image(imgs1)
 
@@ -221,16 +215,16 @@ def multiplot(phs1, title=""):
     ax.hist(distances, bins=20)
     plt.title(title)
 
-    plot_imgs(IMG, xlims=xlims, ylims=ylims, new_fig=False, subplot=132)
-    plot_imgs(imgs1[ID], xlims=xlims, ylims=ylims, new_fig=False, subplot=133)
+    plot_imgs(IMG, xlim=xlim, ylim=ylim, new_fig=False, subplot=132)
+    plot_imgs(imgs1[ID], xlim=xlim, ylim=ylim, new_fig=False, subplot=133)
 
     return distances
 
 
 def multiplot_outliers(phs1, title=""):
     """Plots distances, average image and an example from the population."""
-    xlims, ylims = define_limits(phs1)
-    imgs1 = [persistence_image(p, xlims=xlims, ylims=ylims) for p in phs1]
+    xlim, ylim = define_limits(phs1)
+    imgs1 = [persistence_image(p, xlim=xlim, ylim=ylim) for p in phs1]
 
     IMG = average_ph_image(imgs1)
 
@@ -249,11 +243,11 @@ def multiplot_outliers(phs1, title=""):
     ax.hist(distances, bins=20)
     plt.title(title)
 
-    plot_imgs(IMG, xlims=xlims, ylims=ylims, new_fig=False, subplot=222)
+    plot_imgs(IMG, xlim=xlim, ylim=ylim, new_fig=False, subplot=222)
     plt.title("All")
-    plot_imgs(IMG_out, xlims=xlims, ylims=ylims, new_fig=False, subplot=223)
+    plot_imgs(IMG_out, xlim=xlim, ylim=ylim, new_fig=False, subplot=223)
     plt.title("Outliers")
-    plot_imgs(IMG_without, xlims=xlims, ylims=ylims, new_fig=False, subplot=224)
+    plot_imgs(IMG_without, xlim=xlim, ylim=ylim, new_fig=False, subplot=224)
     plt.title("No_outliers")
 
     return distances
@@ -341,9 +335,9 @@ def norm_limits(ph_list):
     pp = []
     for ph in ph_list:
         pp = pp + ph
-    xlims, ylims = define_limits(pp)
+    xlim, ylim = define_limits(pp)
 
-    return xlims, ylims
+    return xlim, ylim
 
 
 def norm_intensity(ph_list):
@@ -351,8 +345,8 @@ def norm_intensity(ph_list):
     # Normalization of intensity
     intensities = []
     for ph in ph_list:
-        xlims, ylims = define_limits([ph])
-        Z = average_ph_from_list([ph], norm_factor=1.0, xlims=xlims, ylims=ylims)
+        xlim, ylim = define_limits([ph])
+        Z = average_ph_from_list([ph], norm_factor=1.0, xlim=xlim, ylim=ylim)
         intensities.append(np.max(Z))
     M = np.max(intensities)
 
@@ -361,7 +355,7 @@ def norm_intensity(ph_list):
 
 def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
     """Compare multiple plots."""
-    xlims, ylims = norm_limits(ph_list)
+    xlim, ylim = norm_limits(ph_list)
 
     if norm:
         M = norm_intensity(ph_list)
@@ -371,13 +365,13 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
     # Generate normalized averages
     Zns = []
     for ph in ph_list:
-        Z = average_ph_from_list(ph, norm_factor=M, xlims=xlims, ylims=ylims)
+        Z = average_ph_from_list(ph, norm_factor=M, xlim=xlim, ylim=ylim)
         Zns.append(Z)
 
-    plot_imgs(Zns[0], new_fig=True, subplot=331, xlims=xlims, ylims=ylims)
-    plot_imgs(Zns[1], new_fig=False, subplot=332, xlims=xlims, ylims=ylims)
-    plot_imgs(Zns[2], new_fig=False, subplot=334, xlims=xlims, ylims=ylims)
-    plot_imgs(Zns[3], new_fig=False, subplot=335, xlims=xlims, ylims=ylims)
+    plot_imgs(Zns[0], new_fig=True, subplot=331, xlim=xlim, ylim=ylim)
+    plot_imgs(Zns[1], new_fig=False, subplot=332, xlim=xlim, ylim=ylim)
+    plot_imgs(Zns[2], new_fig=False, subplot=334, xlim=xlim, ylim=ylim)
+    plot_imgs(Zns[3], new_fig=False, subplot=335, xlim=xlim, ylim=ylim)
 
     D1 = img_diff(Zns[0], Zns[2], norm=False)
     D2 = img_diff(Zns[1], Zns[3], norm=False)
@@ -388,8 +382,8 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
         D1,
         new_fig=False,
         subplot=337,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -399,8 +393,8 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
         D2,
         new_fig=False,
         subplot=338,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -410,8 +404,8 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
         D3,
         new_fig=False,
         subplot=333,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -421,8 +415,8 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
         D4,
         new_fig=False,
         subplot=336,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -433,22 +427,22 @@ def multiplot_comparison(ph_list, norm=True, diff=1.0, thresh=0.1, masked=True):
 
 
 def multiplot_weighted_comparison_naive(
-    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
+    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlim=None, ylim=None
 ):
     """Compare multiple weighted plot in a naive way."""
-    if xlims is None and ylims is None:
-        xlims, ylims = norm_limits(ph_list)
+    if xlim is None and ylim is None:
+        xlim, ylim = norm_limits(ph_list)
 
     # Generate normalized averages
     Zns = []
     for ph in ph_list:
-        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlims=xlims, ylims=ylims)
+        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlim=xlim, ylim=ylim)
         Zns.append(Z)
 
-    plot_imgs(Zns[0], new_fig=True, subplot=331, xlims=xlims, ylims=ylims, title="Control 4h")
-    plot_imgs(Zns[1], new_fig=False, subplot=332, xlims=xlims, ylims=ylims, title="Control 48h")
-    plot_imgs(Zns[2], new_fig=False, subplot=334, xlims=xlims, ylims=ylims, title="Naive 4h")
-    plot_imgs(Zns[3], new_fig=False, subplot=335, xlims=xlims, ylims=ylims, title="Naive 48h")
+    plot_imgs(Zns[0], new_fig=True, subplot=331, xlim=xlim, ylim=ylim, title="Control 4h")
+    plot_imgs(Zns[1], new_fig=False, subplot=332, xlim=xlim, ylim=ylim, title="Control 48h")
+    plot_imgs(Zns[2], new_fig=False, subplot=334, xlim=xlim, ylim=ylim, title="Naive 4h")
+    plot_imgs(Zns[3], new_fig=False, subplot=335, xlim=xlim, ylim=ylim, title="Naive 48h")
 
     D1 = img_diff(Zns[0], Zns[2], norm=False)
     D2 = img_diff(Zns[1], Zns[3], norm=False)
@@ -459,8 +453,8 @@ def multiplot_weighted_comparison_naive(
         D1,
         new_fig=False,
         subplot=337,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -472,8 +466,8 @@ def multiplot_weighted_comparison_naive(
         D2,
         new_fig=False,
         subplot=338,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -485,8 +479,8 @@ def multiplot_weighted_comparison_naive(
         D3,
         new_fig=False,
         subplot=333,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -498,8 +492,8 @@ def multiplot_weighted_comparison_naive(
         D4,
         new_fig=False,
         subplot=336,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -515,22 +509,22 @@ def multiplot_weighted_comparison_naive(
 
 
 def multiplot_weighted_comparison(
-    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
+    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlim=None, ylim=None
 ):
     """Compare multiple weighted plot."""
-    if xlims is None and ylims is None:
-        xlims, ylims = norm_limits(ph_list)
+    if xlim is None and ylim is None:
+        xlim, ylim = norm_limits(ph_list)
 
     # Generate normalized averages
     Zns = []
     for ph in ph_list:
-        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlims=xlims, ylims=ylims)
+        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlim=xlim, ylim=ylim)
         Zns.append(Z)
 
-    plot_imgs(Zns[0], new_fig=True, subplot=331, xlims=xlims, ylims=ylims, title="Control 4h")
-    plot_imgs(Zns[1], new_fig=False, subplot=332, xlims=xlims, ylims=ylims, title="Control 48h")
-    plot_imgs(Zns[2], new_fig=False, subplot=334, xlims=xlims, ylims=ylims, title="Drug 4h")
-    plot_imgs(Zns[3], new_fig=False, subplot=335, xlims=xlims, ylims=ylims, title="Drug 48h")
+    plot_imgs(Zns[0], new_fig=True, subplot=331, xlim=xlim, ylim=ylim, title="Control 4h")
+    plot_imgs(Zns[1], new_fig=False, subplot=332, xlim=xlim, ylim=ylim, title="Control 48h")
+    plot_imgs(Zns[2], new_fig=False, subplot=334, xlim=xlim, ylim=ylim, title="Drug 4h")
+    plot_imgs(Zns[3], new_fig=False, subplot=335, xlim=xlim, ylim=ylim, title="Drug 48h")
 
     D1 = img_diff(Zns[0], Zns[2], norm=False)
     D2 = img_diff(Zns[1], Zns[3], norm=False)
@@ -541,8 +535,8 @@ def multiplot_weighted_comparison(
         D1,
         new_fig=False,
         subplot=337,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -554,8 +548,8 @@ def multiplot_weighted_comparison(
         D2,
         new_fig=False,
         subplot=338,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -567,8 +561,8 @@ def multiplot_weighted_comparison(
         D3,
         new_fig=False,
         subplot=333,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -580,8 +574,8 @@ def multiplot_weighted_comparison(
         D4,
         new_fig=False,
         subplot=336,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -597,22 +591,22 @@ def multiplot_weighted_comparison(
 
 
 def multiplot_weighted_comparison_male_female(
-    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlims=None, ylims=None
+    ph_list, diff=1.0, thresh=0.1, masked=True, title="", xlim=None, ylim=None
 ):
     """Compare multiple weighted plot."""
-    if xlims is None and ylims is None:
-        xlims, ylims = norm_limits(ph_list)
+    if xlim is None and ylim is None:
+        xlim, ylim = norm_limits(ph_list)
 
     # Generate normalized averages
     Zns = []
     for ph in ph_list:
-        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlims=xlims, ylims=ylims)
+        Z = average_weighted_ph_from_list(ph, norm_factor=None, xlim=xlim, ylim=ylim)
         Zns.append(Z)
 
-    plot_imgs(Zns[0], new_fig=True, subplot=331, xlims=xlims, ylims=ylims, title="Control 4h")
-    plot_imgs(Zns[1], new_fig=False, subplot=332, xlims=xlims, ylims=ylims, title="Control 48h")
-    plot_imgs(Zns[2], new_fig=False, subplot=334, xlims=xlims, ylims=ylims, title="Drug 4h")
-    plot_imgs(Zns[3], new_fig=False, subplot=335, xlims=xlims, ylims=ylims, title="Drug 48h")
+    plot_imgs(Zns[0], new_fig=True, subplot=331, xlim=xlim, ylim=ylim, title="Control 4h")
+    plot_imgs(Zns[1], new_fig=False, subplot=332, xlim=xlim, ylim=ylim, title="Control 48h")
+    plot_imgs(Zns[2], new_fig=False, subplot=334, xlim=xlim, ylim=ylim, title="Drug 4h")
+    plot_imgs(Zns[3], new_fig=False, subplot=335, xlim=xlim, ylim=ylim, title="Drug 48h")
 
     D1 = img_diff(Zns[0], Zns[2], norm=False)
     D2 = img_diff(Zns[1], Zns[3], norm=False)
@@ -623,8 +617,8 @@ def multiplot_weighted_comparison_male_female(
         D1,
         new_fig=False,
         subplot=337,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -636,8 +630,8 @@ def multiplot_weighted_comparison_male_female(
         D2,
         new_fig=False,
         subplot=338,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -649,8 +643,8 @@ def multiplot_weighted_comparison_male_female(
         D3,
         new_fig=False,
         subplot=333,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -662,8 +656,8 @@ def multiplot_weighted_comparison_male_female(
         D4,
         new_fig=False,
         subplot=336,
-        xlims=xlims,
-        ylims=ylims,
+        xlim=xlim,
+        ylim=ylim,
         vmin=-diff,
         vmax=diff,
         masked=masked,
@@ -678,7 +672,7 @@ def multiplot_weighted_comparison_male_female(
     return Zns
 
 
-def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylims=None, title=""):
+def distance_number_of_cells(ph_list, step_size=10, samples=10, xlim=None, ylim=None, title=""):
     """Plot distance number of cells."""
     min_max_size = np.min([len(p) for p in ph_list])
     intervals = np.linspace(step_size, min_max_size, (min_max_size - step_size) / step_size)
@@ -698,9 +692,7 @@ def distance_number_of_cells(ph_list, step_size=10, samples=10, xlims=None, ylim
             for ph in ph_list:
                 ph_random_indices = np.random.choice(np.arange(len(ph)), int(i), replace=False)
                 ph_random = np.array(ph)[ph_random_indices]
-                Z = average_weighted_ph_from_list(
-                    ph_random, norm_factor=None, xlims=xlims, ylims=ylims
-                )
+                Z = average_weighted_ph_from_list(ph_random, norm_factor=None, xlim=xlim, ylim=ylim)
                 Zns.append(Z)
 
             DiffCD4 = np.sum(np.abs(img_diff(Zns[0], Zns[1], norm=False)))

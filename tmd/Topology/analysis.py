@@ -104,12 +104,12 @@ def get_limits(phs_list, coll=True):
         ph = collapse(phs_list)
     else:
         ph = copy.deepcopy(phs_list)
-    xlims = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
-    ylims = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
-    return xlims, ylims
+    xlim = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
+    ylim = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+    return xlim, ylim
 
 
-def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_method=None):
+def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_method=None):
     """Create the data for the generation of the persistence image.
 
     Args:
@@ -117,16 +117,16 @@ def get_persistence_image_data(ph, norm_factor=None, xlims=None, ylims=None, bw_
         norm_factor: persistence image data are normalized according to this.
             If norm_factor is provided the data will be normalized based on this,
             otherwise they will be normalized to 1.
-        xlims: The image limits on x axis.
-        ylims: The image limits on y axis.
+        xlim: The image limits on x axis.
+        ylim: The image limits on y axis.
         bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
 
-    If xlims, ylims are provided the data will be scaled accordingly.
+    If xlim, ylim are provided the data will be scaled accordingly.
     """
-    if xlims is None or xlims is None:
-        xlims, ylims = get_limits(ph, coll=False)
+    if xlim is None or xlim is None:
+        xlim, ylim = get_limits(ph, coll=False)
 
-    X, Y = np.mgrid[xlims[0] : xlims[1] : 100j, ylims[0] : ylims[1] : 100j]
+    X, Y = np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
 
     values = np.transpose(ph)
     kernel = stats.gaussian_kde(values, bw_method=bw_method)
@@ -254,16 +254,14 @@ def distance_horizontal_unnormed(ph1, ph2, normalized=True, bins=100):
     return norm(np.abs(np.subtract(results1, results2)), normalized)
 
 
-def distance_persistence_image(ph1, ph2, xlims=None, ylims=None):
+def distance_persistence_image(ph1, ph2, xlim=None, ylim=None):
     """Computes the absolute difference of the respective persistence images."""
-    p1 = get_persistence_image_data(ph1, xlims=xlims, ylims=ylims)
-    p2 = get_persistence_image_data(ph2, xlims=xlims, ylims=ylims)
+    p1 = get_persistence_image_data(ph1, xlim=xlim, ylim=ylim)
+    p2 = get_persistence_image_data(ph2, xlim=xlim, ylim=ylim)
     return np.sum(np.abs(get_image_diff_data(p1, p2)))
 
 
-def get_average_persistence_image(
-    ph_list, xlims=None, ylims=None, norm_factor=None, weighted=False
-):
+def get_average_persistence_image(ph_list, xlim=None, ylim=None, norm_factor=None, weighted=False):
     """Plot the gaussian kernel of a population as an average of the ph diagrams that are given."""
     im_av = False
     k = 1
@@ -276,18 +274,14 @@ def get_average_persistence_image(
     for weight, ph in zip(weights, ph_list):
         if not isinstance(im_av, np.ndarray):
             try:
-                im = get_persistence_image_data(
-                    ph, norm_factor=norm_factor, xlims=xlims, ylims=ylims
-                )
+                im = get_persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
                 if not np.isnan(np.sum(im)):
                     im_av = weight * im
             except BaseException:  # pylint: disable=broad-except
                 pass
         else:
             try:
-                im = get_persistence_image_data(
-                    ph, norm_factor=norm_factor, xlims=xlims, ylims=ylims
-                )
+                im = get_persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
                 if not np.isnan(np.sum(im)):
                     im_av = np.add(im_av, weight * im)
                     k = k + 1
