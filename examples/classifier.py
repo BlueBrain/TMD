@@ -59,10 +59,10 @@ def classify_cell_in_groups(
         for j in k.neurons
     ]
     # Define x-ylimits
-    xlims, ylims = tmd.analysis.define_limits(pers_diagrams)
+    xlim, ylim = tmd.analysis.define_limits(pers_diagrams)
     # Generate a persistence image for each diagram
     pers_images = [
-        tmd.analysis.persistence_image_data(p, xlims=xlims, ylims=ylims) for p in pers_diagrams
+        tmd.analysis.persistence_image_data(p, xlim=xlim, ylim=ylim) for p in pers_diagrams
     ]
     # Create the train dataset from the flatten images
     train_dataset = [i.flatten() for i in pers_images]
@@ -73,7 +73,7 @@ def classify_cell_in_groups(
     # Get persistence diagram from test cell
     pers2test = tmd.methods.get_ph_neuron(neuron2test, neurite_type=neurite_type)
     # Get persistence image from test cell
-    pers_image2test = tmd.analysis.persistence_image_data(pers2test, xlims=xlims, ylims=ylims)
+    pers_image2test = tmd.analysis.persistence_image_data(pers2test, xlim=xlim, ylim=ylim)
     # Create the test dataset from the flatten image of the test cell
     test_dataset = pers_image2test.flatten()
 

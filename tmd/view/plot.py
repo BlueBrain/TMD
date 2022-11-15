@@ -162,8 +162,8 @@ def persistence_image(
     ph,
     new_fig=True,
     subplot=111,
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     masked=False,
     colorbar=False,
     norm_factor=None,
@@ -175,12 +175,12 @@ def persistence_image(
     **kwargs,
 ):
     """Plot the gaussian kernel of the ph diagram that is given."""
-    if xlims is None or xlims is None:
-        xlims, ylims = analysis.get_limits(ph, coll=False)
+    if xlim is None or xlim is None:
+        xlim, ylim = analysis.get_limits(ph, coll=False)
 
     # pylint: disable=unexpected-keyword-arg
     Zn = analysis.get_persistence_image_data(
-        ph, norm_factor=norm_factor, bw_method=bw_method, xlims=xlims, ylims=ylims
+        ph, norm_factor=norm_factor, bw_method=bw_method, xlim=xlim, ylim=ylim
     )
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 
@@ -193,14 +193,14 @@ def persistence_image(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
     if colorbar:
         plt.colorbar(cax)
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     kwargs["title"] = kwargs.get("title", "Persistence image")
     kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
     kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")
@@ -213,8 +213,8 @@ def persistence_image_diff(
     Z2,
     new_fig=True,
     subplot=111,
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     norm=True,
     vmin=-1.0,
     vmax=1.0,
@@ -225,8 +225,8 @@ def persistence_image_diff(
 
     The difference is computed as: diff(Z1 - Z2))
     """
-    if xlims is None or xlims is None:
-        xlims, ylims = ((0, 100), (0, 100))
+    if xlim is None or xlim is None:
+        xlim, ylim = ((0, 100), (0, 100))
 
     difference = analysis.get_image_diff_data(Z1, Z2, normalized=norm)
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -236,11 +236,11 @@ def persistence_image_diff(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     return cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
@@ -249,8 +249,8 @@ def persistence_image_add(
     Z1,
     new_fig=True,
     subplot=111,
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     norm=True,
     vmin=0,
     vmax=2.0,
@@ -258,8 +258,8 @@ def persistence_image_add(
     **kwargs,
 ):
     """Plot the sum of 2 images from the gaussian kernel plotting function."""
-    if xlims is None or xlims is None:
-        xlims, ylims = ((0, 100), (0, 100))
+    if xlim is None or xlim is None:
+        xlim, ylim = ((0, 100), (0, 100))
 
     addition = analysis.get_image_add_data(Z1, Z2, normalized=norm)
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
@@ -269,11 +269,11 @@ def persistence_image_add(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     return cm.plot_style(fig=fig, ax=ax, **kwargs)
 
 
@@ -281,8 +281,8 @@ def persistence_image_average(
     ph_list,
     new_fig=True,
     subplot=111,
-    xlims=None,
-    ylims=None,
+    xlim=None,
+    ylim=None,
     norm_factor=1.0,
     vmin=None,
     vmax=None,
@@ -293,10 +293,10 @@ def persistence_image_average(
     """Merge a list of ph diagrams and plot their respective average image."""
     # pylint: disable=unexpected-keyword-arg
     av_imgs = analysis.get_average_persistence_image(
-        ph_list, xlims=xlims, ylims=ylims, norm_factor=norm_factor, weighted=weighted
+        ph_list, xlim=xlim, ylim=ylim, norm_factor=norm_factor, weighted=weighted
     )
-    if xlims is None or xlims is None:
-        xlims, ylims = analysis.get_limits(ph_list)
+    if xlim is None or xlim is None:
+        xlim, ylim = analysis.get_limits(ph_list)
 
     if vmin is None:
         vmin = np.min(av_imgs)
@@ -310,11 +310,11 @@ def persistence_image_average(
         vmax=vmax,
         cmap=cmap,
         interpolation="bilinear",
-        extent=xlims + ylims,
+        extent=xlim + ylim,
     )
 
-    kwargs["xlim"] = xlims
-    kwargs["ylim"] = ylims
+    kwargs["xlim"] = xlim
+    kwargs["ylim"] = ylim
     kwargs["title"] = kwargs.get("title", "Average persistence image")
     kwargs["xlabel"] = kwargs.get("xlabel", "End radial distance")
     kwargs["ylabel"] = kwargs.get("ylabel", "Start radial distance")

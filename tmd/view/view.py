@@ -1348,8 +1348,8 @@ def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=
         cmap=cmap,
         new_fig=False,
         subplot=(224),
-        xlims=(-10, bounds_max),
-        ylims=(-10, bounds_max),
+        xlim=(-10, bounds_max),
+        ylim=(-10, bounds_max),
     )
 
     return fig, ax
