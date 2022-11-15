@@ -19,6 +19,7 @@ from collections import namedtuple
 
 import numpy as np
 
+from tmd.Neuron import Neuron
 from tmd.Soma.Soma import Soma
 from tmd.Tree import Tree
 
@@ -128,3 +129,14 @@ def convert_morphio_trees(morphio_neuron):
             t=t[tree_beg:tree_end],
             p=p[tree_beg:tree_end],
         )
+
+
+def convert_morphio_neuron(morph, tree_types, name=""):
+    """Convert a MorphIO morphology into a Neuron object."""
+    neuron = Neuron.Neuron()
+    neuron.name = name
+    neuron.set_soma(convert_morphio_soma(morph.soma))
+    for tree in convert_morphio_trees(morph):
+        neuron.append_tree(tree, tree_types)
+
+    return neuron

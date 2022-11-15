@@ -20,11 +20,12 @@ import warnings
 from pathlib import Path
 
 import numpy as _np
+from morphio import Morphology
+from morphio import Option
 from scipy import sparse as sp
 from scipy.sparse import csgraph as cs
 
-from tmd.io.conversion import convert_morphio_soma
-from tmd.io.conversion import convert_morphio_trees
+from tmd.io.conversion import convert_morphio_neuron
 from tmd.io.h5 import read_h5
 from tmd.io.swc import SWC_DCT
 from tmd.io.swc import read_swc
@@ -76,7 +77,7 @@ def redefine_types(user_types=None):
     return final_tree_types
 
 
-def load_neuron(
+def _load_neuron_internal(
     input_file, line_delimiter="\n", soma_type=None, user_tree_types=None, remove_duplicates=True
 ):
     """I/O method to load an swc or h5 file into a Neuron object."""
@@ -146,7 +147,7 @@ def load_neuron(
     return neuron
 
 
-def load_neuron_from_morphio(path_or_obj, user_tree_types=None):
+def _load_neuron_morphio(path_or_obj, user_tree_types=None):
     """Create Neuron object from morphio object or from path loaded via morphio.
 
     Supported file formats: h5, swc, asc.
@@ -158,32 +159,76 @@ def load_neuron_from_morphio(path_or_obj, user_tree_types=None):
     Returns:
         neuron (Neuron): tmd Neuron object
     """
-    from morphio import Morphology  # pylint: disable=import-outside-toplevel
-
     tree_types = redefine_types(user_tree_types)
 
     if isinstance(path_or_obj, (str, Path)):
-        obj = Morphology(path_or_obj)
+        obj = Morphology(
+            path_or_obj,
+            Option.allow_root_bifurcations
+            | Option.allow_soma_bifurcations
+            | Option.allow_custom_root_id
+            | Option.allow_multiple_somata,
+        )
         filename = path_or_obj
     else:
         obj = path_or_obj
         # MorphIO does not support naming of objects yet.
         filename = ""
 
-    neuron = Neuron.Neuron()
-    neuron.name = filename
-    neuron.set_soma(convert_morphio_soma(obj.soma))
-    for tree in convert_morphio_trees(obj):
-        neuron.append_tree(tree, tree_types)
-
-    return neuron
+    return convert_morphio_neuron(obj, tree_types, filename)
 
 
-def load_population(neurons, user_tree_types=None, name=None, use_morphio=False):
+def load_neuron(
+    input_file, user_tree_types=None, *, line_delimiter="\n", soma_type=None, remove_duplicates=True
+):
+    """I/O method to load an 'asc', 'h5' or 'swc' file into a Neuron object.
+
+    Args:
+        input_file (Union[str, morphio.Morphology]):
+            Filepath or morphio object
+
+    Returns:
+        neuron (Neuron): tmd Neuron object
+
+    """
+    ext = os.path.splitext(input_file)[-1][1:]
+    if ext not in ("h5", "swc", "asc"):
+        raise ValueError("The file extension must be in ['asc', 'h5', 'swc']")
+
+    try:
+        return _load_neuron_morphio(input_file, user_tree_types=user_tree_types)
+    except Exception as morphio_exc:  # pylint: disable=broad-except
+        try:
+            if ext not in ("h5", "swc"):
+                raise ValueError(
+                    "The internal loader can only read '*.h5' and '*.swc' files."
+                ) from morphio_exc
+            neuron = _load_neuron_internal(
+                input_file,
+                line_delimiter=line_delimiter,
+                soma_type=soma_type,
+                user_tree_types=user_tree_types,
+                remove_duplicates=remove_duplicates,
+            )
+            warnings.warn(
+                f"The file {input_file} was loaded using the internal loader because of a MorphIO "
+                "failure."
+            )
+            return neuron
+        except Exception as exc:
+            raise exc from morphio_exc
+
+
+def load_population(neurons, user_tree_types=None, name=None, use_morphio=None):
     """Load all data of recognised format (swc, h5) into a Population object.
 
     Takes as input a directory or a list of files to load.
     """
+    if use_morphio is not None:
+        warnings.warn(
+            "The 'use_morphio' parameter is deprecated as the internal loader is only used "
+            "when MorphIO fails."
+        )
     if isinstance(neurons, (list, tuple)):
         files = neurons
         name = name if name is not None else "Population"
@@ -204,16 +249,7 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
 
     for filename in files:
         try:
-            ext = os.path.splitext(filename)[-1][1:].lower()
-            if not use_morphio:
-                assert ext in ("h5", "swc")
-                pop.append_neuron(load_neuron(filename, user_tree_types=user_tree_types))
-            else:
-                assert ext in ("h5", "swc", "asc")
-                pop.append_neuron(
-                    load_neuron_from_morphio(filename, user_tree_types=user_tree_types)
-                )
-
+            pop.append_neuron(load_neuron(filename, user_tree_types=user_tree_types))
         except AssertionError as exc:
             raise Warning(
                 "{filename} is not a valid h5, swc or asc file. If asc set use_morphio to True."
