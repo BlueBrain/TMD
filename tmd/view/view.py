@@ -1063,7 +1063,7 @@ def density_cloud(
         (yedges1[:-1] + yedges1[1:]) / 2,
         np.transpose(H2),
         cmap=color_map,
-        alhpa=alpha,
+        alpha=alpha,
     )
 
     kwargs["new_fig"] = False
