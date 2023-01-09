@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,10 +21,29 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Get current month
+      id: date
+      run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
+    - name: Cache APT Packages
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libhdf5-dev
+        version: 1.0
+        execute_install_scripts: true
+    - name: Cache tox and precommit environments
+      uses: actions/cache@v3
+      with:
+        path: |
+          .tox
+          ~/.cache/pre-commit
+        key: ${{ runner.os }}-${{ matrix.python-version }}-${{ steps.date.outputs.date }}-${{ hashFiles('setup.py') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Install dependencies and register dot plugin
       run: |
         python -m pip install --upgrade pip setuptools
         pip install tox-gh-actions
+    - name: Clear results in tox environments
+      run: |
+        rm -rf .tox/*/tmp
     - name: Run tox
       run: |
         tox
