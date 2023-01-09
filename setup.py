@@ -16,7 +16,7 @@ reqs = [
 
 doc_reqs = [
     "m2r2",
-    "sphinx",
+    "sphinx<6",
     "sphinx-bluebrain-theme",
     "sphinx-click",
 ]
@@ -62,6 +62,8 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
 )
