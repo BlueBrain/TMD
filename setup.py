@@ -6,9 +6,9 @@ from setuptools import setup
 
 reqs = [
     "h5py>=2.8.0",
-    "scipy>=0.13.3",
-    "numpy>=1.8.0",
-    "scikit-learn>=0.19.1",
+    "scipy>=1.1.0",
+    "numpy>=1.15.0",
+    "scikit-learn>=0.20.0",
     "munkres>=1.0.12",
     "cached-property>=1.5.1",
     "morphio>=3.3.3",
@@ -22,10 +22,10 @@ doc_reqs = [
 ]
 
 test_reqs = [
-    "mock",
-    "pytest",
-    "pytest-cov",
-    "pytest-html",
+    "mock>=3",
+    "pytest>=6",
+    "pytest-cov>=3",
+    "pytest-html>=2",
 ]
 
 setup(
@@ -63,6 +63,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
 )
