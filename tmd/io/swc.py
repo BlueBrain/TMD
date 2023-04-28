@@ -19,6 +19,8 @@ import re
 
 import numpy as np
 
+from tmd.utils import TmdError
+
 # Definition of swc data container
 SWC_DCT = {"index": 0, "type": 1, "x": 2, "y": 3, "z": 4, "radius": 5, "parent": 6}
 
@@ -27,7 +29,6 @@ def read_swc(input_file, line_delimiter="\n"):
     """Load a swc file containing a list of sections, into a 'Data' format."""
     # Read all data from file.
     with open(input_file, "r", encoding="utf-8") as f:
-
         read_data = f.read()
 
     # Split data per lines
@@ -55,9 +56,7 @@ def swc_to_data(data_swc):
     data = []
 
     for dpoint in data_swc:
-
         if expected_data.match(dpoint.replace("\r", "")):
-
             segment_point = np.array(
                 expected_data.match(dpoint.replace("\r", "")).groups(), dtype=float
             )
@@ -121,7 +120,6 @@ def swc_data_to_lists(data):
     total_offset = int(first_line_data.groups()[0])
 
     for enline in range(length):
-
         segment_point = expected_data.match(data[enline].replace("\r", "")).groups()
 
         x[enline] = float(segment_point[SWC_DCT["x"]])
@@ -136,13 +134,12 @@ def swc_data_to_lists(data):
             p[enline] = int(segment_point[SWC_DCT["parent"]])
 
         if int(segment_point[SWC_DCT["index"]]) - enline != total_offset:
-            raise Exception(
+            raise TmdError(
                 "Aborting process, with non-sequential ids error.\
                              Fix to proceed."
             )
 
     for enline in range(length):
-
         ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch

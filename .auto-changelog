@@ -9,5 +9,5 @@
     "issueUrl": "https://github.com/BlueBrain/TMD/issues/{id}",
     "mergeUrl": "https://github.com/BlueBrain/TMD/pull/{id}",
     "compareUrl": "https://github.com/BlueBrain/TMD/compare/{from}..{to}",
-    "startingVersion": "2.2.0"
+    "startingVersion": "v2.3.0"
 }

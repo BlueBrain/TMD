@@ -202,7 +202,6 @@ def get_persistence_diagram_timelapse(trees, **kwargs):
         while len(np.where(active)[0]) > 1:
             alive = list(np.where(active)[0])
             for i in alive:
-
                 p = parents[i]
                 c = children[p]
 

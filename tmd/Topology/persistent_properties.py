@@ -56,7 +56,6 @@ class PersistentMeanRadius(PersistentProperty):
     """
 
     def __init__(self, tree):
-
         section_begs, section_ends = tree.sections
         self._radii = self._section_mean_radii(0.5 * tree.d, section_begs, section_ends)
 
@@ -91,7 +90,6 @@ class PersistentAngles(PersistentProperty):
     """
 
     def __init__(self, tree):
-
         section_begs, _ = tree.sections
         section_parents, section_children = tree.parents_children
 
@@ -187,7 +185,6 @@ class PersistentAngles(PersistentProperty):
         ]  # Null angle for non bif point
 
         for b in beg[1:]:
-
             angleBetween = PersistentAngles._angles_tree(
                 tree, parID=parents[b], parEND=b, ch1ID=children[b][0], ch2ID=children[b][1]
             )

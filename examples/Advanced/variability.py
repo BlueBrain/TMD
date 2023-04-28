@@ -683,7 +683,6 @@ def distance_number_of_cells(ph_list, step_size=10, samples=10, xlim=None, ylim=
     distancesCD48std = []
 
     for i in intervals:
-
         d4 = []
         d48 = []
 

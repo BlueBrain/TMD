@@ -55,7 +55,6 @@ def closest_ph(ph_list, target_extent, method="from_above"):
     sorted_extents = max_extents[sorted_indices]
 
     if method == "from_above":
-
         above = np.searchsorted(sorted_extents, target_extent, side="right")
 
         # if target extent is close to current one, return this instead
@@ -67,7 +66,6 @@ def closest_ph(ph_list, target_extent, method="from_above"):
         closest_index = np.clip(closest_index, 0, n_bars - 1)
 
     elif method == "from_below":
-
         below = np.searchsorted(sorted_extents, target_extent, side="left")
 
         # if target extent is close to current one, return this instead
@@ -79,7 +77,6 @@ def closest_ph(ph_list, target_extent, method="from_above"):
         closest_index = np.clip(closest_index, 0, n_bars - 1)
 
     elif method == "nearest":
-
         below = np.searchsorted(sorted_extents, target_extent, side="left")
         pos = np.clip(below, 0, n_bars - 2)
 

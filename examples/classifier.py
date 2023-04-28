@@ -80,7 +80,6 @@ def classify_cell_in_groups(
     predict_labels = []
     # Train classifier with training images for selected number_of_trials
     for i in range(number_of_trials):
-
         clf = train(classifier_module, classifier_method, train_dataset, labels)
         # Test classifier with test image and return predictions
         predict_labels.append(predict(clf, test_dataset))
