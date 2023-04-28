@@ -46,7 +46,6 @@ def leave_one_out(mod, classifier, data, labels, **kwargs):
     scores = np.zeros(sample_size)
 
     for ed in range(sample_size):
-
         # print('Testing ' + str(ed) + ' ...')
 
         train_data = data[np.delete(range(sample_size), ed)]
@@ -73,7 +72,6 @@ def leave_one_out_statistics(mod, classifier, data, labels, N=10, **kwargs):
     scores = np.zeros(sample_size)
 
     for ed in range(sample_size):
-
         # print('Testing ' + str(ed) + ' ...')
 
         train_data = data[np.delete(range(sample_size), ed)]
@@ -112,7 +110,6 @@ def leave_perc_out(mod, classifier, data, labels, iterations=10, percent=10, **k
     # print(sample_size, test_size)
 
     for i in range(iterations):
-
         random_inds = random.sample(range(0, sample_size), test_size)
         kept = np.delete(range(sample_size), random_inds)
 
@@ -148,7 +145,6 @@ def leave_one_out_mixing(mod, classifier, data, labels, **kwargs):
         sizes[int(i - 1)] = len(np.where(labels == i)[0])
 
     for ed in range(sample_size):
-
         # print('Testing ' + str(ed) + ' ...')
 
         train_data = data[np.delete(range(sample_size), ed)]
@@ -181,13 +177,11 @@ def leave_one_out_multiple(mod, classifier, data, labels, n=10, **kwargs):
     scores = np.zeros(sample_size)
 
     for ed in range(sample_size):
-
         # print('Testing ' + str(ed) + ' ...')
 
         print("The individual " + str(ed) + " is of type ")
 
         for ni in range(n):
-
             train_data = data[np.delete(range(sample_size), ed)]
             train_labels = labels[np.delete(range(sample_size), ed)]
 

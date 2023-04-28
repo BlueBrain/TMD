@@ -91,7 +91,6 @@ class Neuron:
         correct list of trees in neuron.
         """
         if isinstance(new_tree, Tree.Tree):
-
             if int(np.median(new_tree.t)) in tree_types.keys():
                 neurite_type = tree_types[int(np.median(new_tree.t))]
             else:

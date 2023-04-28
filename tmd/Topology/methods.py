@@ -71,12 +71,10 @@ def tree_to_property_barcode(tree, filtration_function, property_class=NoPropert
     ph = []
     while len(alives) > 1:
         for alive in alives:
-
             p = parents[alive]
             c = children[p]
 
             if np.alltrue(active[c]):
-
                 active[p] = True
                 active[c] = False
 

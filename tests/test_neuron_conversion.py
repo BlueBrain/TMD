@@ -41,7 +41,6 @@ class MockNeuron:
     """A Mock for the Neuron class."""
 
     def __init__(self):
-
         root = MockSection(
             id=0,
             points=np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]),
@@ -154,7 +153,6 @@ def _assert_neurons_equal(neuron1, neuron2):
     npt.assert_allclose(neuron1.soma.d, neuron2.soma.d)
 
     for neurite1, neurite2 in zip(neuron1.neurites, neuron2.neurites):
-
         npt.assert_allclose(neurite1.x, neurite2.x)
         npt.assert_allclose(neurite1.y, neurite2.y)
         npt.assert_allclose(neurite1.z, neurite2.z)

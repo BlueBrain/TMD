@@ -27,7 +27,6 @@ def read_swc(input_file, line_delimiter="\n"):
     """Load a swc file containing a list of sections, into a 'Data' format."""
     # Read all data from file.
     with open(input_file, "r", encoding="utf-8") as f:
-
         read_data = f.read()
 
     # Split data per lines
@@ -55,9 +54,7 @@ def swc_to_data(data_swc):
     data = []
 
     for dpoint in data_swc:
-
         if expected_data.match(dpoint.replace("\r", "")):
-
             segment_point = np.array(
                 expected_data.match(dpoint.replace("\r", "")).groups(), dtype=float
             )
@@ -121,7 +118,6 @@ def swc_data_to_lists(data):
     total_offset = int(first_line_data.groups()[0])
 
     for enline in range(length):
-
         segment_point = expected_data.match(data[enline].replace("\r", "")).groups()
 
         x[enline] = float(segment_point[SWC_DCT["x"]])
@@ -142,7 +138,6 @@ def swc_data_to_lists(data):
             )
 
     for enline in range(length):
-
         ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch

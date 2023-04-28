@@ -89,12 +89,10 @@ def convert_morphio_trees(morphio_neuron):
 
     tree_end = 0
     for root in morphio_neuron.root_sections:
-
         tree_length = 0
         tree_beg = tree_end
 
         for section in root.iter():
-
             # root sections have parent -1
             if section.is_root:
                 start = 0

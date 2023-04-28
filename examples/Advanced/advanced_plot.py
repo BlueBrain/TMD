@@ -194,7 +194,6 @@ def ph_birth_length(ph, new_fig=True, subplot=False, color="b", **kwargs):
     ph_sort = sort_ph(ph)
 
     for p in ph_sort:
-
         ax.scatter(p[0], p[2], c=color)
 
     # bounds = _np.max(_np.max(ph))
@@ -225,7 +224,6 @@ def ph_on_tree(tree, new_fig=True, subplot=False, plane="xy", alpha=0.05, **kwar
         raise Exception("Plane value not recognised")
 
     for p in ph:
-
         c1 = _view.common.plt.Circle([tree.x[0], tree.y[0], tree.z[0]], p[0], alpha=alpha)
         c2 = _view.common.plt.Circle([tree.x[0], tree.y[0], tree.z[0]], p[1], alpha=alpha)
 
@@ -247,13 +245,11 @@ def barcode_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
         raise Exception("Plane value not recognised")
 
     for ip, p in enumerate(ph):
-
         ph[ip].append(_np.abs(p[0] - p[1]))
 
     ph.sort(key=lambda x: x[2])
 
     for ip, p in enumerate(ph):
-
         fig, ax = _view.tree(tree, new_fig=new_fig, subplot=121, plane=plane)
 
         c1 = _view.common.plt.Circle([tree.x[0], tree.y[0]], p[0], alpha=0.2)
@@ -306,13 +302,11 @@ def ph_diagram_tree(tree, new_fig=True, plane="xy", output_dir=None, **kwargs):
     bounds = max(max(ph))
 
     for ip, p in enumerate(ph):
-
         ph[ip].append(_np.abs(p[0] - p[1]))
 
     ph.sort(key=lambda x: x[2])
 
     for ip, p in enumerate(ph):
-
         fig, ax = _view.tree(tree, new_fig=new_fig, subplot=121, plane=plane)
 
         c1 = _view.common.plt.Circle([tree.x[0], tree.y[0]], p[0], alpha=0.2)
@@ -602,7 +596,6 @@ def gaussian_kernel_superposition(
     ax.pcolor(Zn, vmin=0.0, vmax=1.0, cmap=_view.common.plt.cm.inferno)
 
     for p in ph:
-
         ax.scatter(p[0], p[1], c=color)
 
     return _view.common.plot_style(fig=fig, ax=ax, xlim=xlim, ylim=ylim, **kwargs)
@@ -991,12 +984,10 @@ def plot_persistent_homology_video(
         alive = list(_np.where(active)[0])
 
         for i in alive:
-
             p = parents[i]
             c = children[p]
 
             if _np.alltrue(active[c]):
-
                 to_modify = []
                 to_modify_bars = []
 
@@ -1028,7 +1019,6 @@ def plot_persistent_homology_video(
                     key = int(ci)
 
                     while key in active_paths:
-
                         # colors[tree.get_way_to_section_start(active_paths[key] - 1)] = c2
                         to_modify = to_modify + tree.get_way_to_section_start(active_paths[key] - 1)
                         if active_paths[key] < len(colors):

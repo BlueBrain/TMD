@@ -98,7 +98,6 @@ def test_distance_horizontal_unnormed():
 
 
 def _ph_list():
-
     return [
         [
             [16.90, 6.68, 0.1, 0.1, 0.1, 0.1],

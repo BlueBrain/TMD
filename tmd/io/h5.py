@@ -196,7 +196,6 @@ def h5_data_to_lists(data):
     ch = {}
 
     for enline in range(length):
-
         ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch

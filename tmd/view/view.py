@@ -86,7 +86,6 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
     # Definition of the linewidth according to diameter, if diameter is True.
 
     if _get_default("diameter", **kwargs):
-
         scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
@@ -148,7 +147,6 @@ def tree(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, **kwar
     # Definition of the linewidth according to diameter, if diameter is True.
 
     if _get_default("diameter", **kwargs):
-
         scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
@@ -432,7 +430,6 @@ def all_trunks(
             to_plot = to_plot + getattr(nrn, neu_type)
 
     for temp_tree in to_plot:
-
         trunk(temp_tree, N=N, **kwargs)
 
     all_kwargs = {
@@ -504,7 +501,6 @@ def population(
     v = []
 
     for nrn in pop.neurons:
-
         soma(nrn.soma, plane=plane, hadd=hadd, vadd=vadd, **kwargs)
 
         if neurite_type == "all":
@@ -514,7 +510,6 @@ def population(
 
         for nt in neurite_list:
             for temp_tree in getattr(nrn, nt):
-
                 bounding_box = temp_tree.get_bounding_box()
 
                 h.append(
@@ -607,7 +602,6 @@ def tree3d(tr, new_fig=True, new_axes=True, subplot=False, **kwargs):
     # Definition of the linewidth according to diameter, if diameter is True.
 
     if _get_default("diameter", **kwargs):
-
         scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
@@ -710,7 +704,6 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
     # Definition of the linewidth according to diameter, if diameter is True.
 
     if _get_default("diameter", **kwargs):
-
         scale = _get_default("diameter_scale", **kwargs)
         linewidth = [d * scale for d in tr.d]
 
@@ -858,7 +851,6 @@ def neuron3d(nrn, new_fig=True, new_axes=True, subplot=False, neurite_type="all"
             to_plot = to_plot + getattr(nrn, neu_type)
 
     for temp_tree in to_plot:
-
         bounding_box = temp_tree.get_bounding_box()
 
         h.append([bounding_box[0][term_dict["x"]], bounding_box[1][term_dict["x"]]])
@@ -937,7 +929,6 @@ def all_trunks3d(
             to_plot = to_plot + getattr(nrn, neu_type)
 
     for temp_tree in to_plot:
-
         trunk3d(temp_tree, N=N, **kwargs)
 
     all_kwargs = {
