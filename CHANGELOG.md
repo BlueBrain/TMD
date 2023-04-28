@@ -1,15 +1,52 @@
 # Changelog
 
+## [v2.3.0](https://github.com/BlueBrain/TMD/compare/v2.2.0..v2.3.0)
+
+> 28 April 2023
+
+### Chores And Housekeeping
+
+- Update from Copier template (Adrien Berchet - [#73](https://github.com/BlueBrain/TMD/pull/73))
+- Fix license detection (Adrien Berchet - [#59](https://github.com/BlueBrain/TMD/pull/59))
+- Fix citation section and add CITATION.cff file (Adrien Berchet - [#58](https://github.com/BlueBrain/TMD/pull/58))
+- Fix pylint config (Adrien Berchet - [#57](https://github.com/BlueBrain/TMD/pull/57))
+
+### Documentation Changes
+
+- Fix RTD (Adrien Berchet - [#56](https://github.com/BlueBrain/TMD/pull/56))
+
+### Refactoring and Updates
+
+- Make (x/y)lims and (x/y)lim consistent in plot functions (Adrien Berchet - [#69](https://github.com/BlueBrain/TMD/pull/69))
+- Apply copier template (Adrien Berchet - [#55](https://github.com/BlueBrain/TMD/pull/55))
+
+### Tidying of Code eg Whitespace
+
+- Handle default kwargs (Adrien Berchet - [#67](https://github.com/BlueBrain/TMD/pull/67))
+
+### CI Improvements
+
+- Use Py37 with precommit (Adrien Berchet - [#72](https://github.com/BlueBrain/TMD/pull/72))
+- Fix title in commitlint job (Adrien Berchet - [#70](https://github.com/BlueBrain/TMD/pull/70))
+- Store tests results as artifacts (Adrien Berchet - [#66](https://github.com/BlueBrain/TMD/pull/66))
+- Fix tests, bump Github actions and add get_by_name method to Population (Adrien Berchet - [#64](https://github.com/BlueBrain/TMD/pull/64))
+- Fix action to publish new releases on Pypi (Adrien Berchet - [#53](https://github.com/BlueBrain/TMD/pull/53))
+
+### General Changes
+
+- Add new plotting functions to create overview figures for papers (lidakanari - [#63](https://github.com/BlueBrain/TMD/pull/63))
+- Fix load_population to be able to load single files and to raise a proper exception (Adrien Berchet - [#54](https://github.com/BlueBrain/TMD/pull/54))
+
+<!-- auto-changelog-above -->
+
 ## [v2.2.0](https://github.com/BlueBrain/TMD/compare/v2.1.0..v2.2.0)
 
 > 22 August 2022
 
-### Uncategorized Changes
+### General Changes
 
 - Update to dendrite types (Alexis Arnaudon - [#52](https://github.com/BlueBrain/TMD/pull/52))
 - Updated copyright year in several files (alex4200 - [#51](https://github.com/BlueBrain/TMD/pull/51))
-
-<!-- auto-changelog-above -->
 
 ## [v2.1.0](https://github.com/BlueBrain/TMD/compare/v2.0.11..v2.1.0)
 
