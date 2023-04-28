@@ -19,6 +19,8 @@ import re
 
 import numpy as np
 
+from tmd.utils import TmdError
+
 # Definition of swc data container
 SWC_DCT = {"index": 0, "type": 1, "x": 2, "y": 3, "z": 4, "radius": 5, "parent": 6}
 
@@ -132,7 +134,7 @@ def swc_data_to_lists(data):
             p[enline] = int(segment_point[SWC_DCT["parent"]])
 
         if int(segment_point[SWC_DCT["index"]]) - enline != total_offset:
-            raise Exception(
+            raise TmdError(
                 "Aborting process, with non-sequential ids error.\
                              Fix to proceed."
             )

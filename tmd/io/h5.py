@@ -19,6 +19,7 @@ import h5py
 import numpy as np
 
 from tmd.io.swc import SWC_DCT
+from tmd.utils import TmdError
 
 # Definition of h5 data container
 # separated in points (PX,PY,PZ,PD)
@@ -156,7 +157,7 @@ def read_h5(input_file, remove_duplicates=True):
         )
         points, groups = _unpack_v2(h5py.File(input_file, mode="r"), stage=stg)
     else:
-        raise Exception("Not recognized h5 version")
+        raise TmdError("Not recognized h5 version")
 
     h5file.close()
 

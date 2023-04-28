@@ -35,9 +35,10 @@ from tmd.Soma import Soma
 from tmd.Tree import Tree
 from tmd.utils import SOMA_TYPE
 from tmd.utils import TREE_TYPE_DICT
+from tmd.utils import TmdError
 
 
-class LoadNeuronError(Exception):
+class LoadNeuronError(TmdError):
     """Captures the exception of failing to load a single neuron."""
 
 

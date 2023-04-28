@@ -1275,11 +1275,11 @@ def tree_barcode_colors(tr, plane="xy", feature="path_distances", cmap=cm.jet_ma
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
     fig, ax = _tree_colors(
-        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(211)
+        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=211
     )
 
     fig.add_subplot(212)
-    plot.barcode(ph, color=colors_random, new_fig=False, subplot=(212))
+    plot.barcode(ph, color=colors_random, new_fig=False, subplot=212)
 
     return fig, ax
 
@@ -1316,23 +1316,23 @@ def tree_full_persistence_colors(tr, plane="xy", feature="path_distances", cmap=
     colors_random = [cmap(i / len(ph)) for i in np.arange(len(ph))]
 
     fig, _ = _tree_colors(
-        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=(221)
+        tr, ph_graph, colors=colors_random, plane=plane, new_fig=True, subplot=221
     )
 
     fig.add_subplot(222)
-    plot.barcode(ph, color=colors_random, new_fig=False, subplot=(222))
+    plot.barcode(ph, color=colors_random, new_fig=False, subplot=222)
 
     bounds_max = np.max(ph)
 
     fig.add_subplot(223)
-    plot.diagram(ph, color=colors_random, new_fig=False, subplot=(223))
+    plot.diagram(ph, color=colors_random, new_fig=False, subplot=223)
 
     ax = fig.add_subplot(224)
     plot.persistence_image(
         ph,
         cmap=cmap,
         new_fig=False,
-        subplot=(224),
+        subplot=224,
         xlim=(-10, bounds_max),
         ylim=(-10, bounds_max),
     )
