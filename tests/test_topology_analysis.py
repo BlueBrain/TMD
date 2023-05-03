@@ -222,10 +222,11 @@ def test_apical_point_smoothed():
 
 
 def test_get_persistence_image_data():
+    # noqa: D103 ; pylint: disable=missing-function-docstring
     p1 = analysis.load_file(neuron_ph_1_file)
     dt1 = analysis.get_persistence_image_data(p1)
     npt.assert_equal(np.shape(dt1), (100, 100))
     npt.assert_equal(np.max(dt1), 1.0)
     dt2 = analysis.get_persistence_image_data(p1, resolution=10, norm_factor=1.0)
     npt.assert_equal(np.shape(dt2), (10, 10))
-    npt.assert_(np.max(dt2) < 0.01)
+    npt.assert_almost_equal(np.max(dt2), 3.367e-06, decimal=5)

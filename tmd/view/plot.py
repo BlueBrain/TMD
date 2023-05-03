@@ -171,7 +171,7 @@ def diagram_enhanced(
     return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
-def persistence_image(
+def persistence_image(  # pylint: disable=too-many-arguments
     ph,
     new_fig=True,
     subplot=111,
