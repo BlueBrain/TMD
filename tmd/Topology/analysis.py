@@ -119,6 +119,8 @@ def get_persistence_image_data(
         xlim: The image limits on x axis.
         ylim: The image limits on y axis.
         bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
+        weights: weights of the diagram points
+        resolution: number of pixels in each dimension
 
     If xlim, ylim are provided the data will be scaled accordingly.
     """
