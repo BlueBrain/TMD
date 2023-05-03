@@ -106,7 +106,7 @@ def get_limits(phs_list, coll=True):
     return xlim, ylim
 
 
-def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_method=None):
+def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_method=None, resolution=100):
     """Create the data for the generation of the persistence image.
 
     Args:
@@ -122,8 +122,8 @@ def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_me
     """
     if xlim is None or xlim is None:
         xlim, ylim = get_limits(ph, coll=False)
-
-    X, Y = np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
+    res = complex(0, resolution)
+    X, Y = np.mgrid[xlim[0] : xlim[1] : res, ylim[0] : ylim[1] : res]
 
     values = np.transpose(ph)
     kernel = stats.gaussian_kde(values, bw_method=bw_method)
