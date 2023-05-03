@@ -185,6 +185,7 @@ def persistence_image(
     vmax=None,
     cmap=jet_map,
     bw_method=None,
+    weights=None,
     resolution=100,
     **kwargs,
 ):
@@ -195,7 +196,7 @@ def persistence_image(
     # pylint: disable=unexpected-keyword-arg
     Zn = analysis.get_persistence_image_data(
         ph, norm_factor=norm_factor, bw_method=bw_method, xlim=xlim, ylim=ylim,
-        resolution=resolution
+        weights=weights, resolution=resolution
     )
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 
