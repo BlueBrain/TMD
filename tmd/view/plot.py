@@ -195,8 +195,13 @@ def persistence_image(
 
     # pylint: disable=unexpected-keyword-arg
     Zn = analysis.get_persistence_image_data(
-        ph, norm_factor=norm_factor, bw_method=bw_method, xlim=xlim, ylim=ylim,
-        weights=weights, resolution=resolution
+        ph,
+        norm_factor=norm_factor,
+        bw_method=bw_method,
+        xlim=xlim,
+        ylim=ylim,
+        weights=weights,
+        resolution=resolution,
     )
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 

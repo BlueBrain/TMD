@@ -107,13 +107,7 @@ def get_limits(phs_list, coll=True):
 
 
 def get_persistence_image_data(
-    ph,
-    norm_factor=None,
-    xlim=None,
-    ylim=None,
-    bw_method=None,
-    weights=None,
-    resolution=100
+    ph, norm_factor=None, xlim=None, ylim=None, bw_method=None, weights=None, resolution=100
 ):
     """Create the data for the generation of the persistence image.
 
