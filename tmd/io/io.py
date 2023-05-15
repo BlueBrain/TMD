@@ -99,8 +99,9 @@ def load_neuron(
         neuron = Neuron.Neuron(name=str(input_file).replace(".h5", ""))
 
     else:
-        error_msg = "{} is not a valid h5 or swc file. If asc set use_morphio to True."
-        raise LoadNeuronError(error_msg.format(input_file))
+        raise LoadNeuronError(
+            f"{input_file} is not a valid h5 or swc file. If asc set use_morphio to True."
+        )
 
     # Check for duplicated IDs
     IDs, counts = _np.unique(data[:, 0], return_counts=True)
@@ -139,8 +140,7 @@ def load_neuron(
 
     # Extract trees
     for i in range(comp[0]):
-        tree_ids = _np.where(comp[1] == i)[0] + len(soma_ids)
-        tree = make_tree(data[tree_ids])
+        tree = make_tree(data[_np.where(comp[1] == i)[0] + len(soma_ids)])
         neuron.append_tree(tree, tree_types)
 
     return neuron
@@ -215,8 +215,9 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
                 )
 
         except AssertionError as exc:
-            error_msg = "{} is not a valid h5, swc or asc file. If asc set use_morphio to True."
-            raise Warning(error_msg.format(filename)) from exc
+            raise Warning(
+                "{filename} is not a valid h5, swc or asc file. If asc set use_morphio to True."
+            ) from exc
         except LoadNeuronError:
             print(f"File failed to load: {filename}")
 

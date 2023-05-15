@@ -165,6 +165,7 @@ def test_tree_type(DATA_PATH):
 
 @pytest.mark.parametrize("use_morphio", [True, False])
 def test_upper_case(DATA_PATH, use_morphio):
+    """Read files with upper-case extensions."""
     path = Path(DATA_PATH) / "upper_case_names"
     if use_morphio:
         files = path
