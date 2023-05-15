@@ -161,3 +161,14 @@ def test_tree_type(DATA_PATH):
     npt.assert_array_equal(point(neuron.apical_dendrite[0]), [[3, 4, 5]])
     npt.assert_array_equal(point(neuron.basal_dendrite[0]), [[4, 5, 6]])
     npt.assert_array_equal(point(neuron.axon[0]), [[5, 6, 7], [5, 6, 7]])
+
+
+@pytest.mark.parametrize("use_morphio", [True, False])
+def test_upper_case(DATA_PATH, use_morphio):
+    """Read files with upper-case extensions."""
+    path = Path(DATA_PATH) / "upper_case_names"
+    if use_morphio:
+        files = path
+    else:
+        files = [i for i in path.iterdir() if i.suffix.lower() != ".asc"]
+    io.load_population(files, use_morphio=use_morphio)

@@ -11,7 +11,7 @@ reqs = [
     "scikit-learn>=0.20.0",
     "munkres>=1.0.12",
     "cached-property>=1.5.1",
-    "morphio>=3.3.3",
+    "morphio>=3.3.4",
 ]
 
 doc_reqs = [
