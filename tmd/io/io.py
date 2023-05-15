@@ -89,13 +89,18 @@ def load_neuron(
         soma_index = soma_type
 
     # Make neuron with correct filename and load data
-    if os.path.splitext(input_file)[-1] == ".swc":
+    ext = os.path.splitext(input_file)[-1].lower()
+    if ext == ".swc":
         data = swc_to_data(read_swc(input_file=input_file, line_delimiter=line_delimiter))
         neuron = Neuron.Neuron(name=str(input_file).replace(".swc", ""))
 
-    elif os.path.splitext(input_file)[-1] == ".h5":
+    elif ext == ".h5":
         data = read_h5(input_file=input_file, remove_duplicates=remove_duplicates)
         neuron = Neuron.Neuron(name=str(input_file).replace(".h5", ""))
+
+    else:
+        error_msg = "{} is not a valid h5 or swc file. If asc set use_morphio to True."
+        raise LoadNeuronError(error_msg.format(input_file))
 
     # Check for duplicated IDs
     IDs, counts = _np.unique(data[:, 0], return_counts=True)
@@ -199,7 +204,7 @@ def load_population(neurons, user_tree_types=None, name=None, use_morphio=False)
 
     for filename in files:
         try:
-            ext = os.path.splitext(filename)[-1][1:]
+            ext = os.path.splitext(filename)[-1][1:].lower()
             if not use_morphio:
                 assert ext in ("h5", "swc")
                 pop.append_neuron(load_neuron(filename, user_tree_types=user_tree_types))
