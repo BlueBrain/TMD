@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.3.1](https://github.com/BlueBrain/TMD/compare/v2.3.0..v2.3.1)
+
+> 15 May 2023
+
+### New Features
+
+- Files with upper-case extensions can be loaded (Adrien Berchet - [#78](https://github.com/BlueBrain/TMD/pull/78))
+
 ## [v2.3.0](https://github.com/BlueBrain/TMD/compare/v2.2.0..v2.3.0)
 
 > 28 April 2023
