@@ -223,7 +223,7 @@ def test_apical_point_smoothed():
 
 def test_get_persistence_image_data():
     """Tests the validity of persistence image data
-       with respect to resolution, and norm factor
+    with respect to resolution, and norm factor
     """
     p1 = analysis.load_file(neuron_ph_1_file)
     dt1 = analysis.get_persistence_image_data(p1)
