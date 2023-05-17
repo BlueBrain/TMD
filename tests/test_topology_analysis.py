@@ -222,7 +222,9 @@ def test_apical_point_smoothed():
 
 
 def test_get_persistence_image_data():
-    # noqa: D103 ; pylint: disable=missing-function-docstring
+    """Tests the validity of persistence image data
+       with respect to resolution, and norm factor
+    """
     p1 = analysis.load_file(neuron_ph_1_file)
     dt1 = analysis.get_persistence_image_data(p1)
     npt.assert_equal(np.shape(dt1), (100, 100))
