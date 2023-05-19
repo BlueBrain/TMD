@@ -8,6 +8,7 @@ import pytest
 from tmd.io import io
 from tmd.Neuron import Neuron
 from tmd.Soma import Soma
+from tmd.Topology import analysis
 from tmd.Tree import Tree
 from tmd.utils import TREE_TYPE_DICT as td
 
@@ -144,3 +145,15 @@ def neuron(soma_test, apical_test):
 def population(POP_PATH):
     """A small population."""
     return io.load_population(POP_PATH)
+
+
+@pytest.fixture
+def neuron_ph_1(DATA_PATH):
+    """A raw persistence image data."""
+    return analysis.load_file(os.path.join(DATA_PATH, "neuron_ph_1.txt"))
+
+
+@pytest.fixture
+def neuron_ph_2(DATA_PATH):
+    """Another raw persistence image data."""
+    return analysis.load_file(os.path.join(DATA_PATH, "neuron_ph_2.txt"))
