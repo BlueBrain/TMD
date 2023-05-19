@@ -4,7 +4,8 @@ import os
 import numpy as np
 from numpy import testing as npt
 
-from tmd.Topology import analysis, vectorizations
+from tmd.Topology import analysis
+from tmd.Topology import vectorizations
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, "data")

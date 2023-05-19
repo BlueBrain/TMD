@@ -67,8 +67,7 @@ def persistence_image_data(
 
 
 def _index_bar(ph_bar, t):
-    """Computes if a bar is present at time t.
-    """
+    """Computes if a bar is present at time t."""
     if min(ph_bar) <= t <= max(ph_bar):
         return 1
     else:
@@ -77,7 +76,8 @@ def _index_bar(ph_bar, t):
 
 def betti_curve(ph_diagram, bins=None, num_bins=1000):
     """Computes the betti curves of a persistence diagram.
-    It corresponds to the number of bars at each distance t.
+
+    Corresponding to the number of bars at each distance t.
     """
     if bins is None:
         t_list = np.linspace(np.min(ph_diagram), np.max(ph_diagram), num_bins)
@@ -88,18 +88,18 @@ def betti_curve(ph_diagram, bins=None, num_bins=1000):
 
 
 def _total_lifetime(ph_diagram):
-    """Sums the total lengths of all bars"""
+    """Sums the total lengths of all bars."""
     return np.sum(get_lengths(ph_diagram))
 
 
 def _bar_entropy(ph_bar, lifetime):
-    """Absolute difference of a bar divided by lifetime"""
+    """Absolute difference of a bar divided by lifetime."""
     Zn = np.abs(ph_bar[0] - ph_bar[1]) / lifetime
     return Zn * np.log(Zn)
 
 
 def life_entropy_curve(ph_diagram, bins=None, num_bins=1000):
-    """The life entropy curve, computes life entropy at different t values"""
+    """The life entropy curve, computes life entropy at different t values."""
     lifetime = _total_lifetime(ph_diagram)
     # Compute the entropy of each bar
     entropy = [_bar_entropy(ph_bar, lifetime) for ph_bar in ph_diagram]
@@ -107,6 +107,8 @@ def life_entropy_curve(ph_diagram, bins=None, num_bins=1000):
         t_list = np.linspace(np.min(ph_diagram), np.max(ph_diagram), num_bins)
     else:
         t_list = bins
-    t_entropy = [- np.sum([_index_bar(ph_bar, t) * e
-                           for (e, ph_bar) in zip(entropy, ph_diagram)]) for t in t_list]
+    t_entropy = [
+        -np.sum([_index_bar(ph_bar, t) * e for (e, ph_bar) in zip(entropy, ph_diagram)])
+        for t in t_list
+    ]
     return t_entropy, t_list

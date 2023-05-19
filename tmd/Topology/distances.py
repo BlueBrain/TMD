@@ -19,7 +19,9 @@
 
 import numpy as np
 
-from .vectorizations import life_entropy_curve, persistence_image_data, betti_curve
+from .vectorizations import betti_curve
+from .vectorizations import life_entropy_curve
+from .vectorizations import persistence_image_data
 
 
 def total_betti_diff(ph1, ph2, bins=None, num_bins=1000):
@@ -51,29 +53,34 @@ def max_entropy_diff(ph1, ph2, bins=None, num_bins=1000):
 
 
 def image_diff_data(Z1, Z2, normalized=True):
-    """Get the difference of two images
-    from the gaussian kernel plotting function."""
+    """Get the difference of two persistence images."""
     if normalized:
         Z1 = Z1 / Z1.max()
         Z2 = Z2 / Z2.max()
     return Z1 - Z2
 
 
-def total_persistence_image_diff(ph1, ph2, xlim=None, ylim=None,
-                               bw_method=None, weights=None, resolution=100):
+def total_persistence_image_diff(
+    ph1, ph2, xlim=None, ylim=None, bw_method=None, weights=None, resolution=100
+):
     """Total absolute difference of the respective persistence images."""
-    p1 = persistence_image_data(ph1, xlim=xlim, ylim=ylim, bw_method=bw_method,
-                                weights=weights, resolution=resolution)
-    p2 = persistence_image_data(ph2, xlim=xlim, ylim=ylim, bw_method=bw_method,
-                                weights=weights, resolution=resolution)
+    p1 = persistence_image_data(
+        ph1, xlim=xlim, ylim=ylim, bw_method=bw_method, weights=weights, resolution=resolution
+    )
+    p2 = persistence_image_data(
+        ph2, xlim=xlim, ylim=ylim, bw_method=bw_method, weights=weights, resolution=resolution
+    )
     return np.sum(np.abs(image_diff_data(p1, p2)))
 
 
-def max_persistence_image_diff(ph1, ph2, xlim=None, ylim=None,
-                               bw_method=None, weights=None, resolution=100):
+def max_persistence_image_diff(
+    ph1, ph2, xlim=None, ylim=None, bw_method=None, weights=None, resolution=100
+):
     """Max absolute difference of the respective persistence images."""
-    p1 = persistence_image_data(ph1, xlim=xlim, ylim=ylim, bw_method=bw_method,
-                                weights=weights, resolution=resolution)
-    p2 = persistence_image_data(ph2, xlim=xlim, ylim=ylim, bw_method=bw_method,
-                                weights=weights, resolution=resolution)
+    p1 = persistence_image_data(
+        ph1, xlim=xlim, ylim=ylim, bw_method=bw_method, weights=weights, resolution=resolution
+    )
+    p2 = persistence_image_data(
+        ph2, xlim=xlim, ylim=ylim, bw_method=bw_method, weights=weights, resolution=resolution
+    )
     return np.max(np.abs(image_diff_data(p1, p2)))
