@@ -26,8 +26,10 @@ from tmd.Neuron import Neuron  # noqa
 from tmd.Population import Population  # noqa
 from tmd.Soma import Soma  # noqa
 from tmd.Topology import analysis  # noqa
+from tmd.Topology import distances  # noqa
 from tmd.Topology import methods  # noqa
 from tmd.Topology import statistics  # noqa
+from tmd.Topology import vectorizations  # noqa
 from tmd.Tree import Tree  # noqa
 
 __version__ = pkg_resources.get_distribution("TMD").version

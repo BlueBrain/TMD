@@ -19,6 +19,8 @@ import numpy as np
 from matplotlib import pylab as plt
 
 from tmd.Topology import analysis
+from tmd.Topology import distances
+from tmd.Topology import vectorizations
 from tmd.Topology.statistics import transform_ph_to_length
 from tmd.view import common as cm
 from tmd.view.common import jet_map
@@ -191,10 +193,10 @@ def persistence_image(  # pylint: disable=too-many-arguments
 ):
     """Plot the gaussian kernel of the ph diagram that is given."""
     if xlim is None or xlim is None:
-        xlim, ylim = analysis.get_limits(ph, coll=False)
+        xlim, ylim = vectorizations.get_limits(ph)
 
     # pylint: disable=unexpected-keyword-arg
-    Zn = analysis.get_persistence_image_data(
+    Zn = vectorizations.persistence_image_data(
         ph,
         norm_factor=norm_factor,
         bw_method=bw_method,
@@ -253,7 +255,7 @@ def persistence_image_diff(
     if xlim is None or xlim is None:
         xlim, ylim = ((0, 100), (0, 100))
 
-    difference = analysis.get_image_diff_data(Z1, Z2, normalized=norm)
+    difference = distances.image_diff_data(Z1, Z2, normalized=norm)
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
     ax.imshow(
         np.rot90(difference),
@@ -321,7 +323,7 @@ def persistence_image_average(
         ph_list, xlim=xlim, ylim=ylim, norm_factor=norm_factor, weighted=weighted
     )
     if xlim is None or xlim is None:
-        xlim, ylim = analysis.get_limits(ph_list)
+        xlim, ylim = vectorizations.get_limits(ph_list)
 
     if vmin is None:
         vmin = np.min(av_imgs)
