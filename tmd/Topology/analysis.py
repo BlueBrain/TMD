@@ -16,7 +16,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # pylint: disable=invalid-slice-index
-import copy
 import math
 from itertools import chain
 
@@ -26,6 +25,7 @@ from scipy import stats
 from scipy.spatial.distance import cdist
 
 from .statistics import get_lengths
+from .vectorizations import persistence_image_data
 
 
 def collapse(ph_list):
@@ -93,59 +93,6 @@ def load_file(filename, delimiter=" "):
     with open(filename, "r", encoding="utf-8") as f:
         ph = np.array([np.array(line.split(delimiter), dtype=float) for line in f])
     return ph
-
-
-def get_limits(phs_list, coll=True):
-    """Returns the x-y coordinates limits (min, max) for a list of persistence diagrams."""
-    if coll:
-        ph = collapse(phs_list)
-    else:
-        ph = copy.deepcopy(phs_list)
-    xlim = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
-    ylim = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
-    return xlim, ylim
-
-
-def get_persistence_image_data(
-    ph, norm_factor=None, xlim=None, ylim=None, bw_method=None, weights=None, resolution=100
-):
-    """Create the data for the generation of the persistence image.
-
-    Args:
-        ph: persistence diagram.
-        norm_factor: persistence image data are normalized according to this.
-            If norm_factor is provided the data will be normalized based on this,
-            otherwise they will be normalized to 1.
-        xlim: The image limits on x axis.
-        ylim: The image limits on y axis.
-        bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
-        weights: weights of the diagram points
-        resolution: number of pixels in each dimension
-
-    If xlim, ylim are provided the data will be scaled accordingly.
-    """
-    if xlim is None or xlim is None:
-        xlim, ylim = get_limits(ph, coll=False)
-    res = complex(0, resolution)
-    X, Y = np.mgrid[xlim[0] : xlim[1] : res, ylim[0] : ylim[1] : res]
-
-    values = np.transpose(ph)
-    kernel = stats.gaussian_kde(values, bw_method=bw_method, weights=weights)
-    positions = np.vstack([X.ravel(), Y.ravel()])
-    Z = np.reshape(kernel(positions).T, X.shape)
-
-    if norm_factor is None:
-        norm_factor = np.max(Z)
-
-    return Z / norm_factor
-
-
-def get_image_diff_data(Z1, Z2, normalized=True):
-    """Get the difference of two images from the gaussian kernel plotting function."""
-    if normalized:
-        Z1 = Z1 / Z1.max()
-        Z2 = Z2 / Z2.max()
-    return Z1 - Z2
 
 
 def get_image_add_data(Z1, Z2, normalized=True):
@@ -255,13 +202,6 @@ def distance_horizontal_unnormed(ph1, ph2, normalized=True, bins=100):
     return norm(np.abs(np.subtract(results1, results2)), normalized)
 
 
-def distance_persistence_image(ph1, ph2, xlim=None, ylim=None):
-    """Computes the absolute difference of the respective persistence images."""
-    p1 = get_persistence_image_data(ph1, xlim=xlim, ylim=ylim)
-    p2 = get_persistence_image_data(ph2, xlim=xlim, ylim=ylim)
-    return np.sum(np.abs(get_image_diff_data(p1, p2)))
-
-
 def get_average_persistence_image(ph_list, xlim=None, ylim=None, norm_factor=None, weighted=False):
     """Plot the gaussian kernel of a population as an average of the ph diagrams that are given."""
     im_av = False
@@ -275,14 +215,14 @@ def get_average_persistence_image(ph_list, xlim=None, ylim=None, norm_factor=Non
     for weight, ph in zip(weights, ph_list):
         if not isinstance(im_av, np.ndarray):
             try:
-                im = get_persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
+                im = persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
                 if not np.isnan(np.sum(im)):
                     im_av = weight * im
             except BaseException:  # pylint: disable=broad-except
                 pass
         else:
             try:
-                im = get_persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
+                im = persistence_image_data(ph, norm_factor=norm_factor, xlim=xlim, ylim=ylim)
                 if not np.isnan(np.sum(im)):
                     im_av = np.add(im_av, weight * im)
                     k = k + 1

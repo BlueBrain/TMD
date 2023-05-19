@@ -219,16 +219,3 @@ def test_apical_point_smoothed():
     ap2 = analysis.find_apical_point_distance_smoothed(p2, threshold=0.1)
     npt.assert_almost_equal(ap1, 355.1980697442, decimal=5)
     npt.assert_almost_equal(ap2, 199.5273018308, decimal=5)
-
-
-def test_get_persistence_image_data():
-    """Tests the validity of persistence image data
-    with respect to resolution, and norm factor
-    """
-    p1 = analysis.load_file(neuron_ph_1_file)
-    dt1 = analysis.get_persistence_image_data(p1)
-    npt.assert_equal(np.shape(dt1), (100, 100))
-    npt.assert_equal(np.max(dt1), 1.0)
-    dt2 = analysis.get_persistence_image_data(p1, resolution=10, norm_factor=1.0)
-    npt.assert_equal(np.shape(dt2), (10, 10))
-    npt.assert_almost_equal(np.max(dt2), 3.367e-06, decimal=5)
