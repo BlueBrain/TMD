@@ -6,7 +6,7 @@ from setuptools import setup
 
 reqs = [
     "h5py>=2.8.0",
-    "scipy>=1.1.0",
+    "scipy>=1.2.0",
     "numpy>=1.15.0",
     "scikit-learn>=0.20.0",
     "munkres>=1.0.12",

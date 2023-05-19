@@ -106,7 +106,9 @@ def get_limits(phs_list, coll=True):
     return xlim, ylim
 
 
-def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_method=None):
+def get_persistence_image_data(
+    ph, norm_factor=None, xlim=None, ylim=None, bw_method=None, weights=None, resolution=100
+):
     """Create the data for the generation of the persistence image.
 
     Args:
@@ -117,16 +119,18 @@ def get_persistence_image_data(ph, norm_factor=None, xlim=None, ylim=None, bw_me
         xlim: The image limits on x axis.
         ylim: The image limits on y axis.
         bw_method: The method used to calculate the estimator bandwidth for the gaussian_kde.
+        weights: weights of the diagram points
+        resolution: number of pixels in each dimension
 
     If xlim, ylim are provided the data will be scaled accordingly.
     """
     if xlim is None or xlim is None:
         xlim, ylim = get_limits(ph, coll=False)
-
-    X, Y = np.mgrid[xlim[0] : xlim[1] : 100j, ylim[0] : ylim[1] : 100j]
+    res = complex(0, resolution)
+    X, Y = np.mgrid[xlim[0] : xlim[1] : res, ylim[0] : ylim[1] : res]
 
     values = np.transpose(ph)
-    kernel = stats.gaussian_kde(values, bw_method=bw_method)
+    kernel = stats.gaussian_kde(values, bw_method=bw_method, weights=weights)
     positions = np.vstack([X.ravel(), Y.ravel()])
     Z = np.reshape(kernel(positions).T, X.shape)
 

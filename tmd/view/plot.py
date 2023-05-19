@@ -171,7 +171,7 @@ def diagram_enhanced(
     return cm.plot_style(fig=fig, ax=ax, **all_kwargs)
 
 
-def persistence_image(
+def persistence_image(  # pylint: disable=too-many-arguments
     ph,
     new_fig=True,
     subplot=111,
@@ -185,6 +185,8 @@ def persistence_image(
     vmax=None,
     cmap=jet_map,
     bw_method=None,
+    weights=None,
+    resolution=100,
     **kwargs,
 ):
     """Plot the gaussian kernel of the ph diagram that is given."""
@@ -193,7 +195,13 @@ def persistence_image(
 
     # pylint: disable=unexpected-keyword-arg
     Zn = analysis.get_persistence_image_data(
-        ph, norm_factor=norm_factor, bw_method=bw_method, xlim=xlim, ylim=ylim
+        ph,
+        norm_factor=norm_factor,
+        bw_method=bw_method,
+        xlim=xlim,
+        ylim=ylim,
+        weights=weights,
+        resolution=resolution,
     )
     fig, ax = cm.get_figure(new_fig=new_fig, subplot=subplot)
 
