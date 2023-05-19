@@ -15,9 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# pylint: disable=invalid-slice-index
-import copy
-
 import numpy as np
 from scipy import stats
 
@@ -26,9 +23,12 @@ from .statistics import get_lengths
 
 def get_limits(phs_list):
     """Returns the x-y coordinates limits (min, max) for a list of persistence diagrams."""
-    ph = copy.deepcopy(phs_list)
-    xlim = [min(np.transpose(ph)[0]), max(np.transpose(ph)[0])]
-    ylim = [min(np.transpose(ph)[1]), max(np.transpose(ph)[1])]
+    if any((isinstance(ph[0], list) for ph in phs_list)):
+        phs = [list(ph_bar) for ph in phs_list for ph_bar in ph]
+    else:
+        phs = phs_list
+    xlim = [min(np.transpose(phs)[0]), max(np.transpose(phs)[0])]
+    ylim = [min(np.transpose(phs)[1]), max(np.transpose(phs)[1])]
     return xlim, ylim
 
 

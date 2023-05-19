@@ -15,6 +15,18 @@ neuron_ph_1_file = os.path.join(DATA_PATH, "neuron_ph_1.txt")
 neuron_ph_2_file = os.path.join(DATA_PATH, "neuron_ph_2.txt")
 
 
+def test_get_limits():
+    """Tests the validity of persistence image data
+    with respect to resolution, and norm factor
+    """
+    p1 = analysis.load_file(neuron_ph_1_file).tolist()
+    p2 = analysis.load_file(neuron_ph_2_file).tolist()
+    lims1 = vectorizations.get_limits(p1)
+    lims1_2 = vectorizations.get_limits([p1] + [p2])
+    npt.assert_almost_equal(lims1, [[155.88089, 633.59656], [0.0, 561.04985]], decimal=5)
+    npt.assert_almost_equal(lims1_2, [[40.62391, 633.59656], [0.0, 561.04985]], decimal=5)
+
+
 def test_persistence_image_data():
     """Tests the validity of persistence image data
     with respect to resolution, and norm factor
