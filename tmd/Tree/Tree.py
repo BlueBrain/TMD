@@ -164,3 +164,13 @@ class Tree:
         children = {b: ends[np.where(begs == b)[0]] for b in np.unique(begs)}
 
         return parents, children
+
+class MicroTree(Tree):
+    """Microglia Tree class.
+    """
+    def __init__(self, x, y, z, d, t, p, mg, mito, cd68):
+        """Constructor of tmd Tree Object."""
+        super().__init__(x, y, z, d, t, p)
+        self.mg = np.array(mg, dtype=np.float32)
+        self.mito = np.array(mito, dtype=np.float32)
+        self.cd68 = np.array(cd68, dtype=np.float32)

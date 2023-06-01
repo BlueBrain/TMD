@@ -17,6 +17,7 @@
 
 from abc import ABC
 from abc import abstractmethod
+from tmd.io.swc import MITO_DCT
 
 import numpy as np
 
@@ -80,6 +81,41 @@ class PersistentMeanRadius(PersistentProperty):
         return np.fromiter(
             (np.mean(tree_radii[b:e]) for b, e in zip(section_begs, section_ends)), dtype=float
         )
+
+
+class PersistentMicro(PersistentProperty):
+    """Component mean microglia feature:
+
+    Args:
+        tree (Tree): A tree object.
+        prop: "cd68", "mg", "mito"
+    """
+
+    def __init__(self, tree, prop="cd68"):
+        section_begs, section_ends = tree.sections
+        self._prop = self._section_prop(getattr(tree, prop), section_begs, section_ends)
+
+    def get(self, component_start):
+        """Get one persistent property.
+
+        Args:
+            component_start (int): The component start.
+        """
+        return [self._prop[component_start]]
+
+    def infinite_component(self, component_start):
+        """Returns mean prop corresponding to inf component."""
+        return self.get(component_start)
+
+    @staticmethod
+    def _section_prop(tree_prop, section_begs, section_ends):
+        """Returns the sum of a property per section.
+           Absence is indicated by -1 so +1 needed to count.
+        """
+        properties_micro = []
+        for b, e in zip(section_begs, section_ends):
+            properties_micro.append(np.sum([1 if i != -1 else 0 for i in tree_prop[b:e]]))
+        return properties_micro
 
 
 class PersistentAngles(PersistentProperty):

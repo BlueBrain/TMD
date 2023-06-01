@@ -22,6 +22,7 @@ from tmd.Topology.analysis import sort_ph
 from tmd.Topology.persistent_properties import NoProperty
 from tmd.Topology.persistent_properties import PersistentAngles
 from tmd.Topology.persistent_properties import PersistentMeanRadius
+from tmd.Topology.persistent_properties import PersistentMicro
 
 
 def write_ph(ph, output_file="test.txt"):
@@ -129,6 +130,16 @@ def get_ph_radii(tree, feature="radial_distances", **kwargs):
         tree,
         filtration_function=_filtration_function(feature, **kwargs),
         property_class=PersistentMeanRadius,
+    )
+    return ph
+
+
+def get_ph_micro(tree, feature="radial_distances", prop="cd68", **kwargs):
+    """Method to extract ph from tree that contains mutlifurcations."""
+    ph, _ = tree_to_property_barcode(
+        tree,
+        filtration_function=_filtration_function(feature, **kwargs),
+        property_class=PersistentMicro,
     )
     return ph
 

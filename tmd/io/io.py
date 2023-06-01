@@ -27,8 +27,10 @@ from tmd.io.conversion import convert_morphio_soma
 from tmd.io.conversion import convert_morphio_trees
 from tmd.io.h5 import read_h5
 from tmd.io.swc import SWC_DCT
+from tmd.io.swc import MITO_DCT
 from tmd.io.swc import read_swc
 from tmd.io.swc import swc_to_data
+from tmd.io.swc import swc_micro_to_data
 from tmd.Neuron import Neuron
 from tmd.Population import Population
 from tmd.Soma import Soma
@@ -58,6 +60,28 @@ def make_tree(data):
         d=tr_data[SWC_DCT["radius"]],
         t=tr_data[SWC_DCT["type"]],
         p=parents,
+    )
+
+
+def make_micro_tree(data):
+    """Make tree structure from loaded data."""
+    tr_data = _np.transpose(data)
+
+    parents = [
+        _np.where(tr_data[0] == i)[0][0] if len(_np.where(tr_data[0] == i)[0]) > 0 else -1
+        for i in tr_data[6]
+    ]
+
+    return Tree.MicroTree(
+        x=tr_data[SWC_DCT["x"]],
+        y=tr_data[SWC_DCT["y"]],
+        z=tr_data[SWC_DCT["z"]],
+        d=tr_data[SWC_DCT["radius"]],
+        t=tr_data[SWC_DCT["type"]],
+        p=parents,
+        mg=tr_data[MITO_DCT["mg"]],
+        mito=tr_data[MITO_DCT["mito"]],
+        cd68=tr_data[MITO_DCT["cd68"]],
     )
 
 
@@ -144,6 +168,71 @@ def load_neuron(
         neuron.append_tree(tree, tree_types)
 
     return neuron
+
+
+def load_microglia(
+    input_file, line_delimiter="\n", soma_type=None, user_tree_types=None, remove_duplicates=True
+):
+    """I/O method to load an swc file into a Neuron object with micro trees."""
+    tree_types = redefine_types(user_tree_types)
+
+    # Definition of swc types from type_dict function
+    if soma_type is None:
+        soma_index = SOMA_TYPE
+    else:
+        soma_index = soma_type
+
+    # Make neuron with correct filename and load data
+    ext = os.path.splitext(input_file)[-1].lower()
+    if ext == ".swc":
+        data = swc_micro_to_data(read_swc(input_file=input_file, line_delimiter=line_delimiter)[1:])
+        micro = Neuron.Neuron(name=str(input_file).replace(".swc", ""))
+    else:
+        raise LoadNeuronError(
+            f"{input_file} is not a valid swc file. If asc set use_morphio to True."
+        )
+
+    # Check for duplicated IDs
+    IDs, counts = _np.unique(data[:, 0], return_counts=True)
+    if (counts != 1).any():
+        warnings.warn(f"The following IDs are duplicated: {IDs[counts > 1]}")
+
+    data_T = _np.transpose(data)
+
+    try:
+        soma_ids = _np.where(data_T[1] == soma_index)[0]
+    except IndexError as exc:
+        raise LoadNeuronError("Soma points not in the expected format") from exc
+
+    # Extract soma information from swc
+    soma = Soma.Soma(
+        x=data_T[SWC_DCT["x"]][soma_ids],
+        y=data_T[SWC_DCT["y"]][soma_ids],
+        z=data_T[SWC_DCT["z"]][soma_ids],
+        d=data_T[SWC_DCT["radius"]][soma_ids],
+    )
+
+    # Save soma in Neuron
+    micro.set_soma(soma)
+    p = _np.array(data_T[6], dtype=int) - _np.transpose(data)[0][0]
+    # return p, soma_ids
+    try:
+        dA = sp.csr_matrix(
+            (_np.ones(len(p) - len(soma_ids)), (range(len(soma_ids), len(p)), p[len(soma_ids) :])),
+            shape=(len(p), len(p)),
+        )
+    except Exception as exc:
+        raise LoadNeuronError("Cannot create connectivity, nodes not connected correctly.") from exc
+
+    # assuming soma points are in the beginning of the file.
+    comp = cs.connected_components(dA[len(soma_ids) :, len(soma_ids) :])
+
+    # Extract trees
+    for i in range(comp[0]):
+        tree = make_micro_tree(data[_np.where(comp[1] == i)[0] + len(soma_ids)])
+        micro.append_tree(tree, tree_types)
+
+    return micro
 
 
 def load_neuron_from_morphio(path_or_obj, user_tree_types=None):

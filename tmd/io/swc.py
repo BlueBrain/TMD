@@ -24,6 +24,8 @@ from tmd.utils import TmdError
 # Definition of swc data container
 SWC_DCT = {"index": 0, "type": 1, "x": 2, "y": 3, "z": 4, "radius": 5, "parent": 6}
 
+MITO_DCT = {"mg": 7, "mito": 8, "cd68": 9}
+
 
 def read_swc(input_file, line_delimiter="\n"):
     """Load a swc file containing a list of sections, into a 'Data' format."""
@@ -60,6 +62,39 @@ def swc_to_data(data_swc):
             segment_point = np.array(
                 expected_data.match(dpoint.replace("\r", "")).groups(), dtype=float
             )
+
+            # make the radius diameter
+            segment_point[SWC_DCT["radius"]] = 2.0 * segment_point[SWC_DCT["radius"]]
+
+            data.append(segment_point)
+
+    return np.array(data)
+
+
+def swc_micro_to_data(data_swc):
+    """Transform swc to data to be used in make_tree."""
+    expected_data = re.compile(
+        r"^\s*([-+]?\d*\.\d+|[-+]?\d+)"
+        r"\s*([-+]?\d*\.\d+|[-+]?\d+)\s"
+        r"*([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.?,\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*$"
+    )
+
+    data = []
+
+    for dpoint in data_swc:
+        if expected_data.match(dpoint.replace("\r", "")):
+
+            expected = list(expected_data.match(dpoint.replace("\r", "")).groups())
+            expected[MITO_DCT["mito"]] = expected[MITO_DCT["mito"]].split(',')[0]
+
+            segment_point = np.array(expected, dtype=float)
 
             # make the radius diameter
             segment_point[SWC_DCT["radius"]] = 2.0 * segment_point[SWC_DCT["radius"]]
@@ -143,3 +178,95 @@ def swc_data_to_lists(data):
         ch[enline] = list(np.where(p == enline)[0])
 
     return x, y, z, d, t, p, ch
+
+
+def swc_microglia_to_lists(data):
+    """Transforms data as loaded from read_swc into a set of 'meaningful' lists.
+
+    The lists are the following:
+
+    * x: list of floats
+        x-coordinates
+    * y: list of floats
+        y-coordinates
+    * z: list of floats
+        z-coordinates
+    * d: list of floats
+        diameters
+    * t: list of ints
+        tree type
+    * p: list of ints
+        parent id
+    * mg: list of ints
+        microglia
+    * mito: list of ints
+        mitohondria
+    * cd68: list of ints
+        cd68
+    * ch: dictionary
+        children id(s)
+    """
+    length = len(data)
+
+    # Here we define the expected structure of the data.
+    # If this structure is not followed, the data will fail
+    # to load and the method will be terminated, with an error message.
+
+    expected_data = re.compile(
+        r"^\s*([-+]?\d*\.\d+|[-+]?\d+)"
+        r"\s*([-+]?\d*\.\d+|[-+]?\d+)\s"
+        r"*([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.?,\d+|[-+]?\d+)\s*"
+        r"([-+]?\d*\.\d+|[-+]?\d+)\s*$"
+    )
+
+    # Definition of swc data from SWC_DCT function
+
+    x = np.zeros(length, dtype=float)
+    y = np.zeros(length, dtype=float)
+    z = np.zeros(length, dtype=float)
+    d = np.zeros(length, dtype=float)
+    t = np.zeros(length, dtype=int)
+    p = np.zeros(length, dtype=int)
+    mg = np.zeros(length, dtype=int)
+    mito = np.zeros(length, dtype=int)
+    cd68 = np.zeros(length, dtype=int)
+    ch = {}
+
+    first_line_data = expected_data.match(data[0].replace("\r", ""))
+
+    total_offset = int(first_line_data.groups()[0])
+
+    for enline in range(length):
+        print(data[enline])
+        segment_point = expected_data.match(data[enline].replace("\r", "")).groups()
+
+        x[enline] = float(segment_point[SWC_DCT["x"]])
+        y[enline] = float(segment_point[SWC_DCT["y"]])
+        z[enline] = float(segment_point[SWC_DCT["z"]])
+        # swc contains radii, and here it is transformed into diameter.
+        d[enline] = 2 * float(segment_point[SWC_DCT["radius"]])
+        t[enline] = int(segment_point[SWC_DCT["type"]])
+        mg[enline] = float(segment_point[MITO_DCT["mg"]])
+        mito[enline] = float(segment_point[MITO_DCT["mito"]].split(',')[0])
+        cd68[enline] = float(segment_point[MITO_DCT["cd68"]])
+        if enline != 0:
+            p[enline] = int(segment_point[SWC_DCT["parent"]]) - total_offset
+        else:
+            p[enline] = int(segment_point[SWC_DCT["parent"]])
+
+        if int(segment_point[SWC_DCT["index"]]) - enline != total_offset:
+            raise TmdError(
+                "Aborting process, with non-sequential ids error.\
+                             Fix to proceed."
+            )
+
+    for enline in range(length):
+        ch[enline] = list(np.where(p == enline)[0])
+
+    return x, y, z, d, t, p, ch, mg, mito, cd68
