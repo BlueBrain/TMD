@@ -52,3 +52,6 @@ ignore-docstrings=yes
 
 # as of numpy 1.8.0, name resolution seems to be a problem. Ignore lookups in numpy
 # ignored-classes=numpy,list
+
+# List members that are dynamically generated
+generated-members = ["matplotlib.cm.jet"]
