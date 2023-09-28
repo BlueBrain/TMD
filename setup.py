@@ -5,10 +5,10 @@ from setuptools import find_namespace_packages
 from setuptools import setup
 
 reqs = [
-    "h5py>=2.8.0",
-    "scipy>=1.2.0",
-    "numpy>=1.15.0",
-    "scikit-learn>=0.20.0",
+    "h5py>=2.9.0",
+    "scipy>=1.4.0",
+    "numpy>=1.18.0",
+    "scikit-learn>=0.22.0",
     "munkres>=1.0.12",
     "cached-property>=1.5.1",
     "morphio>=3.3.4",
