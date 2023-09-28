@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         min_versions: ["min_versions", "latest_versions"]
         exclude:
           - min_versions: "min_versions"
         include:
-          - python-version: "3.7"
+          - python-version: "3.8"
             min_versions: "min_versions"
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -59,7 +59,7 @@ jobs:
         pip install tox
         tox run -e min_versions
     - name: JUnit Report Action
-      uses: mikepenz/action-junit-report@v3
+      uses: mikepenz/action-junit-report@v4
       if: always() # always run even if the previous step fails
       with:
         report_paths: 'reports/pytest-*.xml'
@@ -67,14 +67,14 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         fail_ci_if_error: false
-        files: ./reports/coverage-*.xml
+        directory: ./reports
         flags: pytest
-        name: "TMD-py${{ matrix.python-version }}"
+        name: "TMD-py${{ matrix.python-version }}-${{ matrix.min_versions }}"
     - name: Upload test artifacts
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: tests-${{ matrix.python-version }}
+        name: tests-${{ matrix.python-version }}-${{ matrix.min_versions }}
         retention-days: 4
         path: |
           .tox/py*/tmp
