@@ -9,7 +9,6 @@ requires = [
 [tool.black]
 line-length = 100
 target-version = [
-    "py37",
     "py38",
     "py39",
     "py310",

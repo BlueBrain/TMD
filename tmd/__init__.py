@@ -18,7 +18,7 @@ A python package for the topological analysis of neurons.
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import pkg_resources
+import importlib.metadata
 
 from tmd import utils  # noqa
 from tmd.io import io  # noqa
@@ -30,4 +30,4 @@ from tmd.Topology import methods  # noqa
 from tmd.Topology import statistics  # noqa
 from tmd.Tree import Tree  # noqa
 
-__version__ = pkg_resources.get_distribution("TMD").version
+__version__ = importlib.metadata.version("TMD")
