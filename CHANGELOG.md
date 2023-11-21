@@ -1,8 +1,24 @@
 # Changelog
 
+## [2.4.0](https://github.com/BlueBrain/TMD/compare/v2.3.1..2.4.0)
+
+> 21 November 2023
+
+### Build
+
+- Drop support for Python 3.7 (Adrien Berchet - [#84](https://github.com/BlueBrain/TMD/pull/84))
+
+### Chores And Housekeeping
+
+- Remove some warnings (Adrien Berchet - [#86](https://github.com/BlueBrain/TMD/pull/86))
+
+### General Changes
+
+- Plot improvements (lidakanari - [#76](https://github.com/BlueBrain/TMD/pull/76))
+
 ## [v2.3.1](https://github.com/BlueBrain/TMD/compare/v2.3.0..v2.3.1)
 
-> 15 May 2023
+> 16 May 2023
 
 ### New Features
 
