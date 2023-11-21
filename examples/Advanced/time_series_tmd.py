@@ -205,7 +205,7 @@ def get_persistence_diagram_timelapse(trees, **kwargs):
                 p = parents[i]
                 c = children[p]
 
-                if np.alltrue(active[c]):
+                if np.all(active[c]):
                     active[p] = True
                     active[c] = False
 

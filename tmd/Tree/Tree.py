@@ -74,7 +74,7 @@ class Tree:
 
     def is_equal(self, tree):
         """Tests if all tree lists are the same."""
-        eq = np.alltrue(
+        eq = np.all(
             [
                 np.allclose(self.x, tree.x, atol=1e-4),
                 np.allclose(self.y, tree.y, atol=1e-4),

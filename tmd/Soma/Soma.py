@@ -55,7 +55,7 @@ class Soma:
 
     def is_equal(self, soma):
         """Tests if all soma data are the same."""
-        eq = np.alltrue(
+        eq = np.all(
             [
                 np.allclose(self.x, soma.x, atol=1e-4),
                 np.allclose(self.y, soma.y, atol=1e-4),

@@ -987,7 +987,7 @@ def plot_persistent_homology_video(
             p = parents[i]
             c = children[p]
 
-            if _np.alltrue(active[c]):
+            if _np.all(active[c]):
                 to_modify = []
                 to_modify_bars = []
 

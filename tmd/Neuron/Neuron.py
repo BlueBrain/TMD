@@ -103,21 +103,21 @@ class Neuron:
 
     def is_equal(self, neu):
         """Tests if all neuron structures are the same."""
-        eq = np.alltrue(
+        eq = np.all(
             [
                 self.soma.is_equal(neu.soma),
-                np.alltrue([t1.is_equal(t2) for t1, t2 in zip(self.neurites, neu.neurites)]),
+                np.all([t1.is_equal(t2) for t1, t2 in zip(self.neurites, neu.neurites)]),
             ]
         )
         return eq
 
     def is_same(self, neu):
         """Tests if all neuron data are the same."""
-        eq = np.alltrue(
+        eq = np.all(
             [
                 self.name == neu.name,
                 self.soma.is_equal(neu.soma),
-                np.alltrue([t1.is_equal(t2) for t1, t2 in zip(self.neurites, neu.neurites)]),
+                np.all([t1.is_equal(t2) for t1, t2 in zip(self.neurites, neu.neurites)]),
             ]
         )
         return eq
