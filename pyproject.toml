@@ -3,6 +3,7 @@ requires = [
     "setuptools>=45",
     "setuptools_scm[toml]>=6.2",
 ]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 
@@ -14,7 +15,6 @@ target-version = [
     "py310",
     "py311",
 ]
-build-backend = "setuptools.build_meta"
 
 [tool.pydocstyle]
 # ignore the following:
