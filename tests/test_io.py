@@ -26,8 +26,8 @@ def test_load_swc_neuron(
     assert len(neuron.apical_dendrite) == 1
     assert len(neuron.basal_dendrite) == 1
     assert len(neuron.axon) == 1
-    assert neuron.apical[0].is_equal(apical_test)
-    assert neuron.basal[0].is_equal(basal_test)
+    assert neuron.apical_dendrite[0].is_equal(apical_test)
+    assert neuron.basal_dendrite[0].is_equal(basal_test)
     assert neuron.axon[0].is_equal(axon_test)
 
     neuron1 = io.load_neuron(sample_file)
