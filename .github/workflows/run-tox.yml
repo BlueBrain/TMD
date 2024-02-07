@@ -37,7 +37,7 @@ jobs:
         version: 1.0
         execute_install_scripts: true
     - name: Cache tox and precommit environments
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           .tox
