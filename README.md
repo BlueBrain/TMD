@@ -1,5 +1,11 @@
 # TMD
 
+[![Run all tox jobs using Python3](https://github.com/BlueBrain/TMD/actions/workflows/run-tox.yml/badge.svg)](https://github.com/BlueBrain/TMD/actions/workflows/run-tox.yml)
+[![license](https://img.shields.io/pypi/l/tmd.svg)](https://github.com/BlueBrain/TMD/blob/master/LICENSE-LGPL.txt)
+[![codecov.io](https://codecov.io/github/BlueBrain/TMD/coverage.svg?branch=master)](https://codecov.io/github/BlueBrain/TMD?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/tmd/badge/?version=latest)](http://tmd.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10678146.svg)](https://doi.org/10.5281/zenodo.10678146)
+
 A python package for the topological analysis of neurons.
 
 The TMD performs the topological analysis of neuronal morphologies and extracts the persistence
