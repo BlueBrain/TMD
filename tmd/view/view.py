@@ -1121,7 +1121,7 @@ def _tree_colors(
     subplot=111,
     new_axes=True,
     plane="xy",
-    cmap=plt.cm.jet,
+    cmap=plt.jet,
     **kwargs,
 ):
     """Generate a 2d pic of the tree, each branch has a unique color.
