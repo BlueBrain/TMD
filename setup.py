@@ -19,6 +19,7 @@ doc_reqs = [
     "sphinx",
     "sphinx-bluebrain-theme",
     "sphinx-click",
+    "docutils<0.21",
 ]
 
 test_reqs = [

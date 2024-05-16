@@ -169,13 +169,11 @@ def extract_ph_neuron(
 
     if sort:
         sort_ph(ph)
-    else:
-        p = ph
 
     if output_file is None:
         output_file = "PH_" + neuron.name + "_" + neurite_type + ".txt"
 
-    write_ph(p, output_file)
+    write_ph(ph, output_file)
 
 
 def get_lifetime(tree, feature="point_radial_distances"):

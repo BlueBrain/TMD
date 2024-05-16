@@ -76,8 +76,7 @@ def trunk(tr, plane="xy", new_fig=True, subplot=False, hadd=0.0, vadd=0.0, N=10,
 
         return ((horz1, vert1), (horz2, vert2))
 
-    if len(tr.get_segments()) < N:
-        N = len(tr.get_segments())
+    N = min(N, len(tr.get_segments()))
 
     segs = [_seg_2d(seg, hadd, vadd) for seg in tr.get_segments()[:N]]
 
@@ -694,8 +693,7 @@ def trunk3d(tr, new_fig=True, new_axes=True, subplot=False, N=10, **kwargs):
 
         return ((horz1, vert1, depth1), (horz2, vert2, depth2))
 
-    if len(tr.get_segments()) < N:
-        N = len(tr.get_segments())
+    N = min(N, len(tr.get_segments()))
 
     segs = [_seg_3d(seg) for seg in tr.get_segments()[:N]]
 
@@ -1121,7 +1119,7 @@ def _tree_colors(
     subplot=111,
     new_axes=True,
     plane="xy",
-    cmap=plt.cm.jet,
+    cmap=plt.jet,
     **kwargs,
 ):
     """Generate a 2d pic of the tree, each branch has a unique color.

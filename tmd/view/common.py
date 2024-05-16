@@ -20,9 +20,9 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-jet_map = plt.cm.get_cmap("jet")
-blues_map = plt.cm.get_cmap("Blues")
-reds_map = plt.cm.get_cmap("Reds")
+jet_map = plt.get_cmap("jet")
+blues_map = plt.get_cmap("Blues")
+reds_map = plt.get_cmap("Reds")
 
 
 def figure_naming(pretitle=None, posttitle=None, prefile=None, postfile=None):

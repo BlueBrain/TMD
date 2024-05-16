@@ -303,6 +303,6 @@ def matching_munkress_modified(p1, p2, use_diag=True):
     D = cdist(p1_enh, p2_enh)
     m = munkres.Munkres()
     indices = m.compute(np.copy(D))
-    ssum = np.sum([D[i][j] for (i, j) in indices])
+    ssum = np.sum([D[i][j] for (i, j) in indices])  # pylint: disable=unsubscriptable-object
 
     return indices, ssum
