@@ -12,6 +12,7 @@ reqs = [
     "munkres>=1.0.12",
     "cached-property>=1.5.1",
     "morphio>=3.3.4,<4",
+    "docutils<0.21",
 ]
 
 doc_reqs = [
@@ -19,6 +20,7 @@ doc_reqs = [
     "sphinx",
     "sphinx-bluebrain-theme",
     "sphinx-click",
+    ""
 ]
 
 test_reqs = [
