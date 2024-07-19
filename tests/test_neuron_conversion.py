@@ -8,8 +8,8 @@ import numpy as np
 from numpy import testing as npt
 
 from tmd.io import conversion as tested
+from tmd.io.io import _load_neuron_morphio
 from tmd.io.io import load_neuron
-from tmd.io.io import load_neuron_from_morphio
 
 _path = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_path, "data")
@@ -166,11 +166,11 @@ def test_neuron_building_consistency__h5():
     path = f"{DATA_PATH}/valid/C010398B-P2.h5"
 
     neuron1 = load_neuron(path)
-    neuron2 = load_neuron_from_morphio(path)
+    neuron2 = _load_neuron_morphio(path)
 
     _assert_neurons_equal(neuron1, neuron2)
 
-    neuron2 = load_neuron_from_morphio(morphio.Morphology(path))
+    neuron2 = _load_neuron_morphio(morphio.Morphology(path))
 
     _assert_neurons_equal(neuron1, neuron2)
 
@@ -180,10 +180,10 @@ def test_neuron_building_consistency__swc():
     path = f"{DATA_PATH}/valid/C010398B-P2.CNG.swc"
 
     neuron1 = load_neuron(path)
-    neuron2 = load_neuron_from_morphio(path)
+    neuron2 = _load_neuron_morphio(path)
 
     _assert_neurons_equal(neuron1, neuron2)
 
-    neuron2 = load_neuron_from_morphio(morphio.Morphology(path))
+    neuron2 = _load_neuron_morphio(morphio.Morphology(path))
 
     _assert_neurons_equal(neuron1, neuron2)
